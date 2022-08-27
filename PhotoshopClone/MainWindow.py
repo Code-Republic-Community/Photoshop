@@ -26,29 +26,28 @@ class MainWindow(QMainWindow):
         self.add_menus()
         self.key = list(self.menu_and_actions.keys())
         self.connect_actions()
+
     def connect_actions(self):
         self.menu_and_actions[self.key[0]][5].triggered.connect(self.close)
 
     def close(self):
         close = QMessageBox.question(self,
-                                               "QUIT",
-                                               "Are you sure want to close the program?",
-                                               QMessageBox.Yes | QMessageBox.No)
+                                     "QUIT",
+                                     "Are you sure want to close the program?",
+                                     QMessageBox.Yes | QMessageBox.No)
         if close == QMessageBox.Yes:
             exit()
-
 
     def add_menus(self):
         menubar = self.menuBar()
 
         i = 0
-        for name,actions in self.menu_and_actions.items():
+        for name, actions in self.menu_and_actions.items():
             menubar.addMenu(name)
             for j in range(len(actions)):
                 name.addAction(actions[j])
 
             i += 1
-
 
 
 def main():
