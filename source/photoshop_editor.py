@@ -1,28 +1,28 @@
 """This file open main window, and let you do photoshop"""
 
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton
+from PyQt5.QtWidgets import QApplication, QPushButton
 from PyQt5.QtGui import QIcon
+from source.main_window import MainWindow
 
-
-class PhotoshopEditor(QMainWindow):
+class PhotoshopEditor(MainWindow):
     def __init__(self):
         """In the constructor is designed main window, and call main functions"""
-
         super().__init__()
         self.setGeometry(250, 100, 900, 600)
         self.setWindowTitle("Photoshop Editor")
-        self.setMinimumSize(600, 440)
+        self.setMinimumSize(600, 460)
         self.setWindowIcon(QIcon('content/photoshop.png'))
         self.setStyleSheet('background-color:#FFFFFF')
         self.toolbar()
+
         self.show()
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
 
         dict_buttons = {'content/paint-brush.png': self.paint,
-                        'content/move.png': self.move,
+                        'content/move.png': self.move1,
                         'content/marquee.png': self.marquee,
                         'content/lasso.png': self.lasso,
                         'content/crop.png': self.crop,
@@ -30,7 +30,7 @@ class PhotoshopEditor(QMainWindow):
                         'content/eraser.png': self.eraser,
                         'content/font.png': self.type,
                         'content/recovery.png': self.image_converter}
-        y = 0
+        y = 20
         for key, value in dict_buttons.items():
             self.button = QPushButton(self)
             self.button.resize(40, 40)
@@ -43,7 +43,7 @@ class PhotoshopEditor(QMainWindow):
     def paint(self):
         pass
 
-    def move(self):
+    def move1(self):
         pass
 
     def marquee(self):
@@ -66,7 +66,6 @@ class PhotoshopEditor(QMainWindow):
 
     def image_converter(self):
         pass
-
 
 def run():
     app = QApplication(sys.argv)
