@@ -5,7 +5,6 @@ class File():
     def __init__(self):
         super(File, self).__init__()
 
-
     def new(self):
         pass
 

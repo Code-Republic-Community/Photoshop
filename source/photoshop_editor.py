@@ -41,7 +41,7 @@ class PhotoshopEditor(MainWindow):
             y += 50
 
     def paint(self):
-        pass
+        print('Pressed')
 
     def move1(self):
         pass
