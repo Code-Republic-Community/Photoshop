@@ -1,9 +1,11 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMenu, QAction, QMessageBox
+from content import *
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
+
         super(MainWindow, self).__init__(parent)
 
         self.setGeometry(300, 150, 900, 600)
@@ -11,7 +13,6 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(900, 600)
         self.setMenuBar(self.menuBar())
         self.setWindowTitle('Photoshop Clone')
-        self.show()
         self.menu_and_actions = {
             QMenu("File", self): [QAction("New", self), QAction("Open", self), QAction("Save", self),
                                   QAction("Save as", self), QAction("Print", self), QAction("Close", self)],
