@@ -1,10 +1,13 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMenu, QAction, QMessageBox
-from source import file
-from source import edit
-from source import image
-from source import filter
-
+# from source import file
+# from source import edit
+# from source import image
+# from source import filter
+import file
+import edit
+import image
+import filter
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -95,7 +98,7 @@ class MainWindow(QMainWindow):
 #     ex = MainWindow()
 #     ex.show()
 #     sys.exit(app.exec_())
-#
-#
+
+
 # if __name__ == '__main__':
 #     main()

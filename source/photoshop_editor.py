@@ -3,7 +3,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QPushButton
 from PyQt5.QtGui import QIcon
-from source.main_window import MainWindow
+from main_window import MainWindow
 
 class PhotoshopEditor(MainWindow):
     def __init__(self):
