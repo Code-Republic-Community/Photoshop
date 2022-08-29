@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 class File():
     def __init__(self):
+
         super(File, self).__init__()
 
     def new(self):
@@ -26,9 +27,9 @@ class File():
 
 
     def close(self):
-        from source.photoshop_editor import PhotoshopEditor
-        obj = PhotoshopEditor()
-        close = QMessageBox.question(id(obj),
+        from source.main_window import MainWindow
+        obj = MainWindow()
+        close = QMessageBox.question(obj,
                                      "QUIT",
                                      "Are you sure want to close the program?",
                                      QMessageBox.Yes | QMessageBox.No)

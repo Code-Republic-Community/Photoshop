@@ -1,11 +1,15 @@
-def blur():
-    pass
+class Filter():
+    def __init__(self):
+        super(Filter, self).__init__()
 
-def noise():
-    pass
+    def blur(self):
+        pass
 
-def distort():
-    pass
+    def noise(self):
+        pass
 
-def pixelate():
-    pass
+    def distort(self):
+        pass
+
+    def pixelate(self):
+        pass

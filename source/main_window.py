@@ -1,9 +1,5 @@
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QMenu, QAction, QMessageBox
-# from source import file
-# from source import edit
-# from source import image
-# from source import filter
 import file
 import edit
 import image
@@ -23,16 +19,19 @@ class MainWindow(QMainWindow):
                      'Save': file.File.save, 'Save As': file.File.save_as,
                      'Print': file.File.print, 'Close': file.File.close}
 
-        dict_edit = {'Undo': edit.undo, 'Redo': edit.redo, 'Cut': edit.cut,
-                     'Copy': edit.copy, 'Paste': edit.paste,
-                     'Clear screen': edit.clear_screen,
-                     'Keyboard shortcuts': edit.keyboard_shortcuts}
+        dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo, 'Cut': edit.Edit.cut,
+                     'Copy': edit.Edit.copy, 'Paste': edit.Edit.paste,
+                     'Clear screen': edit.Edit.clear_screen,
+                     'Keyboard shortcuts': edit.Edit.keyboard_shortcuts}
 
-        dict_image = {'Image size': image.image_size, 'Canvas size': image.canvas_size,
-                      'Rotate left': image.rotate_left, 'Rotate right': image.rotate_right}
+        dict_image = {'Image size': image.Image.image_size,
+                      'Canvas size': image.Image.canvas_size,
+                      'Rotate left': image.Image.rotate_left,
+                      'Rotate right': image.Image.rotate_right}
 
-        dict_filter = {'Blur': filter.blur, 'Noise': filter.noise, 'Distort': filter.distort,
-                       'Pixelate': filter.pixelate}
+        dict_filter = {'Blur': filter.Filter.blur, 'Noise': filter.Filter.noise,
+                       'Distort': filter.Filter.distort,
+                       'Pixelate': filter.Filter.pixelate}
 
         for key, value in dict_file.items():
             extractAction = QAction(key, self)
