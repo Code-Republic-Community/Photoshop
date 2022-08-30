@@ -3,40 +3,97 @@
 import sys
 
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QWidget, QBoxLayout
+from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
+import file
+import edit
+import image
+import filter
 
-from main_window import MainWindow
 
-
-class PhotoshopEditor(MainWindow, QWidget):
+class PhotoshopEditor(QMainWindow):
     def __init__(self):
         """In the constructor is designed main window, and call main functions"""
         super().__init__()
-        QWidget().__init__()
-        self.setGeometry(250, 100, 900, 600)
-        self.setWindowTitle("Photoshop Editor")
+        self.setGeometry(280, 90, 900, 600)
         self.setMinimumSize(600, 460)
+        self.setWindowTitle("Photoshop Editor")
         self.setWindowIcon(QIcon('content/photoshop.png'))
         self.setStyleSheet('background-color:#FFFFFF')
         self.button_list = [None] * 9
-        global vbox
-        vbox = QVBoxLayout()
-        #vbox.addStretch()
-        self.toolbar()
 
+        from source.scribble_area import ScribbleArea
+        self.scribbleArea = ScribbleArea()
+        self.setCentralWidget(self.scribbleArea)
+
+        self.toolbar()
+        self.menu_bar()
+
+        # global vbox
+        # vbox = QVBoxLayout()
+        # self.label = QLabel(self)
+        # pixmap1 = QPixmap("content/nissan-gtr.jpg")
+        # self.pixmap = pixmap1.scaled(self.width(), self.height())
+        #
+        # vbox = QVBoxLayout()
+        # vbox.addWidget(self.label)
+        # self.label.resize(900, 600)
+        # self.label.move(50, 20)
+        # self.label.setPixmap(self.pixmap)
         #self.setLayout(vbox)
 
+        #self.show()
 
-        #self.label = QLabel(self)
-        #self.label.resize(860, 580)
-        #self.label.move(40, 20)
-        self.drawing = False
-        self.lastPoint = QPoint()
+    # def resizeEvent(self, event):
+    #     self.image = QPixmap("content/nissan-gtr.jpg")
+    #     self.pixmap = self.image.scaled(self.width(), self.height())
+    #     self.label.setPixmap(self.pixmap)
+    #     self.label.resize(self.width(), self.height())
 
-        self.image = QPixmap("content/nissan-gtr.jpg")
-        #self.label.setPixmap(self.image)
-        self.show()
+    def menu_bar(self):
+        main_menu = self.menuBar()
+        file_menu = main_menu.addMenu('&File')
+        edit_menu = main_menu.addMenu('&Edit')
+        image_menu = main_menu.addMenu('&Image')
+        filter_menu = main_menu.addMenu('&Filter')
+
+        dict_file = {'New': file.File.new, 'Open': file.File.open,
+                     'Save': file.File.save, 'Save As': file.File.save_as,
+                     'Print': file.File.print, 'Close': file.File.close}
+
+        dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo, 'Cut': edit.Edit.cut,
+                     'Copy': edit.Edit.copy, 'Paste': edit.Edit.paste,
+                     'Clear screen': edit.Edit.clear_screen,
+                     'Keyboard shortcuts': edit.Edit.keyboard_shortcuts}
+
+        dict_image = {'Image size': image.Image.image_size,
+                      'Canvas size': image.Image.canvas_size,
+                      'Rotate left': image.Image.rotate_left,
+                      'Rotate right': image.Image.rotate_right}
+
+        dict_filter = {'Blur': filter.Filter.blur, 'Noise': filter.Filter.noise,
+                       'Distort': filter.Filter.distort,
+                       'Pixelate': filter.Filter.pixelate}
+
+        for key, value in dict_file.items():
+            extractAction = QAction(key, self)
+            file_menu.addAction(extractAction)
+            extractAction.triggered.connect(value)
+
+        for key, value in dict_edit.items():
+            extractAction = QAction(key, self)
+            edit_menu.addAction(extractAction)
+            extractAction.triggered.connect(value)
+
+        for key, value in dict_image.items():
+            extractAction = QAction(key, self)
+            image_menu.addAction(extractAction)
+            extractAction.triggered.connect(value)
+
+        for key, value in dict_filter.items():
+            extractAction = QAction(key, self)
+            filter_menu.addAction(extractAction)
+            extractAction.triggered.connect(value)
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
@@ -58,34 +115,11 @@ class PhotoshopEditor(MainWindow, QWidget):
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
             self.button_list[i].setStyleSheet("QPushButton::hover {background-color: lightgray}")
-            vbox.addWidget(self.button_list[i])
+            #vbox.addWidget(self.button_list[i])
             #self.vbox.addStretch()
 
             y += 50
             i += 1
-
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.drawPixmap(self.rect(), self.image)
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.drawing = True
-            self.lastPoint = event.pos()
-
-    def mouseMoveEvent(self, event):
-        if event.buttons() and Qt.LeftButton and self.drawing:
-            painter = QPainter(self.image)
-            painter.setPen(QPen(Qt.red, 3, Qt.SolidLine))
-            painter.drawLine(self.lastPoint, event.pos())
-            self.lastPoint = event.pos()
-            self.update()
-
-    def mouseReleaseEvent(self, event):
-        if event.button == Qt.LeftButton:
-            self.drawing = False
-
 
     def all_button_white(self):
         for i in range(9):
@@ -130,4 +164,5 @@ class PhotoshopEditor(MainWindow, QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = PhotoshopEditor()
+    win.show()
     sys.exit(app.exec_())

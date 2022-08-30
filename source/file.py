@@ -1,9 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QMessageBox
+
+from PyQt5.QtCore import QDir
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
+
 
 class File():
     def __init__(self):
-
         super(File, self).__init__()
 
     def new(self):
@@ -11,7 +13,15 @@ class File():
 
 
     def open(self):
-        pass
+        from source.photoshop_editor import PhotoshopEditor
+        from source.scribble_area import ScribbleArea
+        scribble_area = ScribbleArea()
+        obj = PhotoshopEditor()
+        fileName, _ = QFileDialog.getOpenFileName(obj, "Open File",
+                                                  QDir.currentPath(), "Image files (*.jpg *.gif)")
+        print(fileName)
+        if fileName:
+            scribble_area.openImage(fileName)
 
 
     def save(self):
@@ -27,8 +37,8 @@ class File():
 
 
     def close(self):
-        from source.main_window import MainWindow
-        obj = MainWindow()
+        from source.photoshop_editor import PhotoshopEditor
+        obj = PhotoshopEditor()
         close = QMessageBox.question(obj,
                                      "QUIT",
                                      "Are you sure want to close the program?",
