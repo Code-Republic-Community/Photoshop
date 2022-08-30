@@ -20,7 +20,7 @@ class PhotoshopEditor(QMainWindow):
         self.setGeometry(280, 90, 900, 600)
         self.setMinimumSize(600, 460)
         self.setWindowTitle("Photoshop Editor")
-        self.setWindowIcon(QIcon('content/photoshop.png'))
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setStyleSheet('background-color:#FFFFFF')
         self.button_list = [None] * 9
         self.connected = False
@@ -82,15 +82,15 @@ class PhotoshopEditor(QMainWindow):
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
-        dict_buttons = {'content/paint-brush.png': self.paint,
-                        'content/move.png': self.move1,
-                        'content/marquee.png': self.marquee,
-                        'content/lasso.png': self.lasso,
-                        'content/crop.png': self.crop,
-                        'content/eyedropper.png': self.eyedropper,
-                        'content/eraser.png': self.eraser,
-                        'content/font.png': self.type,
-                        'content/recovery.png': self.image_converter}
+        dict_buttons = {'../content/paint-brush.png': self.paint,
+                        '../content/move.png': self.move1,
+                        '../content/marquee.png': self.marquee,
+                        '../content/lasso.png': self.lasso,
+                        '../content/crop.png': self.crop,
+                        '../content/eyedropper.png': self.eyedropper,
+                        '../content/eraser.png': self.eraser,
+                        '../content/font.png': self.type,
+                        '../content/recovery.png': self.image_converter}
         y = 20
         i = 0
         for key, value in dict_buttons.items():
