@@ -2,6 +2,9 @@
 import functools
 import sys
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
 from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
@@ -14,6 +17,7 @@ import filter
 
 
 class PhotoshopEditor(QMainWindow):
+<<<<<<< HEAD
 =======
 from PyQt5.QtWidgets import QApplication, QPushButton
 from PyQt5.QtGui import QIcon
@@ -24,6 +28,8 @@ from main_window import MainWindow
 
 class PhotoshopEditor(MainWindow):
 >>>>>>> main
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
     def __init__(self):
 
         """In the constructor is designed main window, and call main functions"""
@@ -42,6 +48,9 @@ class PhotoshopEditor(MainWindow):
         self.setCentralWidget(self.scribbleArea)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         self.toolbar()
         self.menu_bar()
 
@@ -94,6 +103,7 @@ class PhotoshopEditor(MainWindow):
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
+<<<<<<< HEAD
 =======
         dict_buttons = {'../content/paint-brush.png': self.paint,
                         '../content/move.png': self.move,
@@ -108,6 +118,8 @@ class PhotoshopEditor(MainWindow):
         i = 0
 
 >>>>>>> main
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         dict_buttons = {'content/paint-brush.png': self.paint,
                         'content/move.png': self.move1,
                         'content/marquee.png': self.marquee,
@@ -119,9 +131,13 @@ class PhotoshopEditor(MainWindow):
                         'content/recovery.png': self.image_converter}
         y = 20
 <<<<<<< HEAD
+<<<<<<< HEAD
         i = 0
 =======
 >>>>>>> main
+=======
+        i = 0
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         for key, value in dict_buttons.items():
             self.button_list[i] = QPushButton(self)
             self.button_list[i].resize(40, 40)
@@ -144,6 +160,9 @@ class PhotoshopEditor(MainWindow):
 
     def paint(self):
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
@@ -153,6 +172,7 @@ class PhotoshopEditor(MainWindow):
         self.scribbleArea.is_pressed(False)
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
+<<<<<<< HEAD
 =======
         self.button_list[0].setStyleSheet('background-color: red;')
     def move(self):
@@ -161,6 +181,8 @@ class PhotoshopEditor(MainWindow):
     def move1(self):
         pass
 >>>>>>> main
+=======
+>>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
 
     def marquee(self):
         self.all_button_white()
