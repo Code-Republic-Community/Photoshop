@@ -1,10 +1,6 @@
 """This file open main window, and let you do photoshop"""
 import functools
 import sys
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
 from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
@@ -17,19 +13,6 @@ import filter
 
 
 class PhotoshopEditor(QMainWindow):
-<<<<<<< HEAD
-=======
-from PyQt5.QtWidgets import QApplication, QPushButton
-from PyQt5.QtGui import QIcon
-from PhotoshopClone.MainWindow import MainWindow
-
-
-from main_window import MainWindow
-
-class PhotoshopEditor(MainWindow):
->>>>>>> main
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
     def __init__(self):
 
         """In the constructor is designed main window, and call main functions"""
@@ -37,7 +20,7 @@ class PhotoshopEditor(MainWindow):
         self.setGeometry(280, 90, 900, 600)
         self.setMinimumSize(600, 460)
         self.setWindowTitle("Photoshop Editor")
-        self.setWindowIcon(QIcon('content/photoshop.png'))
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setStyleSheet('background-color:#FFFFFF')
         self.button_list = [None] * 9
         self.connected = False
@@ -47,10 +30,6 @@ class PhotoshopEditor(MainWindow):
         self.scribbleArea.move(50, 20)
         self.setCentralWidget(self.scribbleArea)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         self.toolbar()
         self.menu_bar()
 
@@ -103,10 +82,8 @@ class PhotoshopEditor(MainWindow):
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
-<<<<<<< HEAD
-=======
         dict_buttons = {'../content/paint-brush.png': self.paint,
-                        '../content/move.png': self.move,
+                        '../content/move.png': self.move1,
                         '../content/marquee.png': self.marquee,
                         '../content/lasso.png': self.lasso,
                         '../content/crop.png': self.crop,
@@ -114,30 +91,8 @@ class PhotoshopEditor(MainWindow):
                         '../content/eraser.png': self.eraser,
                         '../content/font.png': self.type,
                         '../content/recovery.png': self.image_converter}
-        y = 0
-        i = 0
-
->>>>>>> main
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
-        dict_buttons = {'content/paint-brush.png': self.paint,
-                        'content/move.png': self.move1,
-                        'content/marquee.png': self.marquee,
-                        'content/lasso.png': self.lasso,
-                        'content/crop.png': self.crop,
-                        'content/eyedropper.png': self.eyedropper,
-                        'content/eraser.png': self.eraser,
-                        'content/font.png': self.type,
-                        'content/recovery.png': self.image_converter}
         y = 20
-<<<<<<< HEAD
-<<<<<<< HEAD
         i = 0
-=======
->>>>>>> main
-=======
-        i = 0
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         for key, value in dict_buttons.items():
             self.button_list[i] = QPushButton(self)
             self.button_list[i].resize(40, 40)
@@ -159,10 +114,6 @@ class PhotoshopEditor(MainWindow):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
         self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
@@ -172,17 +123,6 @@ class PhotoshopEditor(MainWindow):
         self.scribbleArea.is_pressed(False)
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
-<<<<<<< HEAD
-=======
-        self.button_list[0].setStyleSheet('background-color: red;')
-    def move(self):
-        pass
-
-    def move1(self):
-        pass
->>>>>>> main
-=======
->>>>>>> 9351f8f75f988ce0fe32f097b36295f324113cea
 
     def marquee(self):
         self.all_button_white()
