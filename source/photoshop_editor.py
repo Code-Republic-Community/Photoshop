@@ -1,9 +1,10 @@
 """This file open main window, and let you do photoshop"""
-
+import functools
 import sys
-
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtWidgets import QApplication, QPushButton, QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
+from functools import partial
+from source.scribble_area import ScribbleArea
+from PyQt5.QtWidgets import QApplication, QPushButton, \
+    QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
 import file
 import edit
@@ -13,6 +14,7 @@ import filter
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
+
         """In the constructor is designed main window, and call main functions"""
         super().__init__()
         self.setGeometry(280, 90, 900, 600)
@@ -21,34 +23,17 @@ class PhotoshopEditor(QMainWindow):
         self.setWindowIcon(QIcon('content/photoshop.png'))
         self.setStyleSheet('background-color:#FFFFFF')
         self.button_list = [None] * 9
+        self.connected = False
 
-        from source.scribble_area import ScribbleArea
+
         self.scribbleArea = ScribbleArea()
+        self.scribbleArea.move(50, 20)
         self.setCentralWidget(self.scribbleArea)
 
         self.toolbar()
         self.menu_bar()
 
-        # global vbox
-        # vbox = QVBoxLayout()
-        # self.label = QLabel(self)
-        # pixmap1 = QPixmap("content/nissan-gtr.jpg")
-        # self.pixmap = pixmap1.scaled(self.width(), self.height())
-        #
-        # vbox = QVBoxLayout()
-        # vbox.addWidget(self.label)
-        # self.label.resize(900, 600)
-        # self.label.move(50, 20)
-        # self.label.setPixmap(self.pixmap)
-        #self.setLayout(vbox)
-
         #self.show()
-
-    # def resizeEvent(self, event):
-    #     self.image = QPixmap("content/nissan-gtr.jpg")
-    #     self.pixmap = self.image.scaled(self.width(), self.height())
-    #     self.label.setPixmap(self.pixmap)
-    #     self.label.resize(self.width(), self.height())
 
     def menu_bar(self):
         main_menu = self.menuBar()
@@ -61,9 +46,9 @@ class PhotoshopEditor(QMainWindow):
                      'Save': file.File.save, 'Save As': file.File.save_as,
                      'Print': file.File.print, 'Close': file.File.close}
 
-        dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo, 'Cut': edit.Edit.cut,
-                     'Copy': edit.Edit.copy, 'Paste': edit.Edit.paste,
-                     'Clear screen': edit.Edit.clear_screen,
+        dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo,
+                     'Cut': edit.Edit.cut, 'Copy': edit.Edit.copy,
+                     'Paste': edit.Edit.paste, 'Clear screen': edit.Edit.clear_screen,
                      'Keyboard shortcuts': edit.Edit.keyboard_shortcuts}
 
         dict_image = {'Image size': image.Image.image_size,
@@ -78,7 +63,7 @@ class PhotoshopEditor(QMainWindow):
         for key, value in dict_file.items():
             extractAction = QAction(key, self)
             file_menu.addAction(extractAction)
-            extractAction.triggered.connect(value)
+            extractAction.triggered.connect(functools.partial(value, self, self))
 
         for key, value in dict_edit.items():
             extractAction = QAction(key, self)
@@ -114,22 +99,28 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].move(1, y)
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
-            self.button_list[i].setStyleSheet("QPushButton::hover {background-color: lightgray}")
+            #print(self.button_list[1])
+            self.button_list[i].setStyleSheet("QPushButton::hover "
+                                              "{background-color: lightgray}")
             #vbox.addWidget(self.button_list[i])
             #self.vbox.addStretch()
 
             y += 50
             i += 1
 
+
     def all_button_white(self):
         for i in range(9):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
+        self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
 
+
     def move1(self):
+        self.scribbleArea.is_pressed(False)
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
 
