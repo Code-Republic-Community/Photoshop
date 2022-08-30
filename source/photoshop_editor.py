@@ -1,6 +1,7 @@
 """This file open main window, and let you do photoshop"""
 import functools
 import sys
+<<<<<<< HEAD
 from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
@@ -13,6 +14,16 @@ import filter
 
 
 class PhotoshopEditor(QMainWindow):
+=======
+from PyQt5.QtWidgets import QApplication, QPushButton
+from PyQt5.QtGui import QIcon
+from PhotoshopClone.MainWindow import MainWindow
+
+
+from main_window import MainWindow
+
+class PhotoshopEditor(MainWindow):
+>>>>>>> main
     def __init__(self):
 
         """In the constructor is designed main window, and call main functions"""
@@ -30,6 +41,7 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.move(50, 20)
         self.setCentralWidget(self.scribbleArea)
 
+<<<<<<< HEAD
         self.toolbar()
         self.menu_bar()
 
@@ -82,6 +94,20 @@ class PhotoshopEditor(QMainWindow):
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
+=======
+        dict_buttons = {'../content/paint-brush.png': self.paint,
+                        '../content/move.png': self.move,
+                        '../content/marquee.png': self.marquee,
+                        '../content/lasso.png': self.lasso,
+                        '../content/crop.png': self.crop,
+                        '../content/eyedropper.png': self.eyedropper,
+                        '../content/eraser.png': self.eraser,
+                        '../content/font.png': self.type,
+                        '../content/recovery.png': self.image_converter}
+        y = 0
+        i = 0
+
+>>>>>>> main
         dict_buttons = {'content/paint-brush.png': self.paint,
                         'content/move.png': self.move1,
                         'content/marquee.png': self.marquee,
@@ -92,7 +118,10 @@ class PhotoshopEditor(QMainWindow):
                         'content/font.png': self.type,
                         'content/recovery.png': self.image_converter}
         y = 20
+<<<<<<< HEAD
         i = 0
+=======
+>>>>>>> main
         for key, value in dict_buttons.items():
             self.button_list[i] = QPushButton(self)
             self.button_list[i].resize(40, 40)
@@ -114,6 +143,7 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
+<<<<<<< HEAD
         self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
@@ -123,6 +153,14 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.is_pressed(False)
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
+=======
+        self.button_list[0].setStyleSheet('background-color: red;')
+    def move(self):
+        pass
+
+    def move1(self):
+        pass
+>>>>>>> main
 
     def marquee(self):
         self.all_button_white()
