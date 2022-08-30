@@ -1,11 +1,15 @@
-def image_size():
-    pass
+class Image():
+    def __init__(self):
+        super(Image, self).__init__()
 
-def canvas_size():
-    pass
+    def image_size(self):
+        pass
 
-def rotate_left():
-    pass
+    def canvas_size(self):
+        pass
 
-def rotate_right():
-    pass
+    def rotate_left(self):
+        pass
+
+    def rotate_right(self):
+        pass

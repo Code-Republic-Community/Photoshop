@@ -1,20 +1,25 @@
-def undo():
-    pass
+class Edit():
+    def __init__(self):
 
-def redo():
-    pass
+        super(Edit, self).__init__()
 
-def cut():
-    pass
+    def undo(self):
+        pass
 
-def copy():
-    pass
+    def redo(self):
+        pass
 
-def paste():
-    pass
+    def cut(self):
+        pass
 
-def clear_screen():
-    pass
+    def copy(self):
+        pass
 
-def keyboard_shortcuts():
-    pass
+    def paste(self):
+        pass
+
+    def clear_screen(self):
+        pass
+
+    def keyboard_shortcuts(self):
+        pass
