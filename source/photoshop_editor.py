@@ -6,6 +6,7 @@ from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
+from PyQt5 import QtCore
 import file
 import edit
 import image
@@ -25,15 +26,14 @@ class PhotoshopEditor(QMainWindow):
         self.button_list = [None] * 9
         self.connected = False
 
-
         self.scribbleArea = ScribbleArea()
         self.scribbleArea.move(50, 20)
         self.setCentralWidget(self.scribbleArea)
 
         self.toolbar()
         self.menu_bar()
-
         #self.show()
+
 
     def menu_bar(self):
         main_menu = self.menuBar()
@@ -59,11 +59,11 @@ class PhotoshopEditor(QMainWindow):
         dict_filter = {'Blur': filter.Filter.blur, 'Noise': filter.Filter.noise,
                        'Distort': filter.Filter.distort,
                        'Pixelate': filter.Filter.pixelate}
-
+        x = file.File()
         for key, value in dict_file.items():
             extractAction = QAction(key, self)
             file_menu.addAction(extractAction)
-            extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.triggered.connect(functools.partial(value,x , self))
 
         for key, value in dict_edit.items():
             extractAction = QAction(key, self)
@@ -102,9 +102,6 @@ class PhotoshopEditor(QMainWindow):
             #print(self.button_list[1])
             self.button_list[i].setStyleSheet("QPushButton::hover "
                                               "{background-color: lightgray}")
-            #vbox.addWidget(self.button_list[i])
-            #self.vbox.addStretch()
-
             y += 50
             i += 1
 

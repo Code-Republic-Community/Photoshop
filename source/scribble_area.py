@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QPoint, Qt, QDir, QSize
+from PyQt5.QtCore import QPoint, Qt, QSize
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QWidget
 
 
 class ScribbleArea(QWidget):
@@ -17,6 +17,7 @@ class ScribbleArea(QWidget):
         newSize = self.image.size().expandedTo(self.size())
         self.resizeImage(self.image, newSize)
         self.lastPoint = QPoint()
+        self.check = False
 
     def is_pressed(self, value):
         self.pressed = value
@@ -48,7 +49,6 @@ class ScribbleArea(QWidget):
         dirtyRect = event.rect()
         painter.drawImage(dirtyRect, self.image, dirtyRect)
 
-
     def resizeEvent(self, event):
         if self.width() > self.image.width() or self.height() > self.image.height():
             newWidth = max(self.width(), self.image.width())
@@ -70,6 +70,7 @@ class ScribbleArea(QWidget):
             painter.drawLine(self.lastPoint, event.pos())
             self.lastPoint = event.pos()
             self.update()
+            self.check = True
 
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:
