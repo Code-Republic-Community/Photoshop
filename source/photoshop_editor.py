@@ -1,10 +1,11 @@
 """This file open main window, and let you do photoshop"""
 import functools
 import sys
+from PyQt5 import QtCore
 from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
-    QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
+    QLabel, QVBoxLayout, QHBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSpacerItem
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
 import file
 import edit
@@ -25,15 +26,27 @@ class PhotoshopEditor(QMainWindow):
         self.button_list = [None] * 9
         self.connected = False
 
+        widget = QWidget()
+        self.buttons_layout = QVBoxLayout()
+
 
         self.scribbleArea = ScribbleArea()
-        self.scribbleArea.move(50, 20)
-        self.setCentralWidget(self.scribbleArea)
+
+        horizontal_layout = QHBoxLayout(self.centralWidget())
+        horizontal_layout.addLayout(self.buttons_layout)
+        horizontal_layout.addWidget(self.scribbleArea)
+
+
+        vertcal_spacer = QSpacerItem(20, 40)
+        #self.buttons_layout.addSpacerItem(vertcal_spacer)
 
         self.toolbar()
         self.menu_bar()
 
-        #self.show()
+        widget.setLayout(horizontal_layout)
+        self.setCentralWidget(widget)
+
+
 
     def menu_bar(self):
         main_menu = self.menuBar()
@@ -102,12 +115,11 @@ class PhotoshopEditor(QMainWindow):
             #print(self.button_list[1])
             self.button_list[i].setStyleSheet("QPushButton::hover "
                                               "{background-color: lightgray}")
-            #vbox.addWidget(self.button_list[i])
-            #self.vbox.addStretch()
+            self.buttons_layout.addWidget(self.button_list[i])
 
             y += 50
             i += 1
-
+        #self.buttons_layout.addStretch()
 
     def all_button_white(self):
         for i in range(9):
