@@ -64,7 +64,7 @@ class PhotoshopEditor(QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         dict_file = {'New': file.File.new, 'Open': file.File.open,
                      'Save': file.File.save, 'Save As': file.File.save_as,
-                     'Print': file.File.print, 'Close': file.File.close}
+                     'Print': file.File.print, 'Close': file.File.close_window}
 
         dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo,
                      'Cut': edit.Edit.cut, 'Copy': edit.Edit.copy,
