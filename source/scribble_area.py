@@ -41,8 +41,27 @@ class ScribbleArea(QWidget):
         newImage = QImage(newSize, QImage.Format_RGB32)
         newImage.fill(qRgb(255, 255, 255))
         painter = QPainter(newImage)
-        painter.drawImage(QPoint(40, 0), image)
+        painter.drawImage(QPoint(0, 0), image)
         self.image = newImage
+
+    def resizeEvent(self, event):
+        #if self.width() > self.image.width() or self.height() > self.image.height():
+        newWidth = max(self.width() + 128, self.image.width())
+        newHeight = max(self.height() + 128, self.image.height())
+        self.resizeImage(self.image, QSize(self.width(), self.height()))
+        self.update()
+
+        super(ScribbleArea, self).resizeEvent(event)
+
+    def saveImage(self, fileName, fileFormat):
+        visibleImage = self.image
+        self.resizeImage(visibleImage, self.size())
+
+        if visibleImage.save(fileName, fileFormat):
+            self.modified = False
+            return True
+        else:
+            return False
 
     def paintEvent(self, event):
         painter = QPainter(self)
