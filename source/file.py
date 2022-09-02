@@ -4,16 +4,17 @@ from PyQt5.QtGui import QImage, qRgb, QPainter, QPen
 from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget, QMainWindow
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
+from source.scribble_area import ScribbleArea
 
 
 class File(QMainWindow):
     def __init__(self):
         super(File, self).__init__()
+        self.filename = ''
         #self.obj = PhotoshopEditor()
 
 
-    def new(self,obj):
-        print("ok")
+    def new(self, obj):
         if self.check:
             close = QMessageBox.question(obj,
                                          "QUIT",
@@ -35,16 +36,37 @@ class File(QMainWindow):
                 obj.scribbleArea.update()
                 obj.scribbleArea.check = False
 
-    def open(self,obj):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open File", QDir.currentPath(),
+    def open(self, obj):
+        self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                   "Image files (*.jpg *.png)")
-        if fileName:
-            obj.scribbleArea.openImage(fileName)
-
-
+        if self.filename:
+            obj.scribbleArea.openImage(self.filename)
+        self.check = True
 
     def save(self, obj):
-        pass
+        try:
+            if self.filename == '':
+                pass
+        except:
+            self.filename = 'C'
+            fileFormat = 'png'
+            initialPath = self.filename + f'/untitled.' + fileFormat
+            fileName, _ = QFileDialog.getSaveFileName(obj, "Save", initialPath,
+                    "%s Files (*.%s);;All Files (*)" % (fileFormat.upper(), fileFormat))
+            if fileName:
+                return obj.scribbleArea.saveImage(fileName, fileFormat)
+
+        lst = str(self.filename).split('/')
+        image_name = str(lst[-1])
+        fileFormat = image_name[len(image_name) - 3:]
+        #image_name = image_name[:len(image_name) - 4]
+        #initialPath = self.filename + f'/{image_name}.' + fileFormat
+        # fileName, _ = QFileDialog.getSaveFileName(obj, "Save", initialPath,
+        #                     "%s Files (*.%s);;All Files (*)" % (fileFormat.upper(), fileFormat))
+
+        if self.filename:
+            return obj.scribbleArea.saveImage(self.filename, fileFormat)
+
 
     def save_as(self,obj):
         filename = QFileDialog.getSaveFileName(self,
