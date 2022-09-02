@@ -63,19 +63,14 @@ class ScribbleArea(QWidget):
         else:
             return False
 
+    def foo(self):
+        return self.image
+
     def paintEvent(self, event):
         painter = QPainter(self)
         dirtyRect = event.rect()
+        #print(self.foo())
         painter.drawImage(dirtyRect, self.image, dirtyRect)
-
-    def resizeEvent(self, event):
-        if self.width() > self.image.width() or self.height() > self.image.height():
-            newWidth = max(self.width(), self.image.width())
-            newHeight = max(self.height(), self.image.height())
-            self.resizeImage(self.image, QSize(newWidth, newHeight))
-            self.update()
-
-        super(ScribbleArea, self).resizeEvent(event)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
