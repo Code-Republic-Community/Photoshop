@@ -78,9 +78,11 @@ class ScribbleArea(QWidget):
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
+        from photoshop_editor import PhotoshopEditor
+        color = PhotoshopEditor()
         if self.pressed:
             painter = QPainter(self.image)
-            painter.setPen(QPen(Qt.red, 3, Qt.SolidLine))
+            painter.setPen(QPen(Qt.color1, 3, Qt.SolidLine))
             painter.drawLine(self.lastPoint, event.pos())
             self.lastPoint = event.pos()
             self.update()

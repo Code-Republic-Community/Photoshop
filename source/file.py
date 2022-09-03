@@ -37,10 +37,10 @@ class File(QMainWindow):
         #f, e = os.path.splitext(self.filename)
         imResize = im.resize((900, 600), Image.ANTIALIAS)
         imResize.save(self.filename, 'JPEG', quality=90)
-        print(im)
         if self.filename:
             obj.scribbleArea.openImage(self.filename)
         self.check = True
+        obj.scribbleArea.check = True
 
     def save(self, obj):
         try:
@@ -104,7 +104,7 @@ class File(QMainWindow):
 
         dialog = QPrintDialog(printer)
         dialog.exec_()
-        im = QImage("../content/nissan-gtr.jpg")
+        im = QImage(obj.scribbleArea.image)
         im = im.scaledToWidth(printer.pageRect().width(), Qt.SmoothTransformation)
 
         painter = QPainter()
@@ -129,7 +129,7 @@ class File(QMainWindow):
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save(self, obj)
+                File.save(self,obj)
                 exit()
             else:
                 exit()
