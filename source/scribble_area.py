@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QPoint, Qt, QSize
-from PyQt5.QtGui import QImage, qRgb, QPainter, QPen
+from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QWidget
 
 
@@ -8,20 +8,18 @@ class ScribbleArea(QWidget):
         super(ScribbleArea, self).__init__()
 
         self.setAttribute(Qt.WA_StaticContents)
-        self.modified = False
-        self.scribbling = False
-        self.myPenWidth = 1
-        self.myPenColor = Qt.blue
         self.image = QImage()
         self.pressed = False
-        newSize = self.image.size().expandedTo(self.size())
-        self.resizeImage(self.image, newSize)
         self.lastPoint = QPoint()
         self.check = False
+        self.color = (0, 0, 0, 255)
 
     def is_pressed(self, value):
         self.pressed = value
         return self.pressed
+
+    def current_window_size(self):
+        return self.width(), self.height()
 
     def openImage(self, fileName):
         loadedImage = QImage()
@@ -30,7 +28,6 @@ class ScribbleArea(QWidget):
         newSize = loadedImage.size().expandedTo(self.size())
         self.resizeImage(loadedImage, newSize)
         self.image = loadedImage
-        self.modified = False
         self.update()
         return True
 
@@ -45,7 +42,7 @@ class ScribbleArea(QWidget):
         self.image = newImage
 
     def resizeEvent(self, event):
-        #if self.width() > self.image.width() or self.height() > self.image.height():
+        # if self.width() > self.image.width() or self.height() > self.image.height():
         newWidth = max(self.width() + 128, self.image.width())
         newHeight = max(self.height() + 128, self.image.height())
         self.resizeImage(self.image, QSize(self.width(), self.height()))
@@ -58,10 +55,8 @@ class ScribbleArea(QWidget):
         self.resizeImage(visibleImage, self.size())
 
         if visibleImage.save(fileName, fileFormat):
-            self.modified = False
             return True
-        else:
-            return False
+        return False
 
     def foo(self):
         return self.image
@@ -69,20 +64,19 @@ class ScribbleArea(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         dirtyRect = event.rect()
-        #print(self.foo())
         painter.drawImage(dirtyRect, self.image, dirtyRect)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.drawing = True
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
         from photoshop_editor import PhotoshopEditor
-        color = PhotoshopEditor()
         if self.pressed:
             painter = QPainter(self.image)
-            painter.setPen(QPen(Qt.color1, 3, Qt.SolidLine))
+            painter.setPen(QPen(
+                QColor(self.color[0], self.color[1], self.color[2], self.color[3]),
+                3, Qt.SolidLine))
             painter.drawLine(self.lastPoint, event.pos())
             self.lastPoint = event.pos()
             self.update()
@@ -90,4 +84,4 @@ class ScribbleArea(QWidget):
 
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:
-            self.drawing = False
+            pass

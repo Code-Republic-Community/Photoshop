@@ -4,8 +4,8 @@ from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
-    QColorDialog
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
+    QColorDialog, QSpinBox
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor
 from PyQt5 import QtCore, QtWidgets
 import file
 import edit
@@ -14,11 +14,13 @@ import filter
 import help
 from scribble_area import ScribbleArea
 from help import Help, Documentation
+
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
-        #QMainWindow.setCentralWidget(self,self.scribbleArea)
+        # QMainWindow.setCentralWidget(self,self.scribbleArea)
+
     def setupUi(self, MainWindow):
 
         MainWindow.setObjectName("MainWindow")
@@ -36,7 +38,7 @@ class PhotoshopEditor(QMainWindow):
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.button_list = [None] * 9
-
+        self.colorname = QColor()
         self.horizontalLayout_2.addLayout(self.verticalLayout)
         self.horizontalLayout_2.addWidget(self.scribbleArea)
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
@@ -84,7 +86,7 @@ class PhotoshopEditor(QMainWindow):
                        'Pixelate': filter.Filter.pixelate}
 
         dict_help = {'Help': self.help, 'Documentation': self.documentation
-                       }
+                     }
 
         for key, value in dict_file.items():
             extractAction = QAction(MainWindow)
@@ -92,7 +94,6 @@ class PhotoshopEditor(QMainWindow):
             main_menu.addAction(file_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
-
 
         for key, value in dict_edit.items():
             extractAction = QAction(MainWindow)
@@ -152,7 +153,7 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
-            #print(self.button_list[1])
+            # print(self.button_list[1])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.verticalLayout.addWidget(self.button_list[i])
@@ -173,8 +174,8 @@ class PhotoshopEditor(QMainWindow):
         self.button_list[0].setStyleSheet('background-color: red;')
 
     def pen_color(self):
-        color = QColorDialog.getColor()
-        print(color.getRgbF())
+        self.scribbleArea.color = QColorDialog.getColor().getRgb()
+
     def pen_width(self):
         pass
 
@@ -211,16 +212,18 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
 
-    def help(self,obj,obj2):
+    def help(self, obj, obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
         self.window.show()
-    def documentation(self,obj,obj2):
+
+    def documentation(self, obj, obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
         self.window.show()
+
 
 if __name__ == "__main__":
     import sys
