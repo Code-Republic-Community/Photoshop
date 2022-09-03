@@ -5,13 +5,14 @@ from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets
 import file
 import edit
 import image
 import filter
+import help
 from scribble_area import ScribbleArea
-
+from help import Help, Documentation
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
@@ -61,6 +62,7 @@ class PhotoshopEditor(QMainWindow):
         edit_menu = QMenu(main_menu)
         image_menu = QMenu(main_menu)
         filter_menu = QMenu(main_menu)
+        help_menu = QMenu(main_menu)
         _translate = QtCore.QCoreApplication.translate
         dict_file = {'New': file.File.new, 'Open': file.File.open,
                      'Save': file.File.save, 'Save As': file.File.save_as,
@@ -79,6 +81,9 @@ class PhotoshopEditor(QMainWindow):
         dict_filter = {'Blur': filter.Filter.blur, 'Noise': filter.Filter.noise,
                        'Distort': filter.Filter.distort,
                        'Pixelate': filter.Filter.pixelate}
+
+        dict_help = {'Help': self.help, 'Documentation': self.documentation
+                       }
 
         for key, value in dict_file.items():
             extractAction = QAction(MainWindow)
@@ -109,10 +114,18 @@ class PhotoshopEditor(QMainWindow):
             extractAction.triggered.connect(functools.partial(value, self.x, self))
             extractAction.setText(_translate("MainWindow", key))
 
+        for key, value in dict_help.items():
+            extractAction = QAction(MainWindow)
+            help_menu.addAction(extractAction)
+            main_menu.addAction(help_menu.menuAction())
+            extractAction.triggered.connect(functools.partial(value, self.x, self))
+            extractAction.setText(_translate("MainWindow", key))
+
         file_menu.setTitle(_translate("MainWindow", "File"))
         image_menu.setTitle(_translate("MainWindow", "Edit"))
         edit_menu.setTitle(_translate("MainWindow", "Image"))
         filter_menu.setTitle(_translate("MainWindow", "Filter"))
+        help_menu.setTitle(_translate("MainWindow", "Help"))
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
@@ -187,6 +200,17 @@ class PhotoshopEditor(QMainWindow):
     def image_converter(self):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
+
+    def help(self,obj,obj2):
+        self.window = QtWidgets.QDialog()
+        self.ui = Help()
+        self.ui.setupUi(self.window)
+        self.window.show()
+    def documentation(self,obj,obj2):
+        self.window = QtWidgets.QDialog()
+        self.ui = Documentation()
+        self.ui.setupUi(self.window)
+        self.window.show()
 
 if __name__ == "__main__":
     import sys
