@@ -1,5 +1,3 @@
-import os
-import sys
 from PIL import Image
 from PyQt5.QtCore import QPoint, Qt, QDir, QSize
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QPagedPaintDevice
@@ -26,21 +24,22 @@ class File(QMainWindow):
             else:
                 obj.scribbleArea.image = QImage()
                 newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
-                obj.scribbleArea.resizeImage(obj.scribbleArea.image, newSize)
+                obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
                 obj.scribbleArea.update()
                 obj.scribbleArea.check = False
+
     def open(self, obj):
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                        "Image files (*.jpg *.png)")
 
-        im = Image.open(self.filename)
-        #f, e = os.path.splitext(self.filename)
-        imResize = im.resize((900, 600), Image.ANTIALIAS)
-        imResize.save(self.filename, 'JPEG', quality=90)
-        if self.filename:
-            obj.scribbleArea.openImage(self.filename)
-        self.check = True
-        obj.scribbleArea.check = True
+        if self.filename != '':
+            im = Image.open(self.filename)
+            imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
+            imResize.save(self.filename, 'png', quality=90)
+            if self.filename:
+                obj.scribbleArea.openImage(self.filename)
+            self.check = True
+            obj.scribbleArea.check = True
 
     def save(self, obj):
         try:
@@ -75,9 +74,7 @@ class File(QMainWindow):
         if self.filename:
             obj.scribbleArea.saveImage(self.filename, fileFormat)
 
-
     def save_as(self, obj):
-
         self.filename = 'C'
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(self,
@@ -93,10 +90,7 @@ class File(QMainWindow):
         if self.filename:
             return obj.scribbleArea.saveImage(self.filename, fileFormat)
 
-
     def print(self, obj):
-        from source.scribble_area import ScribbleArea
-        obj_scribble = ScribbleArea()
         printer = QPrinter(QPrinter.HighResolution)
         printer.setResolution(1200)
         printer.setFullPage(True)
@@ -111,7 +105,6 @@ class File(QMainWindow):
         painter.begin(printer)
         painter.drawImage(0, 0, im)
         painter.end()
-
 
     def close_window(self, obj1):
         from source.photoshop_editor import PhotoshopEditor
@@ -129,7 +122,7 @@ class File(QMainWindow):
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save(self,obj)
+                File.save(self, obj)
                 exit()
             else:
                 exit()

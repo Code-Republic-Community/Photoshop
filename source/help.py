@@ -1,10 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFrame, QDialog
 
 class Help(QDialog):
 
     def setupUi(self, Help):
         Help.setObjectName("Help")
+        Help.setWindowIcon(QIcon('../content/photoshop.png'))
         Help.resize(682, 556)
         Help.setMinimumSize(QtCore.QSize(682, 556))
         self.verticalLayout = QtWidgets.QVBoxLayout(Help)
@@ -57,6 +59,7 @@ class Documentation(QDialog):
 
     def setupUi(self, Documentation):
         Documentation.setObjectName("Help")
+        Documentation.setWindowIcon(QIcon('../content/photoshop.png'))
         Documentation.resize(682, 556)
         Documentation.setMinimumSize(QtCore.QSize(682, 556))
         self.verticalLayout = QtWidgets.QVBoxLayout(Documentation)

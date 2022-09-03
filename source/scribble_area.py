@@ -8,20 +8,17 @@ class ScribbleArea(QWidget):
         super(ScribbleArea, self).__init__()
 
         self.setAttribute(Qt.WA_StaticContents)
-        self.modified = False
-        self.scribbling = False
-        self.myPenWidth = 1
-        self.myPenColor = Qt.blue
         self.image = QImage()
         self.pressed = False
-        newSize = self.image.size().expandedTo(self.size())
-        self.resizeImage(self.image, newSize)
         self.lastPoint = QPoint()
         self.check = False
 
     def is_pressed(self, value):
         self.pressed = value
         return self.pressed
+
+    def current_window_size(self):
+        return self.width(), self.height()
 
     def openImage(self, fileName):
         loadedImage = QImage()
@@ -30,7 +27,6 @@ class ScribbleArea(QWidget):
         newSize = loadedImage.size().expandedTo(self.size())
         self.resizeImage(loadedImage, newSize)
         self.image = loadedImage
-        self.modified = False
         self.update()
         return True
 
@@ -58,10 +54,8 @@ class ScribbleArea(QWidget):
         self.resizeImage(visibleImage, self.size())
 
         if visibleImage.save(fileName, fileFormat):
-            self.modified = False
             return True
-        else:
-            return False
+        return False
 
     def foo(self):
         return self.image
@@ -69,17 +63,13 @@ class ScribbleArea(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         dirtyRect = event.rect()
-        #print(self.foo())
         painter.drawImage(dirtyRect, self.image, dirtyRect)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            self.drawing = True
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
-        from photoshop_editor import PhotoshopEditor
-        color = PhotoshopEditor()
         if self.pressed:
             painter = QPainter(self.image)
             painter.setPen(QPen(Qt.color1, 3, Qt.SolidLine))
@@ -90,4 +80,4 @@ class ScribbleArea(QWidget):
 
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:
-            self.drawing = False
+            pass

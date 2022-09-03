@@ -14,11 +14,14 @@ import filter
 import help
 from scribble_area import ScribbleArea
 from help import Help, Documentation
+
+
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
-        #QMainWindow.setCentralWidget(self,self.scribbleArea)
+        # QMainWindow.setCentralWidget(self,self.scribbleArea)
+
     def setupUi(self, MainWindow):
 
         MainWindow.setObjectName("MainWindow")
@@ -84,7 +87,7 @@ class PhotoshopEditor(QMainWindow):
                        'Pixelate': filter.Filter.pixelate}
 
         dict_help = {'Help': self.help, 'Documentation': self.documentation
-                       }
+                     }
 
         for key, value in dict_file.items():
             extractAction = QAction(MainWindow)
@@ -92,7 +95,6 @@ class PhotoshopEditor(QMainWindow):
             main_menu.addAction(file_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
-
 
         for key, value in dict_edit.items():
             extractAction = QAction(MainWindow)
@@ -152,7 +154,7 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
-            #print(self.button_list[1])
+            # print(self.button_list[1])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.verticalLayout.addWidget(self.button_list[i])
@@ -175,6 +177,7 @@ class PhotoshopEditor(QMainWindow):
     def pen_color(self):
         color = QColorDialog.getColor()
         print(color.getRgbF())
+
     def pen_width(self):
         pass
 
@@ -211,16 +214,18 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
 
-    def help(self,obj,obj2):
+    def help(self, obj, obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
         self.window.show()
-    def documentation(self,obj,obj2):
+
+    def documentation(self, obj, obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
         self.window.show()
+
 
 if __name__ == "__main__":
     import sys
