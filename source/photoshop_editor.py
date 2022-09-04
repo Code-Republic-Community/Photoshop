@@ -4,8 +4,8 @@ from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
-    QColorDialog
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
+    QColorDialog, QSpinBox
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor
 from PyQt5 import QtCore, QtWidgets
 import file
 import edit
@@ -14,7 +14,6 @@ import filter
 import help
 from scribble_area import ScribbleArea
 from help import Help, Documentation
-
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
@@ -39,7 +38,7 @@ class PhotoshopEditor(QMainWindow):
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.button_list = [None] * 9
-
+        self.colorname = QColor()
         self.horizontalLayout_2.addLayout(self.verticalLayout)
         self.horizontalLayout_2.addWidget(self.scribbleArea)
         self.horizontalLayout.addLayout(self.horizontalLayout_2)
@@ -175,8 +174,7 @@ class PhotoshopEditor(QMainWindow):
         self.button_list[0].setStyleSheet('background-color: red;')
 
     def pen_color(self):
-        color = QColorDialog.getColor()
-        print(color.getRgbF())
+        self.scribbleArea.color = QColorDialog.getColor().getRgb()
 
     def pen_width(self):
         pass

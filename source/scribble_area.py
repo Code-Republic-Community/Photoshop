@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QPoint, Qt, QSize
-from PyQt5.QtGui import QImage, qRgb, QPainter, QPen
+from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor
 from PyQt5.QtWidgets import QWidget
 
 
@@ -12,6 +12,7 @@ class ScribbleArea(QWidget):
         self.pressed = False
         self.lastPoint = QPoint()
         self.check = False
+        self.color = (0, 0, 0, 255)
 
     def is_pressed(self, value):
         self.pressed = value
@@ -41,7 +42,7 @@ class ScribbleArea(QWidget):
         self.image = newImage
 
     def resizeEvent(self, event):
-        #if self.width() > self.image.width() or self.height() > self.image.height():
+        # if self.width() > self.image.width() or self.height() > self.image.height():
         newWidth = max(self.width() + 128, self.image.width())
         newHeight = max(self.height() + 128, self.image.height())
         self.resizeImage(self.image, QSize(self.width(), self.height()))
@@ -70,9 +71,12 @@ class ScribbleArea(QWidget):
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
+        from photoshop_editor import PhotoshopEditor
         if self.pressed:
             painter = QPainter(self.image)
-            painter.setPen(QPen(Qt.color1, 3, Qt.SolidLine))
+            painter.setPen(QPen(
+                QColor(self.color[0], self.color[1], self.color[2], self.color[3]),
+                3, Qt.SolidLine))
             painter.drawLine(self.lastPoint, event.pos())
             self.lastPoint = event.pos()
             self.update()

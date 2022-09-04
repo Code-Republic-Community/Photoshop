@@ -110,11 +110,11 @@ class File(QMainWindow):
         from source.photoshop_editor import PhotoshopEditor
         obj = PhotoshopEditor()
         if not obj1.scribbleArea.check:
-            close = QMessageBox.question(obj,
+            close1 = QMessageBox.question(self,
                                          "QUIT",
                                          "Are you sure want to close the program?",
                                          QMessageBox.Yes | QMessageBox.No)
-            if close == QMessageBox.Yes:
+            if close1 == QMessageBox.Yes:
                 exit()
         elif obj1.scribbleArea.check:
             close = QMessageBox.question(self,
