@@ -1,7 +1,10 @@
-class Edit():
-    def __init__(self):
+from PyQt5.QtWidgets import QUndoCommand
 
-        super(Edit, self).__init__()
+
+class Edit():
+    def __init__(self, parent):
+        super().__init__()
+
 
     def undo(self):
         pass

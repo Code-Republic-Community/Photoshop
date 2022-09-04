@@ -99,33 +99,33 @@ class PhotoshopEditor(QMainWindow):
             extractAction = QAction(MainWindow)
             edit_menu.addAction(extractAction)
             main_menu.addAction(edit_menu.menuAction())
-            extractAction.triggered.connect(functools.partial(value, self.x, self))
+            extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
 
         for key, value in dict_image.items():
             extractAction = QAction(MainWindow)
             image_menu.addAction(extractAction)
             main_menu.addAction(image_menu.menuAction())
-            extractAction.triggered.connect(functools.partial(value, self.x, self))
+            extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
 
         for key, value in dict_filter.items():
             extractAction = QAction(MainWindow)
             filter_menu.addAction(extractAction)
             main_menu.addAction(filter_menu.menuAction())
-            extractAction.triggered.connect(functools.partial(value, self.x, self))
+            extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
 
         for key, value in dict_help.items():
             extractAction = QAction(MainWindow)
             help_menu.addAction(extractAction)
             main_menu.addAction(help_menu.menuAction())
-            extractAction.triggered.connect(functools.partial(value, self.x, self))
+            extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
 
         file_menu.setTitle(_translate("MainWindow", "File"))
-        image_menu.setTitle(_translate("MainWindow", "Edit"))
-        edit_menu.setTitle(_translate("MainWindow", "Image"))
+        edit_menu.setTitle(_translate("MainWindow", "Edit"))
+        image_menu.setTitle(_translate("MainWindow", "Image"))
         filter_menu.setTitle(_translate("MainWindow", "Filter"))
         help_menu.setTitle(_translate("MainWindow", "Help"))
 
@@ -163,6 +163,7 @@ class PhotoshopEditor(QMainWindow):
         pen_menu.addAction('Color', self.pen_color)
         pen_menu.addAction('Width', self.pen_width)
         self.button_list[0].setMenu(pen_menu)
+
 
     def all_button_white(self):
         for i in range(9):
