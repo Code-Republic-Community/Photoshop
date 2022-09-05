@@ -1,9 +1,10 @@
 from PIL import Image
-from PyQt5.QtCore import QPoint, Qt, QDir, QSize
+from PyQt5.QtCore import QPoint, Qt, QDir, QSize, QBuffer
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QPagedPaintDevice
 from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget, QMainWindow
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
+import cv2 as cv
 
 
 class File(QMainWindow):
@@ -35,12 +36,14 @@ class File(QMainWindow):
                                                        "Image files (*.jpg *.png)")
 
         if self.filename != '':
-            im = Image.open(self.filename)
-            imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
-            imResize.save(self.filename, 'png', quality=90)
+            # im = Image.open(self.filename)
+            # imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
+            # imResize.save(self.filename, 'png', quality=90)
+            img = cv.resize(cv.imread(self.filename), obj.scribbleArea.current_window_size())
+            img = obj.cv_to_qimage(img)
             if self.filename:
-                obj.scribbleArea.openImage(self.filename)
-                obj.scribbleArea.foo1(self.filename)
+                obj.scribbleArea.openImage(img)
+                #obj.scribbleArea.foo1(self.filename)
             self.check = True
             obj.scribbleArea.check = True
 
