@@ -12,7 +12,6 @@ import edit
 import image
 import filter
 
-
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
 
