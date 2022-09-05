@@ -13,6 +13,7 @@ class File(QMainWindow):
 
     def new(self, obj):
         from source.photoshop_editor import PhotoshopEditor
+        self.filename = ''
         self.ph_obj = PhotoshopEditor()
         if obj.scribbleArea.check:
             close = QMessageBox.question(self,
@@ -29,6 +30,7 @@ class File(QMainWindow):
                 obj.scribbleArea.check = False
 
     def open(self, obj):
+        a = QFileDialog()
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                        "Image files (*.jpg *.png)")
 
@@ -38,6 +40,7 @@ class File(QMainWindow):
             imResize.save(self.filename, 'png', quality=90)
             if self.filename:
                 obj.scribbleArea.openImage(self.filename)
+                obj.scribbleArea.foo1(self.filename)
             self.check = True
             obj.scribbleArea.check = True
 

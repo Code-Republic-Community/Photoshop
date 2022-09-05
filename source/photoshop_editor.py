@@ -11,7 +11,6 @@ import file
 import edit
 import image
 import filter
-import help
 from scribble_area import ScribbleArea
 from help import Help, Documentation
 
@@ -85,15 +84,22 @@ class PhotoshopEditor(QMainWindow):
                        'Distort': filter.Filter.distort,
                        'Pixelate': filter.Filter.pixelate}
 
-        dict_help = {'Help': self.help, 'Documentation': self.documentation
-                     }
+        dict_help = {'Help': self.help, 'Documentation': self.documentation}
 
+        # action_save = QAction("Save", self)
+        # action_save.setShortcut('Ctrl+S')
+        # file_menu.addAction(action_save)
+
+        lst = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
+        i = 0
         for key, value in dict_file.items():
             extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst[i])
             file_menu.addAction(extractAction)
             main_menu.addAction(file_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
+            i += 1
 
         for key, value in dict_edit.items():
             extractAction = QAction(MainWindow)
@@ -160,8 +166,8 @@ class PhotoshopEditor(QMainWindow):
             i += 1
         pen_menu = QMenu()
         pen_menu.addAction('Paint', self.paint)
-        pen_menu.addAction('Color', self.pen_color)
-        pen_menu.addAction('Width', self.pen_width)
+        pen_menu.addAction('Color', self.scribbleArea.pen_color)
+        pen_menu.addAction('Width', self.scribbleArea.pen_width)
         self.button_list[0].setMenu(pen_menu)
 
 
@@ -173,12 +179,6 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
-
-    def pen_color(self):
-        self.scribbleArea.color = QColorDialog.getColor().getRgb()
-
-    def pen_width(self):
-        pass
 
     def move1(self):
         self.scribbleArea.is_pressed(False)
@@ -213,13 +213,13 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
 
-    def help(self, obj, obj2):
+    def help(self,obj1,obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def documentation(self, obj, obj2):
+    def documentation(self,obj1,obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
