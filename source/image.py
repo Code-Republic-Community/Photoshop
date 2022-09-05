@@ -25,4 +25,5 @@ class Image():
         transform90 = QTransform()
         transform90.rotate(90)
         obj.scribbleArea.image = obj.scribbleArea.image.transformed(transform90)
+        obj.scribbleArea.image = obj.scribbleArea.resize_rotated_image(rotated_image)
         obj.scribbleArea.update()

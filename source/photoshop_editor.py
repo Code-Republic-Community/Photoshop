@@ -1,49 +1,74 @@
-"""This file open main window, and let you do photoshop"""
 import functools
 import sys
 from functools import partial
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
-    QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen
+    QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
+    QColorDialog, QSpinBox
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor
+from PyQt5 import QtCore, QtWidgets
 import file
 import edit
 import image
 import filter
+from scribble_area import ScribbleArea
+from help import Help, Documentation
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
-
-        """In the constructor is designed main window, and call main functions"""
-        super().__init__()
-        self.setGeometry(280, 90, 900, 600)
-        self.setMinimumSize(600, 460)
-        self.setWindowTitle("Photoshop Editor")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.setStyleSheet('background-color:#FFFFFF')
-        self.button_list = [None] * 9
-        self.connected = False
-
-
+        super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
-        self.scribbleArea.move(50, 20)
-        self.setCentralWidget(self.scribbleArea)
+        # QMainWindow.setCentralWidget(self,self.scribbleArea)
 
+    def setupUi(self, MainWindow):
+
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.setWindowTitle("Photoshop Editor")
+        MainWindow.setGeometry(280, 90, 900, 600)
+        MainWindow.setMinimumSize(QtCore.QSize(600, 400))
+        MainWindow.setWindowIcon(QIcon('../content/photoshop.png'))
+
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.horizontalLayout = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.button_list = [None] * 9
+        self.colorname = QColor()
+        self.horizontalLayout_2.addLayout(self.verticalLayout)
+        self.horizontalLayout_2.addWidget(self.scribbleArea)
+        self.horizontalLayout.addLayout(self.horizontalLayout_2)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
+        self.menubar.setObjectName("menubar")
+        self.menuFile = QMenu(self.menubar)
+        self.menuFile.setObjectName("menuFile")
+        MainWindow.setMenuBar(self.menubar)
+        self.actionNew = QAction(MainWindow)
+        self.actionNew.setObjectName("actionNesssw")
+        self.menuFile.addAction(self.actionNew)
+        self.menubar.addAction(self.menuFile.menuAction())
         self.toolbar()
-        self.menu_bar()
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        #self.show()
-
-    def menu_bar(self):
-        main_menu = self.menuBar()
-        file_menu = main_menu.addMenu('&File')
-        edit_menu = main_menu.addMenu('&Edit')
-        image_menu = main_menu.addMenu('&Image')
-        filter_menu = main_menu.addMenu('&Filter')
-
+    def retranslateUi(self, MainWindow):
+        main_menu = QMenuBar(MainWindow)
+        main_menu.setGeometry(QtCore.QRect(0, 0, 800, 24))
+        MainWindow.setMenuBar(main_menu)
+        file_menu = QMenu(main_menu)
+        edit_menu = QMenu(main_menu)
+        image_menu = QMenu(main_menu)
+        filter_menu = QMenu(main_menu)
+        help_menu = QMenu(main_menu)
+        _translate = QtCore.QCoreApplication.translate
         dict_file = {'New': file.File.new, 'Open': file.File.open,
                      'Save': file.File.save, 'Save As': file.File.save_as,
-                     'Print': file.File.print, 'Close': file.File.close}
+                     'Print': file.File.print, 'Close': file.File.close_window}
 
         dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo,
                      'Cut': edit.Edit.cut, 'Copy': edit.Edit.copy,
@@ -59,25 +84,56 @@ class PhotoshopEditor(QMainWindow):
                        'Distort': filter.Filter.distort,
                        'Pixelate': filter.Filter.pixelate}
 
+        dict_help = {'Help': self.help, 'Documentation': self.documentation}
+
+        # action_save = QAction("Save", self)
+        # action_save.setShortcut('Ctrl+S')
+        # file_menu.addAction(action_save)
+
+        lst = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
+        i = 0
         for key, value in dict_file.items():
-            extractAction = QAction(key, self)
+            extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst[i])
             file_menu.addAction(extractAction)
+            main_menu.addAction(file_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.setText(_translate("MainWindow", key))
+            i += 1
 
         for key, value in dict_edit.items():
-            extractAction = QAction(key, self)
+            extractAction = QAction(MainWindow)
             edit_menu.addAction(extractAction)
-            extractAction.triggered.connect(value)
+            main_menu.addAction(edit_menu.menuAction())
+            extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.setText(_translate("MainWindow", key))
 
         for key, value in dict_image.items():
-            extractAction = QAction(key, self)
+            extractAction = QAction(MainWindow)
             image_menu.addAction(extractAction)
-            extractAction.triggered.connect(value)
+            main_menu.addAction(image_menu.menuAction())
+            extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.setText(_translate("MainWindow", key))
 
         for key, value in dict_filter.items():
-            extractAction = QAction(key, self)
+            extractAction = QAction(MainWindow)
             filter_menu.addAction(extractAction)
-            extractAction.triggered.connect(value)
+            main_menu.addAction(filter_menu.menuAction())
+            extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.setText(_translate("MainWindow", key))
+
+        for key, value in dict_help.items():
+            extractAction = QAction(MainWindow)
+            help_menu.addAction(extractAction)
+            main_menu.addAction(help_menu.menuAction())
+            extractAction.triggered.connect(functools.partial(value, self, self))
+            extractAction.setText(_translate("MainWindow", key))
+
+        file_menu.setTitle(_translate("MainWindow", "File"))
+        edit_menu.setTitle(_translate("MainWindow", "Edit"))
+        image_menu.setTitle(_translate("MainWindow", "Image"))
+        filter_menu.setTitle(_translate("MainWindow", "Filter"))
+        help_menu.setTitle(_translate("MainWindow", "Help"))
 
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
@@ -90,22 +146,29 @@ class PhotoshopEditor(QMainWindow):
                         '../content/eraser.png': self.eraser,
                         '../content/font.png': self.type,
                         '../content/recovery.png': self.image_converter}
-        y = 20
         i = 0
         for key, value in dict_buttons.items():
-            self.button_list[i] = QPushButton(self)
-            self.button_list[i].resize(40, 40)
-            self.button_list[i].move(1, y)
+            self.button_list[i] = QPushButton(self.centralwidget)
+
+            self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
+            sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+            sizePolicy.setHorizontalStretch(0)
+            sizePolicy.setVerticalStretch(0)
+            sizePolicy.setHeightForWidth(self.button_list[i].sizePolicy().hasHeightForWidth())
+            self.button_list[i].setSizePolicy(sizePolicy)
+            self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
-            #print(self.button_list[1])
-            self.button_list[i].setStyleSheet("QPushButton::hover "
+            # print(self.button_list[1])
+            self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
-            #vbox.addWidget(self.button_list[i])
-            #self.vbox.addStretch()
-
-            y += 50
+            self.verticalLayout.addWidget(self.button_list[i])
             i += 1
+        pen_menu = QMenu()
+        pen_menu.addAction('Paint', self.paint)
+        pen_menu.addAction('Color', self.scribbleArea.pen_color)
+        pen_menu.addAction('Width', self.scribbleArea.pen_width)
+        self.button_list[0].setMenu(pen_menu)
 
 
     def all_button_white(self):
@@ -116,7 +179,6 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.is_pressed(True)
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
-
 
     def move1(self):
         self.scribbleArea.is_pressed(False)
@@ -151,8 +213,25 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
 
-if __name__ == '__main__':
+    def help(self):
+        self.window = QtWidgets.QDialog()
+        self.ui = Help()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def documentation(self):
+        self.window = QtWidgets.QDialog()
+        self.ui = Documentation()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+
+if __name__ == "__main__":
+    import sys
+
     app = QApplication(sys.argv)
-    win = PhotoshopEditor()
-    win.show()
+    Frame = QMainWindow()
+    ui = PhotoshopEditor()
+    ui.setupUi(Frame)
+    Frame.show()
     sys.exit(app.exec_())

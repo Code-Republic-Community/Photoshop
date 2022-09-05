@@ -33,7 +33,6 @@ class Filter():
 
     def noise(self, obj):
         pass
-        #obj.set_geometry(QMainWindow, obj.)
 
     def distort(self, obj):
         pass

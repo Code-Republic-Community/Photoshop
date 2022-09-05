@@ -61,6 +61,13 @@ class ScribbleArea(QWidget):
         self.a = filename
         self.openImage(filename)
 
+    def resize_rotated_image(self, filename):
+        im = Image.open(filename)
+        imResize = im.resize((self.current_window_size()), Image.ANTIALIAS)
+        imResize.save(filename, 'png', quality=90)
+        #self.a = filename
+        return filename
+
     def saveImage(self, fileName, fileFormat):
         visibleImage = self.image
         self.resizeImage(visibleImage, self.size())
