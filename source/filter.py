@@ -4,14 +4,18 @@ from PyQt5.QtCore import QBuffer
 from PIL import Image, ImageFilter
 from PIL.ImageQt import ImageQt, QPixmap
 from PyQt5.QtGui import QImage
-from scribble_area import  ScribbleArea
+from PyQt5.QtWidgets import QMainWindow
+
+from scribble_area import ScribbleArea
+import cv2
+import numpy as np
+
 
 class Filter():
     def __init__(self):
         super(Filter, self).__init__()
 
-
-    def blur(self,obj):
+    def blur(self, obj):
         img = obj.scribbleArea.image
         buffer = QBuffer()
         buffer.open(QBuffer.ReadWrite)
@@ -27,11 +31,12 @@ class Filter():
         obj.scribbleArea.image = qimg
         obj.scribbleArea.update()
 
-    def noise(self,obj):
+    def noise(self, obj):
         pass
-    def distort(self,obj):
+        #obj.set_geometry(QMainWindow, obj.)
+
+    def distort(self, obj):
         pass
 
-    def pixelate(self,obj):
+    def pixelate(self, obj):
         pass
-

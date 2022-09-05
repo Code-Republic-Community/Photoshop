@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QPoint, Qt, QSize
-from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor, QIcon
+from PyQt5.QtWidgets import QWidget, QColorDialog, QInputDialog
+from PIL import Image
 
 
 class ScribbleArea(QWidget):
@@ -10,6 +11,7 @@ class ScribbleArea(QWidget):
         self.setAttribute(Qt.WA_StaticContents)
         self.image = QImage()
         self.pressed = False
+        self.a = ''
         self.lastPoint = QPoint()
         self.check = False
         self.color = (0, 0, 0, 255)
@@ -49,6 +51,15 @@ class ScribbleArea(QWidget):
         self.update()
 
         super(ScribbleArea, self).resizeEvent(event)
+        if self.a != '':
+            self.foo1(self.a)
+
+    def foo1(self, filename):
+        im = Image.open(filename)
+        imResize = im.resize((self.current_window_size()), Image.ANTIALIAS)
+        imResize.save(filename, 'png', quality=90)
+        self.a = filename
+        self.openImage(filename)
 
     def saveImage(self, fileName, fileFormat):
         visibleImage = self.image
@@ -85,3 +96,11 @@ class ScribbleArea(QWidget):
     def mouseReleaseEvent(self, event):
         if event.button == Qt.LeftButton:
             pass
+
+    def pen_color(self):
+        color_dialog = QColorDialog(self)
+        color_dialog.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.color = color_dialog.getColor().getRgb()
+
+    def pen_width(self):
+        pass
