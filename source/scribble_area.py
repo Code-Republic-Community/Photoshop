@@ -1,8 +1,11 @@
-from PyQt5.QtCore import QPoint, Qt, QSize
+import io
+from PyQt5.QtCore import QPoint, Qt, QSize, QBuffer
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor, QIcon
 from PyQt5.QtWidgets import QWidget, QColorDialog, QInputDialog, QUndoStack
-from PIL import Image
-from edit import UndoCommand
+import numpy as np
+import cv2 as cv
+from source.edit import UndoCommand
+
 
 class ScribbleArea(QWidget):
     def __init__(self):
@@ -10,6 +13,9 @@ class ScribbleArea(QWidget):
 
         self.setAttribute(Qt.WA_StaticContents)
         self.image = QImage()
+        newSize = self.image.size().expandedTo(self.size())
+        self.resizeImage(self.image, QSize(newSize))
+        self.update()
         self.pressed = False
         self.a = ''
         self.lastPoint = QPoint()
@@ -29,39 +35,35 @@ class ScribbleArea(QWidget):
         return self.width(), self.height()
 
     def openImage(self, img):
-        newSize = img.size().expandedTo(self.size())
+        #newSize = img.size().expandedTo(self.size())
+        newSize = QSize(img.shape[0], img.shape[1])
         self.resizeImage(img, newSize)
-        self.image = img
+        self.image = self.cv_to_qimage(img)
         self.update()
         return True
 
     def resizeImage(self, image, newSize):
-        if image.size() == newSize:
-            return
+        #if image.size() == newSize:
+            #return
 
         newImage = QImage(newSize, QImage.Format_RGB32)
         newImage.fill(qRgb(255, 255, 255))
         painter = QPainter(newImage)
+        image = self.cv_to_qimage(image)
         painter.drawImage(QPoint(0, 0), image)
         self.image = newImage
 
     def resizeEvent(self, event):
         # if self.width() > self.image.width() or self.height() > self.image.height():
-        newWidth = max(self.width() + 128, self.image.width())
-        newHeight = max(self.height() + 128, self.image.height())
-        self.resizeImage(self.image, QSize(self.width(), self.height()))
+        #newWidth = max(self.width() + 128, self.image.width())
+        #newHeight = max(self.height() + 128, self.image.height())
+        #self.resizeImage(self.image, QSize(self.width(), self.height()))
+        img = cv.resize(self.qimage_to_cv(self.image), self.current_window_size())
+        self.openImage(img)
+        self.image = self.cv_to_qimage(img)
         self.update()
 
         super(ScribbleArea, self).resizeEvent(event)
-        if self.a != '':
-            self.foo1(self.a)
-
-    def foo1(self, filename):
-        im = Image.open(filename)
-        imResize = im.resize((self.current_window_size()), Image.ANTIALIAS)
-        imResize.save(filename, 'png', quality=90)
-        self.a = filename
-        self.openImage(filename)
 
     def saveImage(self, fileName, fileFormat):
         visibleImage = self.image
@@ -77,7 +79,7 @@ class ScribbleArea(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         dirtyRect = event.rect()
-        painter.drawImage(dirtyRect, self.image, dirtyRect)
+        painter.drawImage(dirtyRect, self.cv_to_qimage(self.image), dirtyRect)
 
     def mousePressEvent(self, event):
         self.make_undo_command()
@@ -85,8 +87,6 @@ class ScribbleArea(QWidget):
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
-        from photoshop_editor import PhotoshopEditor
-
         if self.pressed:
             painter = QPainter(self.image)
             painter.setPen(QPen(
@@ -109,5 +109,23 @@ class ScribbleArea(QWidget):
     def pen_width(self):
         num, ok = QInputDialog.getInt(self, "Pen width", "Choose the pen width")
         self.p_width = num
+
     def make_undo_command(self):
         self.mUndoStack.push(UndoCommand(self))
+
+    def qimage_to_cv(self, img: QImage):
+        buffer = QBuffer()
+        buffer.open(QBuffer.ReadWrite)
+        img.save(buffer, "PNG")
+        img_stream = io.BytesIO((buffer.data()))
+        img = cv.imdecode(np.frombuffer(img_stream.read(), np.uint8), 1)
+        return img
+
+    def cv_to_qimage(self, img):
+        if not isinstance(img, QImage):
+            is_success, buffer = cv.imencode(".jpg", img)
+            io_buf = io.BytesIO(buffer)
+            qimg = QImage()
+            qimg.loadFromData(io_buf.getvalue())
+            return qimg
+        return img

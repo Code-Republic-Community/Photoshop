@@ -16,6 +16,7 @@ import edit
 import image
 import filter
 from scribble_area import ScribbleArea
+from source.buttons import Buttons
 from help import Help, Documentation
 import numpy as np
 import cv2 as cv
@@ -24,6 +25,7 @@ class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
+        self.buttons_obj = Buttons()
         self.main_window: QMainWindow = None
         # QMainWindow.setCentralWidget(self,self.scribbleArea)
 
@@ -97,44 +99,64 @@ class PhotoshopEditor(QMainWindow):
         # action_save.setShortcut('Ctrl+S')
         # file_menu.addAction(action_save)
 
-        lst = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
+        lst_file_shortcut = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
         i = 0
         for key, value in dict_file.items():
             extractAction = QAction(MainWindow)
-            extractAction.setShortcut(lst[i])
+            extractAction.setShortcut(lst_file_shortcut[i])
             file_menu.addAction(extractAction)
             main_menu.addAction(file_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
             i += 1
 
+        lst_edit_shortcut = ['Ctrl+Z', 'Ctrl+Y', 'Ctrl+X', 'Ctrl+C', 'Ctrl+V', 'Ctrl+L', 'Ctrl+K']
+        i = 0
+
         for key, value in dict_edit.items():
             extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst_edit_shortcut[i])
             edit_menu.addAction(extractAction)
             main_menu.addAction(edit_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
+            i += 1
+
+        lst_image_shortcut = ['Ctrl+Alt+I', 'Ctrl+Alt+C', 'Shift+Ctrl+L', 'Shift+Ctrl+R']
+        i = 0
 
         for key, value in dict_image.items():
             extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst_image_shortcut[i])
             image_menu.addAction(extractAction)
             main_menu.addAction(image_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
+            i += 1
+
+        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+D', 'Shift+Ctrl+P']
+        i = 0
 
         for key, value in dict_filter.items():
             extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst_filter_shortcut[i])
             filter_menu.addAction(extractAction)
             main_menu.addAction(filter_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
+            i += 1
+
+        lst_help_shortcut = ['Ctrl+H', 'Ctrl+D']
+        i = 0
 
         for key, value in dict_help.items():
             extractAction = QAction(MainWindow)
+            extractAction.setShortcut(lst_help_shortcut[i])
             help_menu.addAction(extractAction)
             main_menu.addAction(help_menu.menuAction())
             extractAction.triggered.connect(functools.partial(value, self, self))
             extractAction.setText(_translate("MainWindow", key))
+            i += 1
 
         file_menu.setTitle(_translate("MainWindow", "File"))
         edit_menu.setTitle(_translate("MainWindow", "Edit"))
@@ -207,6 +229,7 @@ class PhotoshopEditor(QMainWindow):
     def eyedropper(self):
         self.all_button_white()
         self.button_list[5].setStyleSheet('background-color: red;')
+        self.buttons_obj.eyedropper(self)
 
     def eraser(self):
         self.all_button_white()
