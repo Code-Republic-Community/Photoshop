@@ -1,11 +1,15 @@
 import functools
+import io
 import sys
 from functools import partial
+
+from PyQt5.QtCore import QBuffer
+
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
     QColorDialog, QSpinBox
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor, QImage
 from PyQt5 import QtCore, QtWidgets
 import file
 import edit
@@ -13,15 +17,18 @@ import image
 import filter
 from scribble_area import ScribbleArea
 from help import Help, Documentation
+import numpy as np
+import cv2 as cv
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
+        self.main_window: QMainWindow = None
         # QMainWindow.setCentralWidget(self,self.scribbleArea)
 
     def setupUi(self, MainWindow):
-
+        self.main_window = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowTitle("Photoshop Editor")
         MainWindow.setGeometry(280, 90, 900, 600)
@@ -219,12 +226,29 @@ class PhotoshopEditor(QMainWindow):
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def documentation(self,obj1,obj2):
+    def documentation(self):
         self.window = QtWidgets.QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
         self.window.show()
 
+    def set_window_size(self, width, height):
+        self.main_window.setGeometry(280, 90, width, height)
+
+    def qimage_to_cv(self, img: QImage):
+        buffer = QBuffer()
+        buffer.open(QBuffer.ReadWrite)
+        img.save(buffer, "PNG")
+        img_stream = io.BytesIO((buffer.data()))
+        img = cv.imdecode(np.frombuffer(img_stream.read(), np.uint8), 1)
+        return img
+
+    def cv_to_qimage(self, img):
+        is_success, buffer = cv.imencode(".jpg", img)
+        io_buf = io.BytesIO(buffer)
+        qimg = QImage()
+        qimg.loadFromData(io_buf.getvalue())
+        return qimg
 
 if __name__ == "__main__":
     import sys
