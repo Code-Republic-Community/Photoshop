@@ -1,8 +1,8 @@
 from PyQt5.QtCore import QPoint, Qt, QSize
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor, QIcon
-from PyQt5.QtWidgets import QWidget, QColorDialog, QInputDialog
+from PyQt5.QtWidgets import QWidget, QColorDialog, QInputDialog, QUndoStack
 from PIL import Image
-
+from edit import UndoCommand
 
 class ScribbleArea(QWidget):
     def __init__(self):
@@ -15,6 +15,11 @@ class ScribbleArea(QWidget):
         self.lastPoint = QPoint()
         self.check = False
         self.color = (0, 0, 0, 255)
+        self.p_width = 3
+        self.mUndoStack = QUndoStack(self)
+        self.mUndoStack.setUndoLimit(20)
+        #self.mUndoStack.canUndo()
+        #self.mUndoStack.canRedo()
 
     def is_pressed(self, value):
         self.pressed = value
@@ -75,16 +80,18 @@ class ScribbleArea(QWidget):
         painter.drawImage(dirtyRect, self.image, dirtyRect)
 
     def mousePressEvent(self, event):
+        self.make_undo_command()
         if event.button() == Qt.LeftButton:
             self.lastPoint = event.pos()
 
     def mouseMoveEvent(self, event):
         from photoshop_editor import PhotoshopEditor
+
         if self.pressed:
             painter = QPainter(self.image)
             painter.setPen(QPen(
                 QColor(self.color[0], self.color[1], self.color[2], self.color[3]),
-                3, Qt.SolidLine))
+                self.p_width, Qt.SolidLine))
             painter.drawLine(self.lastPoint, event.pos())
             self.lastPoint = event.pos()
             self.update()
@@ -100,4 +107,7 @@ class ScribbleArea(QWidget):
         self.color = color_dialog.getColor().getRgb()
 
     def pen_width(self):
-        pass
+        num, ok = QInputDialog.getInt(self, "Pen width", "Choose the pen width")
+        self.p_width = num
+    def make_undo_command(self):
+        self.mUndoStack.push(UndoCommand(self))

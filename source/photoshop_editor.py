@@ -220,7 +220,7 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
 
-    def help(self):
+    def help(self,obj1,obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
