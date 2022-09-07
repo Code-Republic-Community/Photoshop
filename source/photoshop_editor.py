@@ -26,6 +26,7 @@ class PhotoshopEditor(QMainWindow):
         super(PhotoshopEditor, self).__init__()
         self.scribbleArea = ScribbleArea()
         self.buttons_obj = Buttons()
+        self.pressed_button = None
         self.main_window: QMainWindow = None
         # QMainWindow.setCentralWidget(self,self.scribbleArea)
 
@@ -98,7 +99,6 @@ class PhotoshopEditor(QMainWindow):
         # action_save = QAction("Save", self)
         # action_save.setShortcut('Ctrl+S')
         # file_menu.addAction(action_save)
-
         lst_file_shortcut = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
         i = 0
         for key, value in dict_file.items():
@@ -167,7 +167,7 @@ class PhotoshopEditor(QMainWindow):
     def toolbar(self):
         """This function is responsible for create and design buttons of tool"""
         dict_buttons = {'../content/paint-brush.png': self.paint,
-                        '../content/move.png': self.move1,
+                        '../content/move.png': self.move_text,
                         '../content/marquee.png': self.marquee,
                         '../content/lasso.png': self.lasso,
                         '../content/crop.png': self.crop,
@@ -193,55 +193,71 @@ class PhotoshopEditor(QMainWindow):
                                               "{background-color: lightgray}")
             self.verticalLayout.addWidget(self.button_list[i])
             i += 1
+
         pen_menu = QMenu()
         pen_menu.addAction('Paint', self.paint)
         pen_menu.addAction('Color', self.scribbleArea.pen_color)
         pen_menu.addAction('Width', self.scribbleArea.pen_width)
         self.button_list[0].setMenu(pen_menu)
 
+        text_menu = QMenu()
+        text_menu.addAction('Write', self.scribbleArea.text_write)
+        text_menu.addAction('Size', self.scribbleArea.text_width)
+        text_menu.addAction('Type', self.scribbleArea.text_type)
+        text_menu.addAction('Color', self.scribbleArea.text_color)
+        self.button_list[7].setMenu(text_menu)
 
     def all_button_white(self):
         for i in range(9):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
-        self.scribbleArea.is_pressed(True)
+        self.scribbleArea.pressed_button = 'paint'
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
 
-    def move1(self):
-        self.scribbleArea.is_pressed(False)
+    def move_text(self):
+        self.scribbleArea.pressed_button = 'move'
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
 
     def marquee(self):
+        self.scribbleArea.pressed_button = 'marquee'
         self.all_button_white()
         self.button_list[2].setStyleSheet('background-color: red;')
 
     def lasso(self):
+        self.scribbleArea.pressed_button = 'lasso'
         self.all_button_white()
         self.button_list[3].setStyleSheet('background-color: red;')
 
     def crop(self):
+        self.scribbleArea.pressed_button = 'crop'
         self.all_button_white()
         self.button_list[4].setStyleSheet('background-color: red;')
 
     def eyedropper(self):
+        self.scribbleArea.pressed_button = 'eyedropper'
         self.all_button_white()
         self.button_list[5].setStyleSheet('background-color: red;')
         self.buttons_obj.eyedropper(self)
 
     def eraser(self):
+        self.scribbleArea.pressed_button = 'eraser'
         self.all_button_white()
         self.button_list[6].setStyleSheet('background-color: red;')
 
     def type(self):
+        self.scribbleArea.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background-color: red;')
 
     def image_converter(self):
+        self.scribbleArea.pressed_button = 'image_converter'
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
+
+
 
     def help(self,obj1,obj2):
         self.window = QtWidgets.QDialog()

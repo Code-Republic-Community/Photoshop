@@ -65,8 +65,8 @@ class InputDialogImageSize(QDialog):
             img = self.obj.qimage_to_cv(img)
             image = cv.resize(img, (width, height))
             self.obj.scribbleArea.openImage(image)
-            #self.obj.scribbleArea.image = self.obj.cv_to_qimage(image)
-            #self.obj.scribbleArea.update()
+            self.obj.scribbleArea.image = self.obj.cv_to_qimage(image)
+            self.obj.scribbleArea.update()
             self.close()
 
 class Image():
