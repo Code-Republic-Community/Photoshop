@@ -37,6 +37,7 @@ class InputDialogCanvasSize(QDialog):
 
 class InputDialogImageSize(QDialog):
     def __init__(self, obj, parent=None):
+        global size
         self.obj = obj
         self.only_int = QIntValidator()
         super().__init__(parent)
@@ -53,6 +54,7 @@ class InputDialogImageSize(QDialog):
         layout.addRow("Width", self.width)
         layout.addRow("Height", self.height)
         layout.addWidget(buttonBox)
+        size = (self.width, self.height)
 
         buttonBox.accepted.connect(self.accept)
         buttonBox.rejected.connect(self.reject)
@@ -64,12 +66,15 @@ class InputDialogImageSize(QDialog):
             img = self.obj.scribbleArea.image
             img = self.obj.qimage_to_cv(img)
             image = cv.resize(img, (width, height))
+            self.obj.scribbleArea.image_width = width
+            self.obj.scribbleArea.image_height = height
             self.obj.scribbleArea.openImage(image)
             self.obj.scribbleArea.image = self.obj.cv_to_qimage(image)
             self.obj.scribbleArea.update()
             self.close()
 
 class Image():
+    size = None
     def __init__(self):
         super(Image, self).__init__()
 

@@ -28,11 +28,13 @@ class ScribbleArea(QWidget):
         self.color_pen = (0, 0, 0, 255)
         self.color_text = (0, 0, 0, 255)
         self.width_pen = 3
-        self.width_text = 3
+        self.width_text = 15
         self.bold = False
         self.italic = False
         self.underline = False
         self.text = None
+        self.image_width = 0
+        self.image_height = 0
         self.mUndoStack = QUndoStack(self)
         self.mUndoStack.setUndoLimit(20)
         # self.mUndoStack.canUndo()
@@ -44,6 +46,7 @@ class ScribbleArea(QWidget):
 
     def current_window_size(self):
         return self.width(), self.height()
+
 
     def openImage(self, img):
         # newSize = img.size().expandedTo(self.size())
@@ -76,6 +79,9 @@ class ScribbleArea(QWidget):
 
         super(ScribbleArea, self).resizeEvent(event)
 
+    def foo(self):
+        return ScribbleArea()
+
     def saveImage(self, fileName, fileFormat):
         visibleImage = self.image
         self.resizeImage(visibleImage, self.size())
@@ -84,14 +90,18 @@ class ScribbleArea(QWidget):
             return True
         return False
 
-    def foo(self):
-        return self.image
 
     def paintEvent(self, event):
         painter = QPainter(self)
         dirtyRect = event.rect()
         painter.drawImage(dirtyRect, self.cv_to_qimage(self.image), dirtyRect)
-        painter.drawText(150, 250, self.text)
+        myFont = QFont()
+        myFont.setBold(self.bold)
+        myFont.setItalic(self.italic)
+        myFont.setUnderline(self.underline)
+        myFont.setPointSize(self.width_text)
+        painter.setFont(myFont)
+        painter.drawText(350, 280, self.text)
 
     def mousePressEvent(self, event):
         self.make_undo_command()
@@ -129,8 +139,8 @@ class ScribbleArea(QWidget):
         self.width_pen = num
 
     def text_write(self):
-        text, done1 = QInputDialog.getText(self, 'Write text', '')
-        self.text = text
+        #text, done1 = QInputDialog.getText(self, 'Write text', '')
+        #self.text = text
         if self.bold:
             pass
         if self.italic:

@@ -20,6 +20,7 @@ from source.buttons import Buttons
 from help import Help, Documentation
 import numpy as np
 import cv2 as cv
+from source.buttons import InputTextDialog
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
@@ -200,12 +201,12 @@ class PhotoshopEditor(QMainWindow):
         pen_menu.addAction('Width', self.scribbleArea.pen_width)
         self.button_list[0].setMenu(pen_menu)
 
-        text_menu = QMenu()
-        text_menu.addAction('Write', self.scribbleArea.text_write)
-        text_menu.addAction('Size', self.scribbleArea.text_width)
-        text_menu.addAction('Type', self.scribbleArea.text_type)
-        text_menu.addAction('Color', self.scribbleArea.text_color)
-        self.button_list[7].setMenu(text_menu)
+        # text_menu = QMenu()
+        # text_menu.addAction('Write', self.scribbleArea.text_write)
+        # text_menu.addAction('Size', self.scribbleArea.text_width)
+        # text_menu.addAction('Type', self.scribbleArea.text_type)
+        # text_menu.addAction('Color', self.scribbleArea.text_color)
+        # self.button_list[7].setMenu(text_menu)
 
     def all_button_white(self):
         for i in range(9):
@@ -251,12 +252,12 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background-color: red;')
+        InputTextDialog(self.scribbleArea).exec()
 
     def image_converter(self):
         self.scribbleArea.pressed_button = 'image_converter'
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
-
 
 
     def help(self,obj1,obj2):
