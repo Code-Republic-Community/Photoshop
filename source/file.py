@@ -1,4 +1,3 @@
-from PIL import Image
 from PyQt5.QtCore import QPoint, Qt, QDir, QSize, QBuffer
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QPagedPaintDevice
 from PyQt5.QtCore import QDir
@@ -40,7 +39,7 @@ class File(QMainWindow):
             # imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
             # imResize.save(self.filename, 'png', quality=90)
             img = cv.resize(cv.imread(self.filename), obj.scribbleArea.current_window_size())
-            img = obj.cv_to_qimage(img)
+            #img = obj.cv_to_qimage(img)
             if self.filename:
                 obj.scribbleArea.openImage(img)
                 #obj.scribbleArea.foo1(self.filename)
