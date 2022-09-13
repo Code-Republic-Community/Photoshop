@@ -7,13 +7,14 @@ class Edit():
     def __init__(self):
         super().__init__()
 
-    def undo(self, object):
+
+    def undo(self,object):
         self.undo = UndoCommand(object.scribbleArea)
         self.undo.undo()
         object.scribbleArea.mUndoStack.undo()
         object.scribbleArea.update()
 
-    def redo(self, obj):
+    def redo(self,obj):
         obj.scribbleArea.mUndoStack.redo()
         from scribble_area import ScribbleArea
         obj = ScribbleArea()
@@ -29,7 +30,7 @@ class Edit():
     def paste(self):
         pass
 
-    def clear_screen(self, obj):
+    def clear_screen(self,obj):
         obj.scribbleArea.image = QImage()
         newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
         obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
@@ -38,9 +39,8 @@ class Edit():
     def keyboard_shortcuts(self):
         pass
 
-
 class UndoCommand(QUndoCommand):
-    def __init__(self, parent):
+    def __init__(self,parent):
         super().__init__()
         self.parent = parent
         self.mPrevImage = parent.image.copy()
@@ -50,7 +50,6 @@ class UndoCommand(QUndoCommand):
         self.mCurrImage = self.parent.image.copy()
         self.parent.image = self.mPrevImage
         self.parent.update()
-
     def redo(self):
         self.parent.image = self.mCurrImage
         self.parent.update()
