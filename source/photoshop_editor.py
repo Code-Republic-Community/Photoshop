@@ -3,24 +3,26 @@ import io
 import sys
 from functools import partial
 
-from PyQt5.QtCore import QBuffer
+from PyQt5.QtCore import QBuffer, Qt
 
 from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
     QColorDialog, QSpinBox
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor, QImage
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QPen, QColor, QImage, QCursor
 from PyQt5 import QtCore, QtWidgets
 import file
 import edit
 import image
 import filter
+import buttons
 from scribble_area import ScribbleArea
 from source.buttons import Buttons
 from help import Help, Documentation
 import numpy as np
 import cv2 as cv
 from source.buttons import InputTextDialog
+
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
@@ -29,7 +31,6 @@ class PhotoshopEditor(QMainWindow):
         self.buttons_obj = Buttons()
         self.pressed_button = None
         self.main_window: QMainWindow = None
-        # QMainWindow.setCentralWidget(self,self.scribbleArea)
 
     def setupUi(self, MainWindow):
         self.main_window = MainWindow
@@ -97,9 +98,6 @@ class PhotoshopEditor(QMainWindow):
 
         dict_help = {'Help': self.help, 'Documentation': self.documentation}
 
-        # action_save = QAction("Save", self)
-        # action_save.setShortcut('Ctrl+S')
-        # file_menu.addAction(action_save)
         lst_file_shortcut = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
         i = 0
         for key, value in dict_file.items():
@@ -189,24 +187,18 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
             self.button_list[i].clicked.connect(value)
-            # print(self.button_list[1])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.verticalLayout.addWidget(self.button_list[i])
             i += 1
 
+        self.button_list[4].clicked.connect(functools.partial(buttons.Buttons.crop, self, self))
+
         pen_menu = QMenu()
         pen_menu.addAction('Paint', self.paint)
         pen_menu.addAction('Color', self.scribbleArea.pen_color)
-        pen_menu.addAction('Width', self.scribbleArea.pen_width)
+        pen_menu.addAction('Width', functools.partial(self.scribbleArea.pen_width, self, self))
         self.button_list[0].setMenu(pen_menu)
-
-        # text_menu = QMenu()
-        # text_menu.addAction('Write', self.scribbleArea.text_write)
-        # text_menu.addAction('Size', self.scribbleArea.text_width)
-        # text_menu.addAction('Type', self.scribbleArea.text_type)
-        # text_menu.addAction('Color', self.scribbleArea.text_color)
-        # self.button_list[7].setMenu(text_menu)
 
     def all_button_white(self):
         for i in range(9):
@@ -217,7 +209,19 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[0].setStyleSheet('background-color: red;')
 
+        icon = QIcon('../content/paint-brush.png')
+        pixmap = QPixmap('../content/paint-brush.png')
+        pixmap = pixmap.scaled(20 + self.scribbleArea.width_pen, 20 + self.scribbleArea.width_pen,
+                               Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
+        mask = pixmap.createMaskFromColor(Qt.red)
+        pixmap.setMask(mask)
+        cursor = QCursor(pixmap)
+        app.setOverrideCursor(cursor)
+
     def move_text(self):
+        cursor = QCursor().bitmap()
+        app.setOverrideCursor(cursor)
         self.scribbleArea.pressed_button = 'move'
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
@@ -258,9 +262,9 @@ class PhotoshopEditor(QMainWindow):
         self.scribbleArea.pressed_button = 'image_converter'
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
+        self.buttons_obj.image_converter(self)
 
-
-    def help(self,obj1,obj2):
+    def help(self, obj1, obj2):
         self.window = QtWidgets.QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
@@ -289,6 +293,7 @@ class PhotoshopEditor(QMainWindow):
         qimg = QImage()
         qimg.loadFromData(io_buf.getvalue())
         return qimg
+
 
 if __name__ == "__main__":
     import sys

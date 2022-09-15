@@ -66,6 +66,9 @@ class InputDialogImageSize(QDialog):
             image = cv.resize(img, (width, height))
             self.obj.scribbleArea.openImage(image)
             self.obj.scribbleArea.image = self.obj.cv_to_qimage(image)
+
+            self.obj.scribbleArea.resize_image_draw(self.obj.scribbleArea.image_draw, width, height)
+
             self.obj.scribbleArea.update()
             self.close()
 
@@ -87,6 +90,10 @@ class Image():
         image = obj.qimage_to_cv(image)
         image = cv.resize(image, obj.scribbleArea.current_window_size())
         obj.scribbleArea.openImage(image)
+
+        image_draw = obj.scribbleArea.image_draw.transformed(transform90)
+        obj.scribbleArea.resize_image_draw(image_draw)
+
         obj.scribbleArea.update()
 
     def rotate_right(self, obj):
@@ -97,4 +104,8 @@ class Image():
         image = obj.qimage_to_cv(image)
         image = cv.resize(image, obj.scribbleArea.current_window_size())
         obj.scribbleArea.openImage(image)
+
+        image_draw = obj.scribbleArea.image_draw.transformed(transform90)
+        obj.scribbleArea.resize_image_draw(image_draw)
+
         obj.scribbleArea.update()

@@ -18,7 +18,6 @@ from source.buttons import TextTypeCheckbox
 class ScribbleArea(QWidget):
     def __init__(self):
         super(ScribbleArea, self).__init__()
-
         self.setAttribute(Qt.WA_StaticContents)
         self.image = QImage()
         self.buttons = Buttons()
@@ -32,7 +31,7 @@ class ScribbleArea(QWidget):
         self.color_pen = (0, 0, 0, 255)
         self.color_text = (0, 0, 0, 255)
         self.width_pen = 3
-        self.width_text = 3
+        self.width_text = 15
         self.bold = False
         self.italic = False
         self.underline = False
@@ -45,18 +44,14 @@ class ScribbleArea(QWidget):
         self.coords = ()
         self.shape = QRect()
         self.coordinates = []
-        self.imageDraw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
+        self.image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
         self.image = QImage(QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32))
-        self.image.fill(qRgb(255,255,255))
+        self.image.fill(qRgb(255, 255, 255))
         self.update()
-        self.brushSize = 2
+        self.brush_size = 2
         self._clear_size = 20
-        self.brushColor = QtGui.QColor(QtCore.Qt.black)
+        self.brush_color = QtGui.QColor(QtCore.Qt.black)
         self.change, self.open = False, False
-
-    def is_pressed(self, value):
-        self.pressed = value
-        return self.pressed
 
     def current_window_size(self):
         return self.width(), self.height()
@@ -71,8 +66,6 @@ class ScribbleArea(QWidget):
         return True
 
     def resizeImage(self, image, newSize):
-        # if image.size() == newSize:
-        # return
         newImage = QImage(newSize, QImage.Format_RGB32)
         newImage.fill(qRgb(255, 255, 255))
         painter = QPainter(newImage)
@@ -81,36 +74,44 @@ class ScribbleArea(QWidget):
         self.image = newImage
 
     def resizeEvent(self, event):
-        # if self.width() > self.image.width() or self.height() > self.image.height():
-        # newWidth = max(self.width() + 128, self.image.width())
-        # newHeight = max(self.height() + 128, self.image.height())
-        # self.resizeImage(self.image, QSize(self.width(), self.height()))
         if self.open:
-
             img = cv.resize(self.qimage_to_cv(self.image), self.current_window_size())
-            # self.openImage(img)
             self.image = self.cv_to_qimage(img)
         else:
             pixmap = QPixmap()
-            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.width(), self.height(), Qt.IgnoreAspectRatio,
-                                                                    Qt.SmoothTransformation))
-            self.imagecopy = self.image.copy()
-
+            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.width(), self.height(),
+                                                                Qt.IgnoreAspectRatio,
+                                                                Qt.SmoothTransformation))
+            self.image_copy = self.image.copy()
             self.image = pixamp2.toImage()
 
-
         pixmap = QPixmap()
-        pixamp2 = pixmap.fromImage(self.imageDraw.copy().scaled(self.width(), self.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
-        self.imagecopy = self.image.copy()
+        pixamp2 = pixmap.fromImage(
+            self.image_draw.copy().scaled(self.width(), self.height(),
+                                          Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        self.image_copy = self.image.copy()
 
-        self.imageDraw = pixamp2.toImage()
+        self.image_draw = pixamp2.toImage()
         self.update()
 
         super(ScribbleArea, self).resizeEvent(event)
 
+    def resize_image_draw(self, image, width=None, height=None):
+        if (width and height) == None:
+            width = self.width()
+            height = self.height()
+        pixmap = QPixmap()
+        pixamp2 = pixmap.fromImage(
+            image.copy().scaled(width, height,
+                                Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        self.image_copy = self.image.copy()
+
+        self.image_draw = pixamp2.toImage()
+        self.update()
+
     def saveImage(self, fileName, fileFormat):
 
-        frontImage = self.qimage_to_pil(self.imageDraw).convert("RGBA")
+        frontImage = self.qimage_to_pil(self.image_draw).convert("RGBA")
 
         background = self.qimage_to_pil(self.image).convert("RGBA")
 
@@ -128,30 +129,26 @@ class ScribbleArea(QWidget):
             return True
         return False
 
-    def foo(self):
-        return self.image
-
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         dirtyRect = event.rect()
         painter.drawImage(dirtyRect, self.cv_to_qimage(self.image), dirtyRect)
-        painter.drawImage(dirtyRect, self.imageDraw, dirtyRect)
+        painter.drawImage(dirtyRect, self.image_draw, dirtyRect)
         painter.drawText(150, 250, self.text)
         self.update()
         if self.pressed_button == "paint":
-            painter.drawImage(dirtyRect, self.imageDraw, dirtyRect)
+            painter.drawImage(dirtyRect, self.image_draw, dirtyRect)
             painter.drawText(150, 250, self.text)
+
         if self.pressed_button == "marquee":
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
-            painter.drawImage(dirtyRect, self.imageDraw, dirtyRect)
+            painter.drawImage(dirtyRect, self.image_draw, dirtyRect)
             painter.drawText(150, 250, self.text)
             if not self.begin.isNull() and not self.end.isNull():
                 self.shape = QRect(self.begin, self.end)
                 # self.coords = self.shape.getCoords()
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
-        if self.pressed_button == "eraser":
-            pass
 
     def mousePressEvent(self, event):
         self.make_undo_command()
@@ -165,12 +162,10 @@ class ScribbleArea(QWidget):
                 self.begin = self.end = event.pos()
                 self.update()
                 super().mousePressEvent(event)
-            if self.pressed_button == "eraser":
-                pass
 
     def mouseMoveEvent(self, event):
         if self.pressed_button == 'paint':
-            painter = QPainter(self.imageDraw)
+            painter = QPainter(self.image_draw)
             painter.setPen(QPen(
                 QColor(self.color_pen[0], self.color_pen[1], self.color_pen[2], self.color_pen[3]),
                 self.width_pen, Qt.SolidLine))
@@ -186,8 +181,8 @@ class ScribbleArea(QWidget):
             super().mouseMoveEvent(event)
 
         if self.pressed_button == "eraser":
-            painter = QtGui.QPainter(self.imageDraw)
-            painter.setPen(QtGui.QPen(self.brushColor, self.brushSize,
+            painter = QtGui.QPainter(self.image_draw)
+            painter.setPen(QtGui.QPen(self.brush_color, self.brush_size,
                                       QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
             r = QtCore.QRect(QtCore.QPoint(), self._clear_size * QtCore.QSize())
             r.moveCenter(event.pos())
@@ -212,29 +207,10 @@ class ScribbleArea(QWidget):
         color_dialog.setWindowIcon(QIcon('../content/photoshop.png'))
         self.color_pen = color_dialog.getColor().getRgb()
 
-    def pen_width(self):
+    def pen_width(self, obj1, obj2):
         num, ok = QInputDialog.getInt(self, "Pen width", "Choose the pen width")
         self.width_pen = num
-
-    def text_write(self):
-        text, done1 = QInputDialog.getText(self, 'Write text', '')
-        self.text = text
-        if self.bold:
-            pass
-        if self.italic:
-            pass
-        if self.underline:
-            pass
-
-    def text_type(self):
-        TextTypeCheckbox(self).exec()
-
-    def text_width(self):
-        num, ok = QInputDialog.getInt(self, "Text width", "Choose the text width")
-        self.width_text = num
-
-    def text_color(self):
-        self.color_text = QColorDialog().getColor().getRgb()
+        obj1.paint()
 
     def make_undo_command(self):
         self.mUndoStack.push(UndoCommand(self))

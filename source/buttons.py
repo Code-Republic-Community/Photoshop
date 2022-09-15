@@ -1,21 +1,20 @@
-from PyQt5.QtCore import QPoint, Qt, QSize, QRect
-from PyQt5.QtGui import QColor, QIcon, QFont, QIntValidator, QPixmap, QPainter, QPen, QCursor, QImage
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog, QLineEdit, \
-    QFormLayout, QPushButton, QColorDialog, QHBoxLayout, QLabel, QApplication
+from PyQt5.QtCore import QPoint, Qt, QSize, QDir
+from PyQt5.QtGui import QColor, QIcon, QPen, QPainter, qRgb, QImage, QFont, QIntValidator
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog, QHBoxLayout, \
+    QLabel, QLineEdit, QPushButton, QColorDialog, QFileDialog
 import cv2 as cv
 import argparse
 import numpy as np
+import sys
 
+from PyQt5.QtCore import Qt, QPoint, QRect
+from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
 
 class Buttons(QMainWindow):
     obj_photoshop = None
 
     def __init__(self):
         super().__init__()
-        self.obj = None
-        self.pos_x = QPoint()
-        self.pos_y = QPoint()
-        self.lastPoint = QPoint()
 
     def eyedropper(self, obj):
         global obj_photoshop
@@ -28,16 +27,8 @@ class Buttons(QMainWindow):
         obj_photoshop.all_button_white()
         obj_scribble.pressed_button = None
 
-    def eraser(self, obj, app, painter):
-
-        pixmap = QPixmap(QSize(1, 1) * 20)
-        pixmap.fill(Qt.transparent)
-        painter1 = QPainter(pixmap)
-        painter1.setPen(QPen(Qt.black, 2))
-        painter1.drawRect(pixmap.rect())
-        painter1.end()
-        cursor = QCursor(pixmap)
-        app.setOverrideCursor(cursor)
+    def eraser(self, obj):
+        pass
 
     def crop(self, obj):
         cropped = obj.scribbleArea.image.copy(obj.scribbleArea.shape)
@@ -48,6 +39,18 @@ class Buttons(QMainWindow):
         painter.drawImage(obj.scribbleArea.shape, cropped)
         obj.scribbleArea.update()
 
+    def image_converter(self, obj):
+        self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
+                                                       "Image files (*.jpg *.png)")
+
+        image = cv.imread(self.filename)
+        if self.filename[-3:] == 'jpg':
+            cv.imwrite(f'{self.filename[:-3]}png', image)
+        else:
+            cv.imwrite(f'{self.filename[:-3]}jpg', image)
+        cv.waitKey()
+        cv.destroyAllWindows()
+        obj.all_button_white()
 
 class TextTypeCheckbox(QDialog):
     def __init__(self, obj, text):

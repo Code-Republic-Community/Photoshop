@@ -12,42 +12,52 @@ class File(QMainWindow):
         self.filename = ''
 
     def new(self, obj):
-        from source.photoshop_editor import PhotoshopEditor
-        self.filename = ''
-        self.ph_obj = PhotoshopEditor()
+        #self.filename = ''
         if obj.scribbleArea.check:
             close = QMessageBox.question(self,
                                          "QUIT",
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save_as(self, obj)
-            else:
-                obj.scribbleArea.image = QImage()
+                if obj.scribbleArea.open:
+                    File.save(self, obj)
+                else:
+                    File.save_as(self, obj)
+
+                obj.scribbleArea.image = QImage(self.size(), QImage.Format_ARGB32)
                 newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
                 obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
+
+                obj.scribbleArea.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+                newSize = obj.scribbleArea.image_draw.size().expandedTo(obj.scribbleArea.size())
+                obj.scribbleArea.resizeImage(obj.scribbleArea.image_draw, QSize(newSize))
+            else:
+                obj.scribbleArea.image = QImage(self.size(), QImage.Format_ARGB32)
+                newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
+                obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
+
+                obj.scribbleArea.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+                newSize = obj.scribbleArea.image_draw.size().expandedTo(obj.scribbleArea.size())
+                obj.scribbleArea.resizeImage(obj.scribbleArea.image_draw, QSize(newSize))
+
                 obj.scribbleArea.update()
                 obj.scribbleArea.check = False
 
     def open(self, obj):
-        a = QFileDialog()
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                        "Image files (*.jpg *.png)")
 
+        print(self.filename)
         if self.filename != '':
-            # im = Image.open(self.filename)
-            # imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
-            # imResize.save(self.filename, 'png', quality=90)
             img = cv.resize(cv.imread(self.filename), obj.scribbleArea.current_window_size())
-            #img = obj.cv_to_qimage(img)
             if self.filename:
                 obj.scribbleArea.openImage(img)
-                #obj.scribbleArea.foo1(self.filename)
             self.check = True
             obj.scribbleArea.check = True
 
     def save(self, obj):
         try:
+            print(self.filename)
             if self.filename == '':
                 self.filename = 'C'
                 fileFormat = 'png'
@@ -111,23 +121,24 @@ class File(QMainWindow):
         painter.drawImage(0, 0, im)
         painter.end()
 
-    def close_window(self, obj1):
-        from source.photoshop_editor import PhotoshopEditor
-        obj = PhotoshopEditor()
-        if not obj1.scribbleArea.check:
+    def close_window(self, obj):
+        if not obj.scribbleArea.check:
             close1 = QMessageBox.question(self,
                                          "QUIT",
                                          "Are you sure want to close the program?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close1 == QMessageBox.Yes:
                 exit()
-        elif obj1.scribbleArea.check:
+        else:
             close = QMessageBox.question(self,
                                          "QUIT",
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save(self, obj)
+                if obj.scribbleArea.open:
+                    File.save(self, obj)
+                else:
+                    File.save_as(self, obj)
                 exit()
             else:
                 exit()
