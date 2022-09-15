@@ -1,24 +1,11 @@
-<<<<<<< HEAD
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QColor, QIcon, QFont, QIntValidator
+from PyQt5.QtCore import QPoint, Qt, QSize, QRect
+from PyQt5.QtGui import QColor, QIcon, QFont, QIntValidator, QPixmap, QPainter, QPen, QCursor, QImage
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog, QLineEdit, \
-    QFormLayout, QPushButton, QColorDialog, QHBoxLayout, QLabel
+    QFormLayout, QPushButton, QColorDialog, QHBoxLayout, QLabel, QApplication
 import cv2 as cv
 import argparse
 import numpy as np
 
-=======
-from PyQt5.QtCore import QPoint, Qt, QSize
-from PyQt5.QtGui import QColor, QIcon, QPen, QPainter, qRgb, QImage
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog
-import cv2 as cv
-import argparse
-import numpy as np
-import sys
-
-from PyQt5.QtCore import Qt, QPoint, QRect
-from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
->>>>>>> e204b451005fe0b14db2bf30e87e091808af1ba8
 
 class Buttons(QMainWindow):
     obj_photoshop = None
@@ -41,7 +28,26 @@ class Buttons(QMainWindow):
         obj_photoshop.all_button_white()
         obj_scribble.pressed_button = None
 
-<<<<<<< HEAD
+    def eraser(self, obj, app, painter):
+
+        pixmap = QPixmap(QSize(1, 1) * 20)
+        pixmap.fill(Qt.transparent)
+        painter1 = QPainter(pixmap)
+        painter1.setPen(QPen(Qt.black, 2))
+        painter1.drawRect(pixmap.rect())
+        painter1.end()
+        cursor = QCursor(pixmap)
+        app.setOverrideCursor(cursor)
+
+    def crop(self, obj):
+        cropped = obj.scribbleArea.image.copy(obj.scribbleArea.shape)
+        obj.scribbleArea.image = QImage()
+        newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
+        obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
+        painter = QPainter(obj.scribbleArea.image)
+        painter.drawImage(obj.scribbleArea.shape, cropped)
+        obj.scribbleArea.update()
+
 
 class TextTypeCheckbox(QDialog):
     def __init__(self, obj, text):
@@ -85,50 +91,10 @@ class TextTypeCheckbox(QDialog):
         layout.addWidget(buttonBox)
         self.setLayout(layout)
         self.setWindowTitle("Text Font")
-=======
-    def eraser(self, obj):
-        pass
-
-    def crop(self, obj):
-        cropped = obj.scribbleArea.image.copy(obj.scribbleArea.shape)
-        obj.scribbleArea.image = QImage()
-        newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
-        obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
-        painter = QPainter(obj.scribbleArea.image)
-        painter.drawImage(obj.scribbleArea.shape, cropped)
-        obj.scribbleArea.update()
-
-
-
-class TextTypeCheckbox(QDialog):
-    def __init__(self, obj):
-        self.obj = obj
-        super(TextTypeCheckbox, self).__init__()
-        self.setFixedSize(200, 130)
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-
-        self.is_bold = False
-        self.is_italic = False
-        self.is_underline = False
-
-        layout = QVBoxLayout()
-        self.bold = QCheckBox("Bold")
-        self.italic = QCheckBox("Italic")
-        self.underline = QCheckBox("Underline")
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
-
-        layout.addWidget(self.italic)
-        layout.addWidget(self.underline)
-        layout.addWidget(self.bold)
-        layout.addWidget(buttonBox)
-        self.setLayout(layout)
-        self.setWindowTitle("Text type")
->>>>>>> e204b451005fe0b14db2bf30e87e091808af1ba8
 
         buttonBox.accepted.connect(self.accept)
 
     def accept(self):
-<<<<<<< HEAD
         self.obj.is_bold = False
         self.obj.is_italic = False
         self.obj.is_underline = False
@@ -210,14 +176,4 @@ class InputTextDialog(QDialog):
         self.obj.text = self.text.text()
         self.obj.width_text = self.is_size
         self.close()
-        self.obj.foo()
-=======
-        print(id(self.obj))
-        if self.bold.isChecked():
-            self.obj.bold = True
-        if self.italic.isChecked():
-            self.obj.italic = True
-        if self.underline.isChecked():
-            self.obj.underline = True
-        self.close()
->>>>>>> e204b451005fe0b14db2bf30e87e091808af1ba8
+        #self.obj.foo()
