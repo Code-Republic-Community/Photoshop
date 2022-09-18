@@ -1,20 +1,26 @@
+from PyQt5 import QtSvg
 from PyQt5.QtCore import QPoint, Qt, QSize, QDir
 from PyQt5.QtGui import QColor, QIcon, QPen, QPainter, qRgb, QImage, QFont, QIntValidator
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog, QHBoxLayout, \
-    QLabel, QLineEdit, QPushButton, QColorDialog, QFileDialog
+    QLabel, QLineEdit, QPushButton, QColorDialog, QFileDialog, QComboBox
 import cv2 as cv
 import argparse
 import numpy as np
 import sys
-
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
+import aspose.words as aw
+from PIL import Image
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+
 
 class Buttons(QMainWindow):
     obj_photoshop = None
 
     def __init__(self):
         super().__init__()
+        self.image_type = ''
 
     def eyedropper(self, obj):
         global obj_photoshop
@@ -27,36 +33,80 @@ class Buttons(QMainWindow):
         obj_photoshop.all_button_white()
         obj_scribble.pressed_button = None
 
-    def eraser(self, obj):
-        pass
-
     def crop(self, obj):
-        cropped = obj.scribbleArea.image.copy(obj.scribbleArea.shape)
-        obj.scribbleArea.image = QImage()
-        newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
-        obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
-        painter = QPainter(obj.scribbleArea.image)
-        painter.drawImage(obj.scribbleArea.shape, cropped)
-        obj.scribbleArea.update()
+        cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
+        obj.scribble_area.image = QImage()
+        new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
+        obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
+        painter = QPainter(obj.scribble_area.image)
+        painter.drawImage(obj.scribble_area.shape, cropped)
+        obj.scribble_area.update()
 
     def image_converter(self, obj):
+        self.filename = ''
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
-                                                       "Image files (*.jpg *.png)")
+                                                       "Image files (*.jpg *.png *.gif *.svg *.bmp *.jpeg *.jfif)")
 
-        image = cv.imread(self.filename)
-        if self.filename[-3:] == 'jpg':
-            cv.imwrite(f'{self.filename[:-3]}png', image)
-        else:
-            cv.imwrite(f'{self.filename[:-3]}jpg', image)
-        cv.waitKey()
-        cv.destroyAllWindows()
+        if self.filename != '':
+            point_index = self.filename.rindex('.')
+            ImgTypeComboBox(self).exec()
+
+            if self.image_type in 'svg':
+                if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
+                    doc = aw.Document()
+                    builder = aw.DocumentBuilder(doc)
+                    shape = builder.insert_image(self.filename)
+                    save_options = aw.saving.ImageSaveOptions(aw.SaveFormat.SVG)
+                    shape.get_shape_renderer().save(f'{self.filename[:point_index + 1]}{self.image_type}', save_options)
+                    obj.all_button_white()
+                    return
+
+            elif self.image_type in ('png', 'bmp', 'jpeg', 'jpg'):
+                if self.filename.endswith('svg'):
+                    doc = aw.Document()
+                    builder = aw.DocumentBuilder(doc)
+                    shape = builder.insert_image(self.filename)
+                    shape.image_data.save(f'{self.filename[:-3]}{self.image_type}')
+                    obj.all_button_white()
+                    return
+
+                if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
+                    Image.open(self.filename).convert('RGB'). \
+                        save(f'{self.filename[:point_index + 1]}{self.image_type}')
+
         obj.all_button_white()
 
-class TextTypeCheckbox(QDialog):
+
+class ImgTypeComboBox(QDialog):
+    def __init__(self, obj):
+        self.obj = obj
+        super().__init__()
+        self.setFixedSize(250, 120)
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
+
+        layout = QVBoxLayout()
+        self.combo_box = QComboBox(self)
+        img_types = ['jpeg', 'jpg', 'png', 'svg', 'bmp']
+        self.combo_box.addItems(img_types)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+
+        layout.addWidget(self.combo_box)
+        layout.addWidget(button_box)
+        self.setLayout(layout)
+
+        button_box.accepted.connect(self.accept)
+
+    def accept(self):
+        type = self.combo_box.currentText()
+        self.obj.image_type = type
+        self.close()
+
+
+class TextType(QDialog):
     def __init__(self, obj, text):
         self.obj = obj
         self.text = text
-        super(TextTypeCheckbox, self).__init__()
+        super().__init__()
         self.setFixedSize(250, 150)
         self.setWindowIcon(QIcon('../content/photoshop.png'))
 
@@ -84,18 +134,18 @@ class TextTypeCheckbox(QDialog):
         self.underline = QCheckBox("Underline")
         self.underline.setChecked(self.obj.is_underline)
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
         checkbox_layout.addWidget(self.bold)
         checkbox_layout.addWidget(self.italic)
         checkbox_layout.addWidget(self.underline)
         layout.addWidget(self.size)
         layout.addLayout(checkbox_layout)
-        layout.addWidget(buttonBox)
+        layout.addWidget(button_box)
         self.setLayout(layout)
         self.setWindowTitle("Text Font")
 
-        buttonBox.accepted.connect(self.accept)
+        button_box.accepted.connect(self.accept)
 
     def accept(self):
         self.obj.is_bold = False
@@ -118,6 +168,7 @@ class TextTypeCheckbox(QDialog):
         self.text.setFont(font_size)
         self.close()
 
+
 class InputTextDialog(QDialog):
     def __init__(self, obj):
         self.obj = obj
@@ -138,7 +189,7 @@ class InputTextDialog(QDialog):
         self.text.setFixedSize(580, 400)
         self.text.setFont(font)
 
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
@@ -158,19 +209,18 @@ class InputTextDialog(QDialog):
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.text)
-        layout.addWidget(buttonBox)
+        layout.addWidget(button_box)
 
-        buttonBox.accepted.connect(self.accept)
-        buttonBox.rejected.connect(self.reject)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
 
     def select_color(self):
         self.obj.color_text = QColorDialog().getColor().getRgb()
         color = self.obj.color_text
-        #self.text.setText("")
         self.text.setStyleSheet(f'color: rgb{color};')
 
     def select_font(self):
-        TextTypeCheckbox(self, self.text).exec()
+        TextType(self, self.text).exec()
 
     def accept(self):
         self.obj.bold = self.is_bold
@@ -179,4 +229,3 @@ class InputTextDialog(QDialog):
         self.obj.text = self.text.text()
         self.obj.width_text = self.is_size
         self.close()
-        #self.obj.foo()

@@ -15,44 +15,42 @@ class Edit():
     def __init__(self):
         super(MovePicrute).__init__()
 
-    def undo(self, object):
-        self.undo = UndoCommand(object.scribbleArea)
-        self.undo.undo()
-        object.scribbleArea.mUndoStack.undo()
-        object.scribbleArea.update()
+    def undo(self, obj):
+        undo = UndoCommand(obj.scribble_area)
+        undo.undo()
+        obj.scribble_area.undo_stack.undo()
+        obj.scribble_area.update()
 
     def redo(self, obj):
-        obj.scribbleArea.mUndoStack.redo()
-        from scribble_area import ScribbleArea
-        obj = ScribbleArea()
-        self.redo = UndoCommand(obj)
-        self.redo.redo()
+        obj.scribble_area.undo_stack.redo()
+        redo = UndoCommand(obj.scribble_area)
+        redo.redo()
 
     def cut(self, obj):
-        painter = QPainter(obj.scribbleArea.image)
+        painter = QPainter(obj.scribble_area.image)
         image2 = QImage(100, 100, QImage.Format_RGB32)
         image2.fill(qRgb(255, 255, 255))
-        painter.drawImage(obj.scribbleArea.shape, image2)
-        obj.scribbleArea.update()
+        painter.drawImage(obj.scribble_area.shape, image2)
+        obj.scribble_area.update()
 
     def copy(self, obj):
         global cropped
-        cropped = obj.scribbleArea.image.copy(obj.scribbleArea.shape)
+        cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
 
     def paste(self, obj):
-        self.band = MovePicrute(obj.scribbleArea)
-        self.band.adjustSize()
+        band = MovePicrute(obj.scribble_area)
+        band.adjustSize()
 
     def clear_screen(self, obj):
-        obj.scribbleArea.image = QImage(self.size(), QImage.Format_ARGB32)
-        newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
-        obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
+        obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+        new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
+        obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
 
-        obj.scribbleArea.image_draw = QImage(self.size(), QImage.Format_ARGB32)
-        newSize = obj.scribbleArea.image_draw.size().expandedTo(obj.scribbleArea.size())
-        obj.scribbleArea.resizeImage(obj.scribbleArea.image_draw, QSize(newSize))
+        obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+        new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
+        obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
 
-        obj.scribbleArea.update()
+        obj.scribble_area.update()
 
     def keyboard_shortcuts(self):
         pass
@@ -77,14 +75,12 @@ class UndoCommand(QUndoCommand):
 
 class MovePicrute(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        from scribble_area import ScribbleArea
         super(MovePicrute, self).__init__(parent)
         self.draggable = True
         self.dragging_threshold = 5
-        self.mousePressPos = None
-        self.mouseMovePos = None
+        self.mouse_press_pos = None
+        self.mouse_move_pos = None
         self.borderRadius = 5
-        self.step = False
         self.moved = QPoint()
         self.parent = parent
 
@@ -121,30 +117,29 @@ class MovePicrute(QtWidgets.QWidget):
 
     def mousePressEvent(self, event):
         if self.draggable and event.button() == QtCore.Qt.RightButton:
-            self.mousePressPos = event.globalPos()
-            self.mouseMovePos = event.globalPos() - self.pos()
+            self.mouse_press_pos = event.globalPos()
+            self.mouse_move_pos = event.globalPos() - self.pos()
 
         super(MovePicrute, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & QtCore.Qt.RightButton:
-            globalPos = event.globalPos()
-            self.moved = globalPos - self.mousePressPos
+            global_pos = event.globalPos()
+            self.moved = global_pos - self.mouse_press_pos
             if self.moved.manhattanLength() > self.dragging_threshold:
-                diff = globalPos - self.mouseMovePos
+                diff = global_pos - self.mouse_move_pos
                 self.move(diff)
-                self.mouseMovePos = globalPos - self.pos()
+                self.mouse_move_pos = global_pos - self.pos()
 
         super(MovePicrute, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
-        if self.mousePressPos is not None:
+        if self.mouse_press_pos is not None:
             if event.button() == QtCore.Qt.RightButton:
-                self.moved = event.globalPos() - self.mousePressPos
+                self.moved = event.globalPos() - self.mouse_press_pos
                 if self.moved.manhattanLength() > self.dragging_threshold:
                     event.ignore()
-                self.mousePressPos = None
-            self.step = True
+                self.mouse_press_pos = None
         super(MovePicrute, self).mouseReleaseEvent(event)
 
         self.x_pos = self.pos()
