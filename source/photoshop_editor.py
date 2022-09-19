@@ -133,7 +133,7 @@ class PhotoshopEditor(QMainWindow):
             extract_action.setText(_translate("MainWindow", key))
             i += 1
 
-        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+D', 'Shift+Ctrl+P']
+        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+P', 'Shift+Ctrl+P']
         i = 0
 
         for key, value in dict_filter.items():

@@ -46,8 +46,30 @@ class Filter():
         obj.scribble_area.update()
 
     def twirling_spirals(self, obj):
-        pass
+        im = obj.scribble_area.QimageToCv(obj.scribble_area.image)
+        cx = im.shape[1] / 2
+        cy = im.shape[0] / 2
+        a = -1
+        b = 2
+        c = 1
+        r = 1
 
+        x = np.linspace(0, im.shape[1], im.shape[1], dtype=np.float32)
+        y = np.linspace(0, im.shape[0], im.shape[0], dtype=np.float32)
+        xv, yv = np.meshgrid(x - cx, y - cy)
+
+        mag, ang = cv.cartToPolar(xv, yv)
+        nmag = cv.normalize(mag, None, norm_type=cv.NORM_MINMAX)
+
+        sxv, syv = cv.polarToCart(mag, (ang + (a + b * np.pi * nmag ** (1.0 / c)) * (nmag < r)))
+        spiral = cv.remap(im,
+                          sxv + cx,
+                          syv + cy,
+                          cv.INTER_LINEAR)
+
+        qimg = obj.scribble_area.CvToQimage(spiral)
+        obj.scribble_area.image = qimg
+        obj.scribble_area.update()
     def pixelate(self, obj):
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         height, width = img.shape[:2]
