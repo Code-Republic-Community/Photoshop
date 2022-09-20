@@ -5,7 +5,6 @@ from functools import partial
 
 from PyQt5.QtCore import QBuffer, Qt
 
-from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
     QColorDialog, QSpinBox
@@ -17,11 +16,11 @@ import image
 import filter
 import buttons
 from scribble_area import ScribbleArea
-from source.buttons import Buttons
+from source.buttons import Buttons, InputTextDialog
 from help import Help, Documentation
 import numpy as np
 import cv2 as cv
-from source.buttons import InputTextDialog
+from source.buttons import MoveText
 
 
 class PhotoshopEditor(QMainWindow):
@@ -220,11 +219,13 @@ class PhotoshopEditor(QMainWindow):
         app.setOverrideCursor(cursor)
 
     def move_text(self):
-        cursor = QCursor().bitmap()
-        app.setOverrideCursor(cursor)
+        #cursor = QCursor().bitmap()
+        #app.setOverrideCursor(cursor)
         self.scribble_area.pressed_button = 'move'
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
+        MoveText(self.scribble_area,dragable=True)
+
 
     def marquee(self):
         self.scribble_area.pressed_button = 'marquee'
@@ -257,6 +258,7 @@ class PhotoshopEditor(QMainWindow):
         self.all_button_white()
         self.button_list[7].setStyleSheet('background-color: red;')
         InputTextDialog(self.scribble_area).exec()
+        MoveText(self.scribble_area)
 
     def image_converter(self):
         self.scribble_area.pressed_button = 'image_converter'

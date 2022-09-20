@@ -41,6 +41,7 @@ class Edit():
         band = MovePicrute(obj.scribble_area)
         band.adjustSize()
 
+
     def clear_screen(self, obj):
         obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())

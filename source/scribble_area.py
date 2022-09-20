@@ -12,7 +12,6 @@ from PyQt5.QtCore import Qt
 from PIL import Image, ImageFilter
 from source.edit import UndoCommand
 from source.buttons import Buttons
-from source.buttons import TextType
 
 
 class ScribbleArea(QWidget):
