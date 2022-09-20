@@ -230,9 +230,6 @@ class InputTextDialog(QDialog):
         self.obj.underline = self.is_underline
         #self.obj.text = self.text.text()
         self.obj.width_text = self.is_size
-        band = MovePicrute(self.scr_obj)
-        band.label.setText(self.text.text())
-        band.adjustSize()
         global input_text
         input_text = self.text.text()
         self.close()
@@ -255,14 +252,12 @@ class MoveText(QWidget):
         layout.addWidget(
             QSizeGrip(self), 0,
             Qt.AlignRight | Qt.AlignBottom)
-        self.input_obj = InputTextDialog(self)
         self.label = QLabel(self)
 
         self.label.setText(input_text)
 
         self.label.adjustSize()
 
-        self.label.adjustSize()
         self._band = QRubberBand(
             QRubberBand.Rectangle, self)
 
@@ -274,8 +269,6 @@ class MoveText(QWidget):
         self._band.resize(self.size())
 
     def paintEvent(self, event):
-        # Get current window size
-        window_size = self.size()
         qp = QPainter()
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing, True)
