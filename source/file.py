@@ -8,92 +8,92 @@ import cv2 as cv
 
 class File(QMainWindow):
     def __init__(self):
-        super(File, self).__init__()
+        super().__init__()
         self.filename = ''
 
     def new(self, obj):
-        from source.photoshop_editor import PhotoshopEditor
-        self.filename = ''
-        self.ph_obj = PhotoshopEditor()
-        if obj.scribbleArea.check:
+        if obj.scribble_area.check:
             close = QMessageBox.question(self,
                                          "QUIT",
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save_as(self, obj)
+                if obj.scribble_area.open:
+                    File.save(self, obj)
+                else:
+                    File.save_as(self, obj)
             else:
-                obj.scribbleArea.image = QImage()
-                newSize = obj.scribbleArea.image.size().expandedTo(obj.scribbleArea.size())
-                obj.scribbleArea.resizeImage(obj.scribbleArea.image, QSize(newSize))
-                obj.scribbleArea.update()
-                obj.scribbleArea.check = False
+                obj.scribble_area.check = False
+
+            obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+            newSize = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
+            obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(newSize))
+
+            obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+            newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
+            obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(newSize))
+
+            obj.scribble_area.update()
 
     def open(self, obj):
-        a = QFileDialog()
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                        "Image files (*.jpg *.png)")
 
         if self.filename != '':
-            # im = Image.open(self.filename)
-            # imResize = im.resize((obj.scribbleArea.current_window_size()), Image.ANTIALIAS)
-            # imResize.save(self.filename, 'png', quality=90)
-            img = cv.resize(cv.imread(self.filename), obj.scribbleArea.current_window_size())
-            #img = obj.cv_to_qimage(img)
+            img = cv.resize(cv.imread(self.filename), obj.scribble_area.current_window_size())
             if self.filename:
-                obj.scribbleArea.openImage(img)
-                #obj.scribbleArea.foo1(self.filename)
+                obj.scribble_area.openImage(img)
             self.check = True
-            obj.scribbleArea.check = True
+            obj.scribble_area.check = True
 
     def save(self, obj):
         try:
             if self.filename == '':
                 self.filename = 'C'
-                fileFormat = 'png'
-                initialPath = self.filename + f'/untitled.' + fileFormat
-                fileName, _ = QFileDialog.getSaveFileName(obj, "Save", initialPath,
+                file_format = 'png'
+                initial_path = self.filename + f'/untitled.' + file_format
+                filename, _ = QFileDialog.getSaveFileName(obj, "Save", initial_path,
                                                           "%s Files (*.%s);;All Files (*)" % (
-                                                              fileFormat.upper(), fileFormat))
+                                                              file_format.upper(), file_format))
 
-                self.filename = fileName
-                if fileName:
-                    return obj.scribbleArea.saveImage(fileName, fileFormat)
+                self.filename = filename
+                if filename:
+                    return obj.scribble_area.saveImage(filename, file_format)
         except:
             self.filename = 'C'
-            fileFormat = 'png'
-            initialPath = self.filename + f'/untitled.' + fileFormat
-            fileName, _ = QFileDialog.getSaveFileName(obj, "Save", initialPath,
+            file_format = 'png'
+            initial_path = self.filename + f'/untitled.' + file_format
+            filename, _ = QFileDialog.getSaveFileName(obj, "Save", initial_path,
                                                       "%s Files (*.%s);;All Files (*)" % (
-                                                          fileFormat.upper(), fileFormat))
+                                                          file_format.upper(), file_format))
 
-            self.filename = fileName
-            if fileName:
-                return obj.scribbleArea.saveImage(fileName, fileFormat)
+            self.filename = filename
+            if filename:
+                return obj.scribble_area.saveImage(filename, file_format)
             self.filename = ''
             return
 
         lst = str(self.filename).split('/')
         image_name = str(lst[-1])
-        fileFormat = image_name[len(image_name) - 3:]
+        file_format = image_name[len(image_name) - 3:]
         if self.filename:
-            obj.scribbleArea.saveImage(self.filename, fileFormat)
+            obj.scribble_area.saveImage(self.filename, file_format)
 
     def save_as(self, obj):
         self.filename = 'C'
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getSaveFileName(self,
+        filename, _ = QFileDialog.getSaveFileName(self,
                                                   "Save File", "", "All Files(*);; PNG File(*.png) ;; JPG File(*.jpg)",
                                                   options=options)
-        if fileName:
-            return obj.scribbleArea.saveImage(fileName, fileName[-1:-4])
+        if filename:
+            return obj.scribble_area.saveImage(filename, filename[-1:-4])
 
         lst = str(self.filename).split('/')
         image_name = str(lst[-1])
-        fileFormat = image_name[len(image_name) - 3:]
+        file_format = image_name[len(image_name) - 3:]
 
         if self.filename:
-            return obj.scribbleArea.saveImage(self.filename, fileFormat)
+            return obj.scribble_area.saveImage(self.filename, file_format)
 
     def print(self, obj):
         printer = QPrinter(QPrinter.HighResolution)
@@ -103,7 +103,7 @@ class File(QMainWindow):
 
         dialog = QPrintDialog(printer)
         dialog.exec_()
-        im = QImage(obj.scribbleArea.image)
+        im = QImage(obj.scribble_area.image)
         im = im.scaledToWidth(printer.pageRect().width(), Qt.SmoothTransformation)
 
         painter = QPainter()
@@ -111,23 +111,24 @@ class File(QMainWindow):
         painter.drawImage(0, 0, im)
         painter.end()
 
-    def close_window(self, obj1):
-        from source.photoshop_editor import PhotoshopEditor
-        obj = PhotoshopEditor()
-        if not obj1.scribbleArea.check:
+    def close_window(self, obj):
+        if not obj.scribble_area.check:
             close1 = QMessageBox.question(self,
-                                         "QUIT",
-                                         "Are you sure want to close the program?",
-                                         QMessageBox.Yes | QMessageBox.No)
+                                          "QUIT",
+                                          "Are you sure want to close the program?",
+                                          QMessageBox.Yes | QMessageBox.No)
             if close1 == QMessageBox.Yes:
                 exit()
-        elif obj1.scribbleArea.check:
+        else:
             close = QMessageBox.question(self,
                                          "QUIT",
                                          "Do you want to save changes?",
                                          QMessageBox.Yes | QMessageBox.No)
             if close == QMessageBox.Yes:
-                File.save(self, obj)
+                if obj.scribble_area.open:
+                    File.save(self, obj)
+                else:
+                    File.save_as(self, obj)
                 exit()
             else:
                 exit()

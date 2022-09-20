@@ -1,9 +1,6 @@
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QTransform, QImage, QIcon, QIntValidator
-from PyQt5.QtWidgets import QGraphicsBlurEffect, QLineEdit, QDialogButtonBox, QFormLayout, QDialog
+from PyQt5.QtGui import QTransform, QIcon, QIntValidator
+from PyQt5.QtWidgets import QLineEdit, QDialogButtonBox, QFormLayout, QDialog
 import cv2 as cv
-
-from scribble_area import ScribbleArea
 
 
 class InputDialogCanvasSize(QDialog):
@@ -18,15 +15,15 @@ class InputDialogCanvasSize(QDialog):
         self.setWindowTitle("Input size")
         self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setFixedSize(200, 100)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
         layout = QFormLayout(self)
         layout.addRow("Width", self.width)
         layout.addRow("Height", self.height)
-        layout.addWidget(buttonBox)
+        layout.addWidget(button_box)
 
-        buttonBox.accepted.connect(self.accept)
-        buttonBox.rejected.connect(self.reject)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
 
     def accept(self):
         if len(self.width.text()) != 0 and len(self.height.text()):
@@ -34,6 +31,7 @@ class InputDialogCanvasSize(QDialog):
             height = int(self.height.text())
             self.obj.set_window_size(width, height)
             self.close()
+
 
 class InputDialogImageSize(QDialog):
     def __init__(self, obj, parent=None):
@@ -47,27 +45,31 @@ class InputDialogImageSize(QDialog):
         self.setWindowTitle("Input size")
         self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setFixedSize(200, 100)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
         layout = QFormLayout(self)
         layout.addRow("Width", self.width)
         layout.addRow("Height", self.height)
-        layout.addWidget(buttonBox)
+        layout.addWidget(button_box)
 
-        buttonBox.accepted.connect(self.accept)
-        buttonBox.rejected.connect(self.reject)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
 
     def accept(self):
         if len(self.width.text()) != 0 and len(self.height.text()):
             width = int(self.width.text())
             height = int(self.height.text())
-            img = self.obj.scribbleArea.image
-            img = self.obj.qimage_to_cv(img)
+            img = self.obj.scribble_area.image
+            img = self.obj.scribble_area.QimageToCv(img)
             image = cv.resize(img, (width, height))
-            self.obj.scribbleArea.openImage(image)
-            self.obj.scribbleArea.image = self.obj.cv_to_qimage(image)
-            self.obj.scribbleArea.update()
+            self.obj.scribble_area.openImage(image)
+            self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
+
+            self.obj.scribble_area.resize_image_draw(self.obj.scribble_area.image_draw, width, height)
+
+            self.obj.scribble_area.update()
             self.close()
+
 
 class Image():
     def __init__(self):
@@ -83,18 +85,26 @@ class Image():
         transform90 = QTransform()
         transform90.rotate(-90)
 
-        image = obj.scribbleArea.image.transformed(transform90)
-        image = obj.qimage_to_cv(image)
-        image = cv.resize(image, obj.scribbleArea.current_window_size())
-        obj.scribbleArea.openImage(image)
-        obj.scribbleArea.update()
+        image = obj.scribble_area.image.transformed(transform90)
+        image = obj.scribble_area.QimageToCv(image)
+        image = cv.resize(image, obj.scribble_area.current_window_size())
+        obj.scribble_area.openImage(image)
+
+        image_draw = obj.scribble_area.image_draw.transformed(transform90)
+        obj.scribble_area.resize_image_draw(image_draw)
+
+        obj.scribble_area.update()
 
     def rotate_right(self, obj):
         transform90 = QTransform()
         transform90.rotate(90)
 
-        image = obj.scribbleArea.image.transformed(transform90)
-        image = obj.qimage_to_cv(image)
-        image = cv.resize(image, obj.scribbleArea.current_window_size())
-        obj.scribbleArea.openImage(image)
-        obj.scribbleArea.update()
+        image = obj.scribble_area.image.transformed(transform90)
+        image = obj.scribble_area.QimageToCv(image)
+        image = cv.resize(image, obj.scribble_area.current_window_size())
+        obj.scribble_area.openImage(image)
+
+        image_draw = obj.scribble_area.image_draw.transformed(transform90)
+        obj.scribble_area.resize_image_draw(image_draw)
+
+        obj.scribble_area.update()
