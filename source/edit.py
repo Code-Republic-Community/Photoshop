@@ -1,8 +1,8 @@
 from turtle import delay
 
 from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QImage, QColor, QPainter, qRgb
-from PyQt5.QtWidgets import QUndoCommand, QWidget
+from PyQt5.QtGui import QImage, QColor, QPainter, qRgb, QIcon
+from PyQt5.QtWidgets import QUndoCommand, QWidget, QDialog, QDialogButtonBox, QVBoxLayout, QLabel, QHBoxLayout
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage
@@ -27,10 +27,15 @@ class Edit():
         redo.redo()
 
     def cut(self, obj):
+        image = QImage(100, 100, QImage.Format_RGB32)
+        image.fill(qRgb(255, 255, 255))
+
         painter = QPainter(obj.scribble_area.image)
-        image2 = QImage(100, 100, QImage.Format_RGB32)
-        image2.fill(qRgb(255, 255, 255))
-        painter.drawImage(obj.scribble_area.shape, image2)
+        painter.drawImage(obj.scribble_area.shape, image)
+
+        painter_draw = QPainter(obj.scribble_area.image_draw)
+        painter_draw.drawImage(obj.scribble_area.shape, image)
+
         obj.scribble_area.update()
 
     def copy(self, obj):
@@ -42,18 +47,19 @@ class Edit():
         band.adjustSize()
 
     def clear_screen(self, obj):
-        obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+        width, height = obj.scribble_area.currentWindowSize()
+        obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
 
-        obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+        obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
 
         obj.scribble_area.update()
 
-    def keyboard_shortcuts(self):
-        pass
+    def keyboard_shortcuts(self, obj):
+        KeyShortcut().exec()
 
 
 class UndoCommand(QUndoCommand):
@@ -116,14 +122,14 @@ class MovePicrute(QtWidgets.QWidget):
         qp.end()
 
     def mousePressEvent(self, event):
-        if self.draggable and event.button() == QtCore.Qt.RightButton:
+        if self.draggable and event.button() == QtCore.Qt.LeftButton:
             self.mouse_press_pos = event.globalPos()
             self.mouse_move_pos = event.globalPos() - self.pos()
 
         super(MovePicrute, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        if self.draggable and event.buttons() & QtCore.Qt.RightButton:
+        if self.draggable and event.buttons() & QtCore.Qt.LeftButton:
             global_pos = event.globalPos()
             self.moved = global_pos - self.mouse_press_pos
             if self.moved.manhattanLength() > self.dragging_threshold:
@@ -151,3 +157,48 @@ class MovePicrute(QtWidgets.QWidget):
         painter.drawImage(self.y_pos, cropped)
         self.parent.update()
         self.hide()
+
+
+class KeyShortcut(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Keyboard shortcuts")
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.setFixedSize(400, 410)
+
+        layout_options = QVBoxLayout(self)
+        layout_shortcuts = QVBoxLayout(self)
+        layout = QHBoxLayout(self)
+        dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
+                                'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
+                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X', 'Copy': 'Ctrl+C',
+                                'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
+                                'Keyboard shortcuts': 'Ctrl+K', 'Image size': 'Ctrl+Alt+I',
+                                'Canvas size': 'Ctrl+Alt+C', 'Rotate left': 'Shift+Ctrl+L',
+                                'Rotate right': 'Shift+Ctrl+R', 'Blur': 'Shift+Ctrl+B',
+                                'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
+                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
+
+        y = 0
+        myFont = QtGui.QFont()
+        myFont.setBold(True)
+        for key in dictionary_shortcuts.keys():
+            label = QLabel(self)
+            label.setText(key)
+            label.move(50, y)
+            label.setFont(myFont)
+            layout_options.addWidget(label)
+            y += 20
+
+        y = 4
+        for value in dictionary_shortcuts.values():
+            label = QLabel(self)
+            label.setText(value)
+            label.move(200, y)
+            layout_shortcuts.addWidget(label)
+            y += 17
+
+        layout.addLayout(layout_options)
+        layout.addLayout(layout_shortcuts)
+
+        self.setLayout(layout)

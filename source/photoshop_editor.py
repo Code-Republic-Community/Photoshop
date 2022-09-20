@@ -5,7 +5,6 @@ from functools import partial
 
 from PyQt5.QtCore import QBuffer, Qt
 
-from source.scribble_area import ScribbleArea
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
     QColorDialog, QSpinBox
@@ -17,12 +16,12 @@ import image
 import filter
 import buttons
 from scribble_area import ScribbleArea
-from source.buttons import Buttons
+from source.buttons import Buttons, InputTextDialog
 from help import Help, Documentation
 import numpy as np
 import cv2 as cv
-from source.buttons import InputTextDialog
-
+from source.buttons import MoveText
+gl_draggable = False
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
@@ -33,6 +32,7 @@ class PhotoshopEditor(QMainWindow):
         self.main_window: QMainWindow = None
         self.button_list = [None] * 9
         self.vertical_layout = QVBoxLayout()
+        self.band = []
 
     def setupUi(self, main_window):
         self.main_window = main_window
@@ -133,7 +133,7 @@ class PhotoshopEditor(QMainWindow):
             extract_action.setText(_translate("MainWindow", key))
             i += 1
 
-        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+D', 'Shift+Ctrl+P']
+        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+P', 'Shift+Ctrl+P']
         i = 0
 
         for key, value in dict_filter.items():
@@ -192,7 +192,7 @@ class PhotoshopEditor(QMainWindow):
             self.vertical_layout.addWidget(self.button_list[i])
             i += 1
 
-        self.button_list[4].clicked.connect(functools.partial(buttons.Buttons.crop, self, self))
+        #self.button_list[4].clicked.connect(functools.partial(buttons.Buttons.crop, self, self))
 
         pen_menu = QMenu()
         pen_menu.addAction('Paint', self.paint)
@@ -220,49 +220,68 @@ class PhotoshopEditor(QMainWindow):
         app.setOverrideCursor(cursor)
 
     def move_text(self):
-        cursor = QCursor().bitmap()
-        app.setOverrideCursor(cursor)
+        #cursor = QCursor().bitmap()
+        #app.setOverrideCursor(cursor)
         self.scribble_area.pressed_button = 'move'
         self.all_button_white()
         self.button_list[1].setStyleSheet('background-color: red;')
-
+        for i in self.band:
+            i.draggable = True
     def marquee(self):
         self.scribble_area.pressed_button = 'marquee'
         self.all_button_white()
         self.button_list[2].setStyleSheet('background-color: red;')
+        for i in self.band:
+            i.draggable = False
 
     def lasso(self):
         self.scribble_area.pressed_button = 'lasso'
         self.all_button_white()
         self.button_list[3].setStyleSheet('background-color: red;')
-
+        for i in self.band:
+            i.draggable = False
     def crop(self):
         self.scribble_area.pressed_button = 'crop'
         self.all_button_white()
         self.button_list[4].setStyleSheet('background-color: red;')
+        self.buttons_obj.crop(self)
+        for i in self.band:
+            i.draggable = False
 
     def eyedropper(self):
         self.scribble_area.pressed_button = 'eyedropper'
         self.all_button_white()
         self.button_list[5].setStyleSheet('background-color: red;')
         self.buttons_obj.eyedropper(self)
+        for i in self.band:
+            i.draggable = False
 
     def eraser(self):
         self.scribble_area.pressed_button = 'eraser'
         self.all_button_white()
         self.button_list[6].setStyleSheet('background-color: red;')
+        for i in self.band:
+            i.draggable = False
 
     def type(self):
         self.scribble_area.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background-color: red;')
         InputTextDialog(self.scribble_area).exec()
+        obj = MoveText(self.scribble_area.text,
+                       self.scribble_area.width_text, self.scribble_area.color_text,
+                       self.scribble_area.bold, self.scribble_area.italic,
+                       self.scribble_area.underline, self.scribble_area, dragable=False)
+        self.band.append(obj)
+
 
     def image_converter(self):
         self.scribble_area.pressed_button = 'image_converter'
         self.all_button_white()
         self.button_list[8].setStyleSheet('background-color: red;')
         self.buttons_obj.image_converter(self)
+        for i in self.band:
+            i.draggable = False
 
     def help(self, obj1, obj2):
         self.window = QtWidgets.QDialog()
