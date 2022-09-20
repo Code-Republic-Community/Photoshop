@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QTransform, QIcon, QIntValidator
 from PyQt5.QtWidgets import QLineEdit, QDialogButtonBox, QFormLayout, QDialog
 import cv2 as cv
@@ -35,6 +36,7 @@ class InputDialogCanvasSize(QDialog):
 
 class InputDialogImageSize(QDialog):
     def __init__(self, obj, parent=None):
+
         self.obj = obj
         self.only_int = QIntValidator()
         super().__init__(parent)
@@ -65,7 +67,7 @@ class InputDialogImageSize(QDialog):
             self.obj.scribble_area.openImage(image)
             self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
 
-            self.obj.scribble_area.resize_image_draw(self.obj.scribble_area.image_draw, width, height)
+            self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw, width, height)
 
             self.obj.scribble_area.update()
             self.close()
@@ -74,6 +76,8 @@ class InputDialogImageSize(QDialog):
 class Image():
     def __init__(self):
         super(Image, self).__init__()
+        from photoshop_editor import PhotoshopEditor
+        self.photoshop = PhotoshopEditor()
 
     def image_size(self, obj):
         InputDialogImageSize(obj).exec()
@@ -92,8 +96,10 @@ class Image():
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resize_image_draw(image_draw)
+        #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
 
         obj.scribble_area.update()
+
 
     def rotate_right(self, obj):
         transform90 = QTransform()

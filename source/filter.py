@@ -31,6 +31,20 @@ class Filter():
         qimg.loadFromData(bytes_img.getvalue())
 
         obj.scribble_area.image = qimg
+
+        img_draw = obj.scribble_area.image_draw
+        buffer_draw = QBuffer()
+        buffer_draw.open(QBuffer.ReadWrite)
+        img_draw.save(buffer_draw, "PNG")
+        pil_im_draw = Image.open(io.BytesIO(buffer_draw.data())).filter(ImageFilter.BLUR)
+
+        bytes_img_draw = io.BytesIO()
+        pil_im_draw.save(bytes_img_draw, format='PNG')
+
+        qimg_draw = QImage()
+        qimg_draw.loadFromData(bytes_img_draw.getvalue())
+
+        obj.scribble_area.image_draw = qimg_draw
         obj.scribble_area.update()
 
     def noise(self, obj):
@@ -43,6 +57,7 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(speckle_noisy)
         obj.scribble_area.image = qimg
+
         obj.scribble_area.update()
 
     def twirling_spirals(self, obj):
@@ -69,7 +84,9 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(spiral)
         obj.scribble_area.image = qimg
+
         obj.scribble_area.update()
+
     def pixelate(self, obj):
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         height, width = img.shape[:2]

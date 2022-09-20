@@ -9,13 +9,12 @@ import numpy as np
 import sys
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-#import aspose.words as aw
+import aspose.words as aw
 from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 
-input_text = ""
 
 class Buttons(QMainWindow):
     obj_photoshop = None
@@ -37,11 +36,19 @@ class Buttons(QMainWindow):
 
     def crop(self, obj):
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
-        obj.scribble_area.image = QImage()
+        obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
         painter = QPainter(obj.scribble_area.image)
         painter.drawImage(obj.scribble_area.shape, cropped)
+
+        # cropped = obj.scribble_area.image_draw.copy(obj.scribble_area.shape_draw)
+        # obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+        # new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
+        # obj.scribble_area.resizeImageDraw(obj.scribble_area.image_draw, QSize(new_size))
+        # painter = QPainter(obj.scribble_area.image_draw)
+        # painter.drawImage(obj.scribble_area.shape_draw, cropped)
+
         obj.scribble_area.update()
 
     def image_converter(self, obj):
@@ -173,6 +180,7 @@ class TextType(QDialog):
 
 class InputTextDialog(QDialog):
     def __init__(self, obj):
+        self.color_text = (0, 0, 0, 255)
         self.obj = obj
         super().__init__()
         from scribble_area import ScribbleArea
@@ -217,9 +225,9 @@ class InputTextDialog(QDialog):
         button_box.rejected.connect(self.reject)
 
     def select_color(self):
-        self.obj.color_text = QColorDialog().getColor().getRgb()
-        color = self.obj.color_text
-        self.text.setStyleSheet(f'color: rgb{color};')
+        self.color_text = QColorDialog().getColor().getRgb()
+        self.obj.color_text = self.color_text
+        self.text.setStyleSheet(f'color: rgb{self.color_text};')
 
     def select_font(self):
         TextType(self, self.text).exec()
@@ -228,24 +236,22 @@ class InputTextDialog(QDialog):
         self.obj.bold = self.is_bold
         self.obj.italic = self.is_italic
         self.obj.underline = self.is_underline
-        #self.obj.text = self.text.text()
+        self.obj.text = self.text.text()
         self.obj.width_text = self.is_size
-        band = MovePicrute(self.scr_obj)
-        band.label.setText(self.text.text())
-        band.adjustSize()
-        global input_text
-        input_text = self.text.text()
+        self.obj.color_text = self.color_text
         self.close()
 
+
 class MoveText(QWidget):
-    def __init__(self, parent=None, dragable = False):
+    def __init__(self, text, text_width, text_color, bold, italic, underline,
+                 parent=None, dragable=False):
         super(MoveText, self).__init__(parent)
 
         self.draggable = dragable
         self.dragging_threshold = 5
-        self.mousePressPos = None
-        self.mouseMovePos = None
-        self.borderRadius = 0
+        self.mouse_press_pos = None
+        self.mouse_move_pos = None
+        self.border_radius = 0
         self.setWindowFlags(Qt.SubWindow)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -255,14 +261,19 @@ class MoveText(QWidget):
         layout.addWidget(
             QSizeGrip(self), 0,
             Qt.AlignRight | Qt.AlignBottom)
-        self.input_obj = InputTextDialog(self)
+
+        myFont = QFont()
+        myFont.setBold(bold)
+        myFont.setItalic(italic)
+        myFont.setUnderline(underline)
+        myFont.setPointSize(text_width)
+
         self.label = QLabel(self)
-
-        self.label.setText(input_text)
-
+        self.label.setText(text)
+        self.label.setFont(myFont)
+        self.label.setStyleSheet(f'color: rgba{text_color}')
         self.label.adjustSize()
 
-        self.label.adjustSize()
         self._band = QRubberBand(
             QRubberBand.Rectangle, self)
 
@@ -274,38 +285,36 @@ class MoveText(QWidget):
         self._band.resize(self.size())
 
     def paintEvent(self, event):
-        # Get current window size
-        window_size = self.size()
         qp = QPainter()
         qp.begin(self)
         qp.setRenderHint(QPainter.Antialiasing, True)
         qp.drawRoundedRect(0, 0, self.label.width(), self.label.height(),
-                           self.borderRadius, self.borderRadius)
+                           self.border_radius, self.border_radius)
         qp.end()
 
     def mousePressEvent(self, event):
-        if self.draggable and event.button() == Qt.RightButton:
-            self.mousePressPos = event.globalPos()                # global
-            self.mouseMovePos = event.globalPos() - self.pos()    # local
+        if self.draggable and event.button() == Qt.LeftButton:
+            self.mouse_press_pos = event.globalPos()  # global
+            self.mouse_move_pos = event.globalPos() - self.pos()  # local
         super(MoveText, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        if self.draggable and event.buttons() & Qt.RightButton:
-            globalPos = event.globalPos()
-            moved = globalPos - self.mousePressPos
+        if self.draggable and event.buttons() & Qt.LeftButton:
+            global_pos = event.globalPos()
+            moved = global_pos - self.mouse_press_pos
             if moved.manhattanLength() > self.dragging_threshold:
                 # Move when user drag window more than dragging_threshold
-                diff = globalPos - self.mouseMovePos
+                diff = global_pos - self.mouse_move_pos
                 self.move(diff)
-                self.mouseMovePos = globalPos - self.pos()
+                self.mouse_move_pos = global_pos - self.pos()
         super(MoveText, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
-        if self.mousePressPos is not None:
+        if self.mouse_press_pos is not None:
             if event.button() == Qt.RightButton:
-                moved = event.globalPos() - self.mousePressPos
+                moved = event.globalPos() - self.mouse_press_pos
                 if moved.manhattanLength() > self.dragging_threshold:
                     # Do not call click event or so on
                     event.ignore()
-                self.mousePressPos = None
+                self.mouse_press_pos = None
         super(MoveText, self).mouseReleaseEvent(event)

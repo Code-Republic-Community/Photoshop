@@ -7,7 +7,6 @@ from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QColor, QIcon, QTextCharFo
 from PyQt5.QtWidgets import QWidget, QColorDialog, QInputDialog, QUndoStack, QApplication
 import numpy as np
 import cv2 as cv
-from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PIL import Image, ImageFilter
 from source.edit import UndoCommand
@@ -26,6 +25,7 @@ class ScribbleArea(QWidget):
         self.update()
         self.last_point = QPoint()
         self.check = False
+        self.draw = False
         self.color_pen = (0, 0, 0, 255)
         self.color_text = (0, 0, 0, 255)
         self.width_pen = 3
@@ -33,22 +33,23 @@ class ScribbleArea(QWidget):
         self.bold = False
         self.italic = False
         self.underline = False
-        self.text = None
+        self.text = ''
         self.undo_stack = QUndoStack(self)
         self.undo_stack.setUndoLimit(20)
         self.begin = QPoint()
         self.end = QPoint()
         self.shape = QRect()
-        self.image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
-        self.image = QImage(QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32))
+        self.shape_draw = QRect()
+        self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+        self.image = QImage(self.size(), QImage.Format_ARGB32)
         self.image.fill(qRgb(255, 255, 255))
         self.update()
         self.brush_size = 2
         self.clear_size = 20
-        self.brush_color = QtGui.QColor(QtCore.Qt.black)
+        self.brush_color = QColor(Qt.black)
         self.open = False
 
-    def current_window_size(self):
+    def currentWindowSize(self):
         return self.width(), self.height()
 
     def openImage(self, img):
@@ -70,7 +71,7 @@ class ScribbleArea(QWidget):
 
     def resizeEvent(self, event):
         if self.open:
-            img = cv.resize(self.QimageToCv(self.image), self.current_window_size())
+            img = cv.resize(self.QimageToCv(self.image), self.currentWindowSize())
             self.image = self.CvToQimage(img)
         else:
             pixmap = QPixmap()
@@ -90,7 +91,7 @@ class ScribbleArea(QWidget):
 
         super(ScribbleArea, self).resizeEvent(event)
 
-    def resize_image_draw(self, image, width=None, height=None):
+    def resizeImageDraw(self, image, width=None, height=None):
         if (width and height) == None:
             width = self.width()
             height = self.height()
@@ -121,16 +122,17 @@ class ScribbleArea(QWidget):
         dirty_rect = event.rect()
         painter.drawImage(dirty_rect, self.CvToQimage(self.image), dirty_rect)
         painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-        painter.drawText(150, 250, self.text)
+        #painter.drawText(150, 250, self.text)
         self.update()
         if self.pressed_button == "paint":
+            self.draw = True
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-            painter.drawText(150, 250, self.text)
+            #painter.drawText(150, 250, self.text)
 
         if self.pressed_button == "marquee":
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-            painter.drawText(150, 250, self.text)
+            #painter.drawText(150, 250, self.text)
             if not self.begin.isNull() and not self.end.isNull():
                 self.shape = QRect(self.begin, self.end)
                 # self.coords = self.shape.getCoords()
@@ -162,16 +164,20 @@ class ScribbleArea(QWidget):
 
             self.update()
             self.check = True
+
         if self.pressed_button == "marquee":
             self.end = event.pos()
             self.update()
             super().mouseMoveEvent(event)
 
         if self.pressed_button == "eraser":
-            painter = QtGui.QPainter(self.image_draw)
-            painter.setPen(QtGui.QPen(self.brush_color, self.brush_size,
-                                      QtCore.Qt.SolidLine, QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
-            r = QtCore.QRect(QtCore.QPoint(), self.clear_size * QtCore.QSize())
+            if self.draw:
+                painter = QPainter(self.image_draw)
+            else:
+                painter = QPainter(self.image)
+            # painter.setPen(QtGui.QPen(self.brush_color, self.brush_size,
+            #                           Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+            r = QRect(QPoint(), self.clear_size * QSize())
             r.moveCenter(event.pos())
             painter.save()
             painter.setCompositionMode(QPainter.CompositionMode_Clear)
@@ -179,10 +185,6 @@ class ScribbleArea(QWidget):
             painter.restore()
             painter.end()
             self.last_point = event.pos()
-            self.update()
-
-            self.last_point = event.pos()
-            self.update()
             self.update()
             self.check = True
 
