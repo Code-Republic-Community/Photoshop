@@ -67,7 +67,7 @@ class Buttons(QMainWindow):
                     shape = builder.insert_image(self.filename)
                     save_options = aw.saving.ImageSaveOptions(aw.SaveFormat.SVG)
                     shape.get_shape_renderer().save(f'{self.filename[:point_index + 1]}{self.image_type}', save_options)
-                    obj.all_button_white()
+                    obj.allButtonWhite()
                     return
 
             elif self.image_type in ('png', 'bmp', 'jpeg', 'jpg'):
@@ -76,14 +76,14 @@ class Buttons(QMainWindow):
                     builder = aw.DocumentBuilder(doc)
                     shape = builder.insert_image(self.filename)
                     shape.image_data.save(f'{self.filename[:-3]}{self.image_type}')
-                    obj.all_button_white()
+                    obj.allButtonWhite()
                     return
 
                 if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
                     Image.open(self.filename).convert('RGB'). \
                         save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
-        obj.all_button_white()
+        obj.allButtonWhite()
 
 
 class ImgTypeComboBox(QDialog):
@@ -179,10 +179,14 @@ class TextType(QDialog):
 
 
 class InputTextDialog(QDialog):
-    def __init__(self, obj):
-        self.color_text = (0, 0, 0, 255)
-        self.obj = obj
+    def __init__(self, obj_scribble_area):
         super().__init__()
+        self.setWindowTitle("Input size")
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.setFixedSize(600, 500)
+
+        self.color_text = (0, 0, 0, 255)
+        self.obj = obj_scribble_area
         from scribble_area import ScribbleArea
         self.scr_obj = ScribbleArea()
 
@@ -191,16 +195,15 @@ class InputTextDialog(QDialog):
         self.is_underline = False
         self.is_size = 15
 
-        self.setWindowTitle("Input size")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.setFixedSize(600, 500)
-
         self.text = QLineEdit(self)
+        #self.text.setFocus(Qt.MouseFocusReason)
         font = self.text.font()
         font.setPointSize(15)
         self.text.setFixedSize(580, 400)
         self.text.setFont(font)
+
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
         btn_select_color.resize(100, 40)
@@ -209,13 +212,13 @@ class InputTextDialog(QDialog):
         btn_select_color.setStyleSheet("border-radius:5; border:1px solid black;")
         btn_select_color.clicked.connect(self.select_color)
 
-        btn_select_Type = QPushButton(self)
-        btn_select_Type.setText("Select Font")
-        btn_select_Type.resize(100, 40)
-        btn_select_Type.move(150, 445)
-        btn_select_Type.setFont(QFont("Arial", 12))
-        btn_select_Type.setStyleSheet("border-radius:5; border:1px solid black;")
-        btn_select_Type.clicked.connect(self.select_font)
+        btn_select_type = QPushButton(self)
+        btn_select_type.setText("Select Font")
+        btn_select_type.resize(100, 40)
+        btn_select_type.move(150, 445)
+        btn_select_type.setFont(QFont("Arial", 12))
+        btn_select_type.setStyleSheet("border-radius:5; border:1px solid black;")
+        btn_select_type.clicked.connect(self.select_font)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.text)
@@ -233,13 +236,14 @@ class InputTextDialog(QDialog):
         TextType(self, self.text).exec()
 
     def accept(self):
-        self.obj.bold = self.is_bold
-        self.obj.italic = self.is_italic
-        self.obj.underline = self.is_underline
-        self.obj.text = self.text.text()
-        self.obj.width_text = self.is_size
-        self.obj.color_text = self.color_text
-        self.close()
+        if self.text.text():
+            self.obj.bold = self.is_bold
+            self.obj.italic = self.is_italic
+            self.obj.underline = self.is_underline
+            self.obj.text = self.text.text()
+            self.obj.width_text = self.is_size
+            self.obj.color_text = self.color_text
+            self.close()
 
 
 class MoveText(QWidget):
@@ -262,15 +266,15 @@ class MoveText(QWidget):
             QSizeGrip(self), 0,
             Qt.AlignRight | Qt.AlignBottom)
 
-        myFont = QFont()
-        myFont.setBold(bold)
-        myFont.setItalic(italic)
-        myFont.setUnderline(underline)
-        myFont.setPointSize(text_width)
+        my_font = QFont()
+        my_font.setBold(bold)
+        my_font.setItalic(italic)
+        my_font.setUnderline(underline)
+        my_font.setPointSize(text_width)
 
         self.label = QLabel(self)
         self.label.setText(text)
-        self.label.setFont(myFont)
+        self.label.setFont(my_font)
         self.label.setStyleSheet(f'color: rgba{text_color}')
         self.label.adjustSize()
 
@@ -281,16 +285,16 @@ class MoveText(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.show()
 
-    def resizeEvent(self, event):
-        self._band.resize(self.size())
-
-    def paintEvent(self, event):
-        qp = QPainter()
-        qp.begin(self)
-        qp.setRenderHint(QPainter.Antialiasing, True)
-        qp.drawRoundedRect(0, 0, self.label.width(), self.label.height(),
-                           self.border_radius, self.border_radius)
-        qp.end()
+    # def resizeEvent(self, event):
+    #     self._band.resize(self.size())
+    #
+    # def paintEvent(self, event):
+    #     qp = QPainter()
+    #     qp.begin(self)
+    #     qp.setRenderHint(QPainter.Antialiasing, True)
+    #     qp.drawRoundedRect(0, 0, self.label.width(), self.label.height(),
+    #                        self.border_radius, self.border_radius)
+    #     qp.end()
 
     def mousePressEvent(self, event):
         if self.draggable and event.button() == Qt.LeftButton:

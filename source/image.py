@@ -30,7 +30,7 @@ class InputDialogCanvasSize(QDialog):
         if len(self.width.text()) != 0 and len(self.height.text()):
             width = int(self.width.text())
             height = int(self.height.text())
-            self.obj.set_window_size(width, height)
+            self.obj.setWindowSize(width, height)
             self.close()
 
 

@@ -149,9 +149,7 @@ class MovePicrute(QtWidgets.QWidget):
         super(MovePicrute, self).mouseReleaseEvent(event)
 
         self.x_pos = self.pos()
-        print(self.x_pos)
         self.y_pos = self.geometry()
-        print(self.y_pos, type(self.y_pos))
         painter = QPainter(self.parent.image_draw)
         global cropped
         painter.drawImage(self.y_pos, cropped)
