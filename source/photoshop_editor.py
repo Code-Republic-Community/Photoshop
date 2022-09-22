@@ -21,7 +21,7 @@ from help import Help, Documentation
 import numpy as np
 import cv2 as cv
 from source.buttons import MoveText
-
+is_clicked = False
 gl_draggable = False
 
 
@@ -37,19 +37,22 @@ class PhotoshopEditor(QMainWindow):
         self.screen_width = 0
         self.screen_height = 0
         self.band = []
+        self.button_clicked = [False, False, False, False, False, False, False, False, False]
 
     def setupUi(self, main_window):
-        screen = app.primaryScreen()
+
+        screen = QApplication.primaryScreen()
         rect = screen.availableGeometry()
         self.screen_width = rect.width()
         self.screen_height = rect.height()
         self.main_window = main_window
         main_window.setObjectName("MainWindow")
-        main_window.setWindowTitle("Photoshop Editor")
-        main_window.setGeometry((self.screen_width - 826)//2, (self.screen_height - 561)//2, 900, 600)
+        main_window.setWindowTitle("Photoshop Clone")
+        main_window.setGeometry((self.screen_width - 826) // 2, (self.screen_height - 561) // 2, 900, 600)
         main_window.setMinimumSize(QtCore.QSize(600, 400))
         main_window.setMaximumSize(self.screen_width, self.screen_height)
         main_window.setWindowIcon(QIcon('../content/photoshop.png'))
+        # main_window.setStyleSheet("background-color: #222; color: #FFF")
 
         self.central_widget = QWidget(main_window)
         self.central_widget.setObjectName("centralwidget")
@@ -194,7 +197,7 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setSizePolicy(size_policy)
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
-            self.button_list[i].clicked.connect(value)
+            self.button_list[i].clicked.connect(value,self.button_clicked[i])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.vertical_layout.addWidget(self.button_list[i])
@@ -204,24 +207,24 @@ class PhotoshopEditor(QMainWindow):
 
         pen_menu = QMenu()
         pen_menu.addAction('Paint', self.paint)
-        pen_menu.addAction('Color', functools.partial(self.scribble_area.penColor, self, self, ))
+        pen_menu.addAction('Color', functools.partial(self.scribble_area.penColor, self, self))
         pen_menu.addAction('Width', functools.partial(self.scribble_area.toolWidth, self, self, 'pen'))
         self.button_list[0].setMenu(pen_menu)
 
         rubber_menu = QMenu()
-        rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
-        rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
+        rubber_menu.addAction('Rubber', self.eraser)
         rubber_menu.addAction('Width', functools.partial(self.scribble_area.toolWidth, self, self, 'rubber'))
         self.button_list[6].setMenu(rubber_menu)
-
-    def mousePressEvent(self, event):
-        print("clicked")
 
     def allButtonWhite(self):
         for i in range(9):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
+        global is_clicked
+
+        is_clicked = False
+        print(is_clicked)
         self.scribble_area.pressed_button = 'paint'
         self.allButtonWhite()
         self.button_list[0].setStyleSheet('background-color: red;')
@@ -234,9 +237,13 @@ class PhotoshopEditor(QMainWindow):
         mask = pixmap.createMaskFromColor(Qt.red)
         pixmap.setMask(mask)
         cursor = QCursor(pixmap)
-        app.setOverrideCursor(cursor)
+        # app.setOverrideCursor(cursor)
 
     def moveText(self):
+        global is_clicked
+
+        is_clicked = True
+        print(is_clicked)
         # cursor = QCursor().bitmap()
         # app.setOverrideCursor(cursor)
         self.scribble_area.pressed_button = 'move'
@@ -246,6 +253,9 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = True
 
     def marquee(self):
+        global is_clicked
+
+        is_clicked = False
         self.scribble_area.pressed_button = 'marquee'
         self.allButtonWhite()
         self.button_list[2].setStyleSheet('background-color: red;')
@@ -253,6 +263,10 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def lasso(self):
+        global is_clicked
+
+        is_clicked = False
+
         self.scribble_area.pressed_button = 'lasso'
         self.allButtonWhite()
         self.button_list[3].setStyleSheet('background-color: red;')
@@ -260,6 +274,10 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def crop(self):
+        global is_clicked
+
+        is_clicked = False
+
         self.scribble_area.pressed_button = 'crop'
         self.allButtonWhite()
         self.button_list[4].setStyleSheet('background-color: red;')
@@ -268,6 +286,10 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def eyedropper(self):
+        global is_clicked
+
+        is_clicked = False
+
         self.scribble_area.pressed_button = 'eyedropper'
         self.allButtonWhite()
         self.button_list[5].setStyleSheet('background-color: red;')
@@ -275,12 +297,12 @@ class PhotoshopEditor(QMainWindow):
         for i in self.band:
             i.draggable = False
 
-    def eraser(self, type):
-        if type == 'transparent':
-            self.scribble_area.pressed_button = 'transparent'
-        elif type == 'all image':
-            self.scribble_area.pressed_button = 'all image'
+    def eraser(self):
+        global is_clicked
 
+        is_clicked = False
+
+        self.scribble_area.pressed_button = 'eraser'
         self.allButtonWhite()
         self.button_list[6].setStyleSheet('background-color: red;')
         for i in self.band:
@@ -293,9 +315,14 @@ class PhotoshopEditor(QMainWindow):
         mask = pixmap.createMaskFromColor(Qt.red)
         pixmap.setMask(mask)
         cursor = QCursor(pixmap)
-        app.setOverrideCursor(cursor)
+        # app.setOverrideCursor(cursor)
 
     def type(self):
+
+        global is_clicked
+
+        is_clicked = False
+
         self.scribble_area.pressed_button = 'type'
         self.allButtonWhite()
         self.button_list[7].setStyleSheet('background-color: red;')
@@ -303,10 +330,13 @@ class PhotoshopEditor(QMainWindow):
         obj = MoveText(self.scribble_area.text,
                        self.scribble_area.width_text, self.scribble_area.color_text,
                        self.scribble_area.bold, self.scribble_area.italic,
-                       self.scribble_area.underline, self.scribble_area, dragable=False)
+                       self.scribble_area.underline, self.scribble_area, self, dragable=False)
         self.band.append(obj)
 
     def imageConverter(self):
+        global is_clicked
+        is_clicked = False
+
         self.scribble_area.pressed_button = 'image_converter'
         self.allButtonWhite()
         self.button_list[8].setStyleSheet('background-color: red;')
@@ -315,12 +345,16 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def help(self, obj1, obj2):
+        global is_clicked
+        is_clicked = False
         self.window = QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
         self.window.show()
 
     def documentation(self, obj1, obj2):
+        global is_clicked
+        is_clicked =False
         self.window = QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
@@ -341,17 +375,7 @@ class PhotoshopEditor(QMainWindow):
 
         if bigger:
             self.main_window.setGeometry((self.screen_width - width) // 2,
-                                        (self.screen_height - height + 27) // 2, width, height)
+                                         (self.screen_height - height + 27) // 2, width, height)
         else:
             self.main_window.setGeometry((self.screen_width - width) // 2,
-                                        (self.screen_height - height) // 2, width, height)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    frame = QMainWindow()
-    ui = PhotoshopEditor()
-    ui.setupUi(frame)
-    frame.show()
-    sys.exit(app.exec_())
+                                         (self.screen_height - height) // 2, width, height)

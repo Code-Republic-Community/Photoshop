@@ -9,7 +9,7 @@ import numpy as np
 import sys
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-import aspose.words as aw
+#import aspose.words as aw
 from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
@@ -248,7 +248,7 @@ class InputTextDialog(QDialog):
 
 class MoveText(QWidget):
     def __init__(self, text, text_width, text_color, bold, italic, underline,
-                 parent=None, dragable=False):
+                 parent, phj_obj,dragable=False):
         super(MoveText, self).__init__(parent)
 
         self.draggable = dragable
@@ -283,6 +283,7 @@ class MoveText(QWidget):
 
         self.setGeometry(150, 150, 300, 50)
         self.setAttribute(Qt.WA_TranslucentBackground)
+
         self.show()
 
     # def resizeEvent(self, event):

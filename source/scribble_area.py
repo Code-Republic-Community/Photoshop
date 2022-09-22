@@ -170,29 +170,26 @@ class ScribbleArea(QWidget):
             self.update()
             super().mouseMoveEvent(event)
 
-        if self.pressed_button == 'transparent':
-            painter = QPainter(self.image_draw)
-            r = QRect(QPoint(), self.rubber_width * QSize())
-            r.moveCenter(event.pos())
-            painter.save()
-            painter.setCompositionMode(QPainter.CompositionMode_Clear)
-            painter.eraseRect(r)
-            painter.restore()
-            painter.end()
-            self.last_point = event.pos()
-            self.update()
-            self.check = True
-
-        elif self.pressed_button == 'all image':
-            painters = [QPainter(self.image), QPainter(self.image_draw)]
-            for painter in painters:
+        if self.pressed_button == "eraser":
+            if self.draw:
+                painter = QPainter(self.image_draw)
+                r = QRect(QPoint(), self.rubber_width * QSize())
+                r.moveCenter(event.pos())
+                painter.save()
+                painter.setCompositionMode(QPainter.CompositionMode_Clear)
+                painter.eraseRect(r)
+                painter.restore()
+                painter.end()
+                self.last_point = event.pos()
+                self.update()
+                self.check = True
+            else:
+                painter = QPainter(self.image)
                 painter.setPen(QPen(QColor(255, 255, 255, 255), self.rubber_width, Qt.SolidLine))
                 painter.setBrush(QColor(40, 50, 20, 240))
                 painter.drawLine(self.last_point, event.pos())
-
-
-            self.last_point = event.pos()
-            self.update()
+                self.last_point = event.pos()
+                self.update()
 
     def mouseReleaseEvent(self, event):
         pass
@@ -211,7 +208,7 @@ class ScribbleArea(QWidget):
         elif tool == 'rubber':
             num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
             self.rubber_width = num
-            #obj_photoshop_editor.eraser()
+            obj_photoshop_editor.eraser()
 
     def makeUndoCommand(self):
         self.undo_stack.push(UndoCommand(self))
