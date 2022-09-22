@@ -76,16 +76,18 @@ class InputDialogImageSize(QDialog):
 class Image():
     def __init__(self):
         super(Image, self).__init__()
-        from photoshop_editor import PhotoshopEditor
-        self.photoshop = PhotoshopEditor()
 
     def image_size(self, obj):
+        obj.is_clicked_move = False
         InputDialogImageSize(obj).exec()
 
     def canvas_size(self, obj):
+        obj.is_clicked_move = False
         InputDialogCanvasSize(obj).exec()
 
     def rotate_left(self, obj):
+        obj.is_clicked_move = False
+
         transform90 = QTransform()
         transform90.rotate(-90)
 
@@ -102,6 +104,8 @@ class Image():
 
 
     def rotate_right(self, obj):
+        obj.is_clicked_move = False
+
         transform90 = QTransform()
         transform90.rotate(90)
 

@@ -1,17 +1,18 @@
-
+import sys
 from PyQt5.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                           QRect, QSize, QUrl, Qt)
 from PyQt5.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
                          QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
                          QRadialGradient)
 from PyQt5.QtWidgets import *
-
+app = QApplication(sys.argv)
 
 class LoadScreen(object):
     def setupUi(self, SplashScreen):
         if SplashScreen.objectName():
             SplashScreen.setObjectName(u"SplashScreen")
         SplashScreen.resize(680, 400)
+        SplashScreen.setWindowIcon(QIcon('../content/photoshop.png'))
         self.centralwidget = QWidget(SplashScreen)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -90,7 +91,7 @@ class LoadScreen(object):
 
 
     def retranslateUi(self, SplashScreen):
-        SplashScreen.setWindowTitle(QCoreApplication.translate("SplashScreen", u"MainWindow", None))
+        SplashScreen.setWindowTitle(QCoreApplication.translate("SplashScreen", u"Photoshop Editor", None))
         self.label_title.setText(QCoreApplication.translate("SplashScreen", u"<strong>Photoshop</strong> Clone", None))
         self.label_description.setText(
             QCoreApplication.translate("SplashScreen", u"<strong>Photo Editing</strong> Application", None))
@@ -99,9 +100,7 @@ class LoadScreen(object):
             QCoreApplication.translate("SplashScreen", u"<strong>Created</strong>: M.Davitavyan & G. Nersisyan", None))
 
 if __name__ == "__main__":
-    import sys
     app = QApplication(sys.argv)
-
     frame = QMainWindow()
     ui = LoadScreen()
     ui.setupUi(frame)

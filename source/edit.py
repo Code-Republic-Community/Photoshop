@@ -1,7 +1,5 @@
-from turtle import delay
-
 from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QImage, QColor, QPainter, qRgb, QIcon
+from PyQt5.QtGui import QImage, QColor, QPainter, qRgb, QIcon, QPen, QFont
 from PyQt5.QtWidgets import QUndoCommand, QWidget, QDialog, QDialogButtonBox, QVBoxLayout, QLabel, QHBoxLayout
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -15,23 +13,20 @@ class Edit():
         super(MovePicrute).__init__()
 
     def undo(self, obj):
-        from photoshop_editor import is_clicked
-        is_clicked = False
+        obj.is_clicked_move = False
         undo = UndoCommand(obj.scribble_area)
         undo.undo()
         obj.scribble_area.undo_stack.undo()
         obj.scribble_area.update()
 
     def redo(self, obj):
-        from photoshop_editor import is_clicked
-        is_clicked = False
+        obj.is_clicked_move = False
         obj.scribble_area.undo_stack.redo()
         redo = UndoCommand(obj.scribble_area)
         redo.redo()
 
     def cut(self, obj):
-        from photoshop_editor import is_clicked
-        is_clicked = False
+        obj.is_clicked_move = False
         image = QImage(100, 100, QImage.Format_RGB32)
         image.fill(qRgb(255, 255, 255))
 
@@ -44,20 +39,17 @@ class Edit():
         obj.scribble_area.update()
 
     def copy(self, obj):
-        from photoshop_editor import is_clicked
-        is_clicked = False
+        obj.is_clicked_move = False
         global cropped
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
 
     def paste(self, obj):
-        from photoshop_editor import is_clicked
-        is_clicked = False
+        obj.is_clicked_move = False
         obj.moveText()
-        band = MovePicrute(obj.scribble_area)
+        band = MovePicrute(obj, obj.scribble_area)
         band.adjustSize()
 
     def clear_screen(self, obj):
-
         width, height = obj.scribble_area.currentWindowSize()
         obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
@@ -70,7 +62,7 @@ class Edit():
         obj.scribble_area.update()
 
     def keyboard_shortcuts(self, obj):
-        obj.is_clicked = False
+        obj.is_clicked_move = False
         KeyShortcut().exec()
 
 
@@ -92,8 +84,9 @@ class UndoCommand(QUndoCommand):
 
 
 class MovePicrute(QtWidgets.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, photoshop_obj, parent=None):
         super(MovePicrute, self).__init__(parent)
+        self.photoshop_obj = photoshop_obj
         self.draggable = True
         self.dragging_threshold = 5
         self.mouse_press_pos = None
@@ -126,14 +119,14 @@ class MovePicrute(QtWidgets.QWidget):
 
     def paintEvent(self, event):
         window_size = self.size()
-        qp = QPainter()
-        qp.begin(self)
-        qp.setRenderHint(QPainter.Antialiasing, True)
-        qp.drawRoundedRect(0, 0, window_size.width(), window_size.height(),
+        painter = QPainter()
+        painter.begin(self)
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.drawRoundedRect(0, 0, window_size.width(), window_size.height(),
                            self.borderRadius, self.borderRadius)
-        qp.end()
-        from photoshop_editor import is_clicked
-        if not is_clicked:
+        painter.end()
+
+        if not self.photoshop_obj.is_clicked_move:
             self.x_pos = self.pos()
             self.y_pos = self.geometry()
             painter = QPainter(self.parent.image_draw)
