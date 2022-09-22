@@ -30,7 +30,7 @@ class InputDialogCanvasSize(QDialog):
         if len(self.width.text()) != 0 and len(self.height.text()):
             width = int(self.width.text())
             height = int(self.height.text())
-            self.obj.set_window_size(width, height)
+            self.obj.setWindowSize(width, height)
             self.close()
 
 
@@ -76,41 +76,45 @@ class InputDialogImageSize(QDialog):
 class Image():
     def __init__(self):
         super(Image, self).__init__()
-        from photoshop_editor import PhotoshopEditor
-        self.photoshop = PhotoshopEditor()
 
     def image_size(self, obj):
+        obj.is_clicked_move = False
         InputDialogImageSize(obj).exec()
 
     def canvas_size(self, obj):
+        obj.is_clicked_move = False
         InputDialogCanvasSize(obj).exec()
 
     def rotate_left(self, obj):
+        obj.is_clicked_move = False
+
         transform90 = QTransform()
         transform90.rotate(-90)
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.current_window_size())
+        image = cv.resize(image, obj.scribble_area.currentWindowSize())
         obj.scribble_area.openImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resize_image_draw(image_draw)
+        obj.scribble_area.resizeImageDraw(image_draw)
         #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
 
         obj.scribble_area.update()
 
 
     def rotate_right(self, obj):
+        obj.is_clicked_move = False
+
         transform90 = QTransform()
         transform90.rotate(90)
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.current_window_size())
+        image = cv.resize(image, obj.scribble_area.currentWindowSize())
         obj.scribble_area.openImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resize_image_draw(image_draw)
+        obj.scribble_area.resizeImageDraw(image_draw)
 
         obj.scribble_area.update()

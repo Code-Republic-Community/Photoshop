@@ -18,6 +18,7 @@ class Filter():
         super().__init__()
 
     def blur(self, obj):
+        obj.is_clicked_move = False
         img = obj.scribble_area.image
         buffer = QBuffer()
         buffer.open(QBuffer.ReadWrite)
@@ -48,6 +49,7 @@ class Filter():
         obj.scribble_area.update()
 
     def noise(self, obj):
+        obj.is_clicked_move = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
 
         row, col, ch = img.shape
@@ -61,6 +63,7 @@ class Filter():
         obj.scribble_area.update()
 
     def twirling_spirals(self, obj):
+        obj.is_clicked_move = False
         im = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         cx = im.shape[1] / 2
         cy = im.shape[0] / 2
@@ -88,6 +91,7 @@ class Filter():
         obj.scribble_area.update()
 
     def pixelate(self, obj):
+        obj.is_clicked_move = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         height, width = img.shape[:2]
         w, h = (16, 16)
