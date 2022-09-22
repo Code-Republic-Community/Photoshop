@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QTransform, QIcon, QIntValidator
 from PyQt5.QtWidgets import QLineEdit, QDialogButtonBox, QFormLayout, QDialog
 import cv2 as cv
@@ -29,7 +30,7 @@ class InputDialogCanvasSize(QDialog):
         if len(self.width.text()) != 0 and len(self.height.text()):
             width = int(self.width.text())
             height = int(self.height.text())
-            self.obj.set_window_size(width, height)
+            self.obj.setWindowSize(width, height)
             self.close()
 
 
@@ -66,7 +67,7 @@ class InputDialogImageSize(QDialog):
             self.obj.scribble_area.openImage(image)
             self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
 
-            self.obj.scribble_area.resize_image_draw(self.obj.scribble_area.image_draw, width, height)
+            self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw, width, height)
 
             self.obj.scribble_area.update()
             self.close()
@@ -90,12 +91,12 @@ class Image():
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.current_window_size())
+        image = cv.resize(image, obj.scribble_area.currentWindowSize())
         obj.scribble_area.openImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resize_image_draw(image_draw)
-        self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
+        obj.scribble_area.resizeImageDraw(image_draw)
+        #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
 
         obj.scribble_area.update()
 
@@ -106,10 +107,10 @@ class Image():
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.current_window_size())
+        image = cv.resize(image, obj.scribble_area.currentWindowSize())
         obj.scribble_area.openImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resize_image_draw(image_draw)
+        obj.scribble_area.resizeImageDraw(image_draw)
 
         obj.scribble_area.update()

@@ -18,6 +18,8 @@ class Filter():
         super().__init__()
 
     def blur(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         img = obj.scribble_area.image
         buffer = QBuffer()
         buffer.open(QBuffer.ReadWrite)
@@ -31,9 +33,25 @@ class Filter():
         qimg.loadFromData(bytes_img.getvalue())
 
         obj.scribble_area.image = qimg
+
+        img_draw = obj.scribble_area.image_draw
+        buffer_draw = QBuffer()
+        buffer_draw.open(QBuffer.ReadWrite)
+        img_draw.save(buffer_draw, "PNG")
+        pil_im_draw = Image.open(io.BytesIO(buffer_draw.data())).filter(ImageFilter.BLUR)
+
+        bytes_img_draw = io.BytesIO()
+        pil_im_draw.save(bytes_img_draw, format='PNG')
+
+        qimg_draw = QImage()
+        qimg_draw.loadFromData(bytes_img_draw.getvalue())
+
+        obj.scribble_area.image_draw = qimg_draw
         obj.scribble_area.update()
 
     def noise(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
 
         row, col, ch = img.shape
@@ -43,9 +61,12 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(speckle_noisy)
         obj.scribble_area.image = qimg
+
         obj.scribble_area.update()
 
     def twirling_spirals(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         im = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         cx = im.shape[1] / 2
         cy = im.shape[0] / 2
@@ -69,8 +90,12 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(spiral)
         obj.scribble_area.image = qimg
+
         obj.scribble_area.update()
+
     def pixelate(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         height, width = img.shape[:2]
         w, h = (16, 16)

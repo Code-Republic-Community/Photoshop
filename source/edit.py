@@ -7,7 +7,6 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QRect
-
 cropped = QImage()
 
 
@@ -16,44 +15,62 @@ class Edit():
         super(MovePicrute).__init__()
 
     def undo(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         undo = UndoCommand(obj.scribble_area)
         undo.undo()
         obj.scribble_area.undo_stack.undo()
         obj.scribble_area.update()
 
     def redo(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         obj.scribble_area.undo_stack.redo()
         redo = UndoCommand(obj.scribble_area)
         redo.redo()
 
     def cut(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
+        image = QImage(100, 100, QImage.Format_RGB32)
+        image.fill(qRgb(255, 255, 255))
+
         painter = QPainter(obj.scribble_area.image)
-        image2 = QImage(100, 100, QImage.Format_RGB32)
-        image2.fill(qRgb(255, 255, 255))
-        painter.drawImage(obj.scribble_area.shape, image2)
+        painter.drawImage(obj.scribble_area.shape, image)
+
+        painter_draw = QPainter(obj.scribble_area.image_draw)
+        painter_draw.drawImage(obj.scribble_area.shape, image)
+
         obj.scribble_area.update()
 
     def copy(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         global cropped
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
 
     def paste(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
+        obj.moveText()
         band = MovePicrute(obj.scribble_area)
         band.adjustSize()
 
-
     def clear_screen(self, obj):
-        obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+
+        width, height = obj.scribble_area.currentWindowSize()
+        obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
 
-        obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+        obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
 
         obj.scribble_area.update()
 
     def keyboard_shortcuts(self, obj):
+        obj.is_clicked = False
         KeyShortcut().exec()
 
 
@@ -115,16 +132,26 @@ class MovePicrute(QtWidgets.QWidget):
         qp.drawRoundedRect(0, 0, window_size.width(), window_size.height(),
                            self.borderRadius, self.borderRadius)
         qp.end()
+        from photoshop_editor import is_clicked
+        if not is_clicked:
+            self.x_pos = self.pos()
+            self.y_pos = self.geometry()
+            painter = QPainter(self.parent.image_draw)
+            global cropped
+            painter.drawImage(self.y_pos, cropped)
+            self.parent.update()
+            self.hide()
 
     def mousePressEvent(self, event):
-        if self.draggable and event.button() == QtCore.Qt.RightButton:
+        if self.draggable and event.button() == QtCore.Qt.LeftButton:
             self.mouse_press_pos = event.globalPos()
             self.mouse_move_pos = event.globalPos() - self.pos()
 
         super(MovePicrute, self).mousePressEvent(event)
 
+
     def mouseMoveEvent(self, event):
-        if self.draggable and event.buttons() & QtCore.Qt.RightButton:
+        if self.draggable and event.buttons() & QtCore.Qt.LeftButton:
             global_pos = event.globalPos()
             self.moved = global_pos - self.mouse_press_pos
             if self.moved.manhattanLength() > self.dragging_threshold:
@@ -135,6 +162,7 @@ class MovePicrute(QtWidgets.QWidget):
         super(MovePicrute, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
+
         if self.mouse_press_pos is not None:
             if event.button() == QtCore.Qt.RightButton:
                 self.moved = event.globalPos() - self.mouse_press_pos
@@ -143,15 +171,7 @@ class MovePicrute(QtWidgets.QWidget):
                 self.mouse_press_pos = None
         super(MovePicrute, self).mouseReleaseEvent(event)
 
-        self.x_pos = self.pos()
-        print(self.x_pos)
-        self.y_pos = self.geometry()
-        print(self.y_pos, type(self.y_pos))
-        painter = QPainter(self.parent.image_draw)
-        global cropped
-        painter.drawImage(self.y_pos, cropped)
-        self.parent.update()
-        self.hide()
+
 
 class KeyShortcut(QDialog):
     def __init__(self):
@@ -196,10 +216,3 @@ class KeyShortcut(QDialog):
         layout.addLayout(layout_shortcuts)
 
         self.setLayout(layout)
-    def accept(self):
-        self.obj.bold = self.is_bold
-        self.obj.italic = self.is_italic
-        self.obj.underline = self.is_underline
-        self.obj.text = self.text.text()
-        self.obj.width_text = self.is_size
-        self.close()

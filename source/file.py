@@ -12,6 +12,9 @@ class File(QMainWindow):
         self.filename = ''
 
     def new(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
+
         if obj.scribble_area.check:
             close = QMessageBox.question(self,
                                          "QUIT",
@@ -25,28 +28,37 @@ class File(QMainWindow):
             else:
                 obj.scribble_area.check = False
 
-            obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+            width, height = obj.scribble_area.currentWindowSize()
+            obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
             newSize = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
             obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(newSize))
 
-            obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
+            obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
             newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
             obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(newSize))
 
             obj.scribble_area.update()
 
+
     def open(self, obj):
+
+
+
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
                                                        "Image files (*.jpg *.png)")
 
         if self.filename != '':
-            img = cv.resize(cv.imread(self.filename), obj.scribble_area.current_window_size())
+            obj.is_clicked = False
+            img = cv.resize(cv.imread(self.filename), obj.scribble_area.currentWindowSize())
             if self.filename:
                 obj.scribble_area.openImage(img)
             self.check = True
             obj.scribble_area.check = True
+        is_clicked = False
 
     def save(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         try:
             if self.filename == '':
                 self.filename = 'C'
@@ -80,6 +92,8 @@ class File(QMainWindow):
             obj.scribble_area.saveImage(self.filename, file_format)
 
     def save_as(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         self.filename = 'C'
         options = QFileDialog.Options()
         filename, _ = QFileDialog.getSaveFileName(self,
@@ -96,6 +110,8 @@ class File(QMainWindow):
             return obj.scribble_area.saveImage(self.filename, file_format)
 
     def print(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         printer = QPrinter(QPrinter.HighResolution)
         printer.setResolution(1200)
         printer.setFullPage(True)
@@ -112,6 +128,8 @@ class File(QMainWindow):
         painter.end()
 
     def close_window(self, obj):
+        from photoshop_editor import is_clicked
+        is_clicked = False
         if not obj.scribble_area.check:
             close1 = QMessageBox.question(self,
                                           "QUIT",
