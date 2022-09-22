@@ -209,9 +209,13 @@ class PhotoshopEditor(QMainWindow):
         self.button_list[0].setMenu(pen_menu)
 
         rubber_menu = QMenu()
-        rubber_menu.addAction('Rubber', self.eraser)
+        rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
+        rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
         rubber_menu.addAction('Width', functools.partial(self.scribble_area.toolWidth, self, self, 'rubber'))
         self.button_list[6].setMenu(rubber_menu)
+
+    def mousePressEvent(self, event):
+        print("clicked")
 
     def allButtonWhite(self):
         for i in range(9):
@@ -271,8 +275,12 @@ class PhotoshopEditor(QMainWindow):
         for i in self.band:
             i.draggable = False
 
-    def eraser(self):
-        self.scribble_area.pressed_button = 'eraser'
+    def eraser(self, type):
+        if type == 'transparent':
+            self.scribble_area.pressed_button = 'transparent'
+        elif type == 'all image':
+            self.scribble_area.pressed_button = 'all image'
+
         self.allButtonWhite()
         self.button_list[6].setStyleSheet('background-color: red;')
         for i in self.band:

@@ -31,7 +31,7 @@ class Buttons(QMainWindow):
         img = obj_scribble.image.pixel(pos_x, pos_y)
         color = QColor(img).getRgb()
         obj_scribble.color_pen = color
-        obj_photoshop.all_button_white()
+        obj_photoshop.allButtonWhite()
         obj_scribble.pressed_button = None
 
     def crop(self, obj):
