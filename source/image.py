@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import QPoint, QSize
 from PyQt5.QtGui import QTransform, QIcon, QIntValidator
 from PyQt5.QtWidgets import QLineEdit, QDialogButtonBox, QFormLayout, QDialog
 import cv2 as cv
@@ -64,7 +64,7 @@ class InputDialogImageSize(QDialog):
             img = self.obj.scribble_area.image
             img = self.obj.scribble_area.QimageToCv(img)
             image = cv.resize(img, (width, height))
-            self.obj.scribble_area.openImage(image)
+            self.obj.scribble_area.resizeImage(image, QSize(width, height))
             self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
 
             self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw, width, height)
@@ -94,15 +94,14 @@ class Image():
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
         image = cv.resize(image, obj.scribble_area.currentWindowSize())
-        obj.scribble_area.openImage(image)
+        width, height = obj.scribble_area.currentWindowSize()
+        obj.scribble_area.resizeImage(image, QSize(width, height))
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)
-        #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
         obj.scribble_area.check = True
 
         obj.scribble_area.update()
-
 
     def rotate_right(self, obj):
         obj.is_clicked_move = False
@@ -113,7 +112,8 @@ class Image():
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
         image = cv.resize(image, obj.scribble_area.currentWindowSize())
-        obj.scribble_area.openImage(image)
+        width, height = obj.scribble_area.currentWindowSize()
+        obj.scribble_area.resizeImage(image, QSize(width, height))
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)

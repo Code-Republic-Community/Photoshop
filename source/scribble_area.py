@@ -59,6 +59,7 @@ class ScribbleArea(QWidget):
     def openImage(self, img):
         self.open = True
         new_size = QSize(img.shape[0], img.shape[1])
+        print(new_size)
         self.resizeImage(img, new_size)
         image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = self.CvToQimage(img)
@@ -111,7 +112,7 @@ class ScribbleArea(QWidget):
         self.image_draw = pixamp2.toImage()
         self.update()
 
-    def saveImage(self, file_name, file_format):
+    def saveImage(self, file_name=None, file_format=None):
         front_image = self.QimageToPil(self.image_draw).convert("RGBA")
         background = self.QimageToPil(self.image).convert("RGBA")
         width = (background.width - front_image.width) // 2
@@ -120,9 +121,10 @@ class ScribbleArea(QWidget):
         visible_image = self.PilToQimage(background)
         self.resizeImage(visible_image, self.size())
 
-        if visible_image.save(file_name, file_format):
-            return True
-        return False
+        if (file_name and file_format) != None:
+            if visible_image.save(file_name, file_format):
+                return True
+            return False
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
