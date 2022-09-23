@@ -99,6 +99,7 @@ class Image():
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)
         #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
+        obj.scribble_area.check = True
 
         obj.scribble_area.update()
 
@@ -116,5 +117,5 @@ class Image():
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)
-
+        obj.scribble_area.check = True
         obj.scribble_area.update()

@@ -64,7 +64,7 @@ class ScribbleArea(QWidget):
         self.image = self.CvToQimage(img)
         image_draw.scaled(new_size)
         self.image_draw = image_draw
-
+        self.check = True
         self.update()
         return True
 
@@ -206,7 +206,7 @@ class ScribbleArea(QWidget):
             painter.end()
             self.last_point = event.pos()
             self.update()
-            self.check = True
+
 
         elif self.pressed_button == 'all image':
             painters = [QPainter(self.image), QPainter(self.image_draw)]
@@ -216,6 +216,7 @@ class ScribbleArea(QWidget):
                 painter.drawLine(self.last_point, event.pos())
             self.last_point = event.pos()
             self.update()
+        self.check = True
 
     def mouseReleaseEvent(self, event):
         pass

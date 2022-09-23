@@ -35,6 +35,7 @@ class Edit():
 
         painter_draw = QPainter(obj.scribble_area.image_draw)
         painter_draw.drawImage(obj.scribble_area.shape, image)
+        obj.scribble_area.check = True
 
         obj.scribble_area.update()
 
@@ -42,18 +43,18 @@ class Edit():
         obj.is_clicked_move = False
         global cropped
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
+        obj.scribble_area.check = True
 
     def paste(self, obj):
         obj.is_clicked_move = False
         obj.moveText()
         band = MovePicrute(obj, obj.scribble_area)
         band.adjustSize()
+        obj.scribble_area.check = True
 
     def clear_screen(self, obj):
 
-        print("yes")
-
-        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
+        obj.scribble_area.image_draw = QImage(1000,1000, QImage.Format_ARGB32)
 
         #obj.scribble_area.image = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
@@ -62,7 +63,7 @@ class Edit():
 
         new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
-
+        obj.scribble_area.check = False
 
         obj.scribble_area.update()
 
