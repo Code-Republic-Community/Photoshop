@@ -12,12 +12,16 @@ from PIL import Image, ImageFilter
 
 from source.edit import UndoCommand
 from source.buttons import Buttons
+from source.buttons import MoveText
 
 
 class ScribbleArea(QWidget):
     def __init__(self):
+        self.x = 0
+        self.y = 0
         super(ScribbleArea, self).__init__()
         self.setAttribute(Qt.WA_StaticContents)
+        self.photoshop_obj = None
         self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = QImage(self.size(), QImage.Format_ARGB32)
         self.image.fill(qRgb(255, 255, 255))
@@ -54,10 +58,13 @@ class ScribbleArea(QWidget):
 
     def openImage(self, img):
         self.open = True
-        # new_size = img.size().expandedTo(self.size())
         new_size = QSize(img.shape[0], img.shape[1])
         self.resizeImage(img, new_size)
+        image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = self.CvToQimage(img)
+        image_draw.scaled(new_size)
+        self.image_draw = image_draw
+
         self.update()
         return True
 
@@ -122,22 +129,38 @@ class ScribbleArea(QWidget):
         dirty_rect = event.rect()
         painter.drawImage(dirty_rect, self.CvToQimage(self.image), dirty_rect)
         painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-        # painter.drawText(150, 250, self.text)
         self.update()
         if self.pressed_button == "paint":
             self.draw = True
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-            # painter.drawText(150, 250, self.text)
 
         if self.pressed_button == "marquee":
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-            # painter.drawText(150, 250, self.text)
             if not self.begin.isNull() and not self.end.isNull():
-                self.shape = QRect(self.begin, self.end)
+                if self.begin.x() < self.end.x():
+                    self.shape = QRect(self.begin, self.end)
+                else:
+                    self.shape = QRect(self.end, self.begin)
                 # self.coords = self.shape.getCoords()
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
+
+        # if not self.photoshop_obj.is_clicked_move:
+        #     painter = QPainter(self.image)
+        #
+        #     pen = QPen(QColor(self.color_text[0], self.color_text[1], self.color_text[2],
+        #                       self.color_text[3]))
+        #     pen.setWidth(10)
+        #     painter.setPen(pen)
+        #
+        #     font = QFont()
+        #     font.setBold(self.bold)
+        #     font.setItalic(self.italic)
+        #     font.setUnderline(self.underline)
+        #     font.setPointSize(self.width_text)
+        #     painter.setFont(font)
+        #     painter.drawText(self.x, self.y, self.text)
 
     def mousePressEvent(self, event):
         self.makeUndoCommand()
@@ -153,6 +176,8 @@ class ScribbleArea(QWidget):
                 super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
+        self.x = event.x()
+        self.y = event.y()
         if self.pressed_button == 'paint':
             painter = QPainter(self.image_draw)
             painter.setPen(QPen(
@@ -170,26 +195,27 @@ class ScribbleArea(QWidget):
             self.update()
             super().mouseMoveEvent(event)
 
-        if self.pressed_button == "eraser":
-            if self.draw:
-                painter = QPainter(self.image_draw)
-                r = QRect(QPoint(), self.rubber_width * QSize())
-                r.moveCenter(event.pos())
-                painter.save()
-                painter.setCompositionMode(QPainter.CompositionMode_Clear)
-                painter.eraseRect(r)
-                painter.restore()
-                painter.end()
-                self.last_point = event.pos()
-                self.update()
-                self.check = True
-            else:
-                painter = QPainter(self.image)
+        if self.pressed_button == "transparent":
+            painter = QPainter(self.image_draw)
+            r = QRect(QPoint(), self.rubber_width * QSize())
+            r.moveCenter(event.pos())
+            painter.save()
+            painter.setCompositionMode(QPainter.CompositionMode_Clear)
+            painter.eraseRect(r)
+            painter.restore()
+            painter.end()
+            self.last_point = event.pos()
+            self.update()
+            self.check = True
+
+        elif self.pressed_button == 'all image':
+            painters = [QPainter(self.image), QPainter(self.image_draw)]
+            for painter in painters:
                 painter.setPen(QPen(QColor(255, 255, 255, 255), self.rubber_width, Qt.SolidLine))
                 painter.setBrush(QColor(40, 50, 20, 240))
                 painter.drawLine(self.last_point, event.pos())
-                self.last_point = event.pos()
-                self.update()
+            self.last_point = event.pos()
+            self.update()
 
     def mouseReleaseEvent(self, event):
         pass
@@ -208,7 +234,7 @@ class ScribbleArea(QWidget):
         elif tool == 'rubber':
             num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
             self.rubber_width = num
-            obj_photoshop_editor.eraser()
+            #obj_photoshop_editor.eraser()
 
     def makeUndoCommand(self):
         self.undo_stack.push(UndoCommand(self))
@@ -244,3 +270,6 @@ class ScribbleArea(QWidget):
         qimg = QImage()
         qimg.loadFromData(bytes_img.getvalue())
         return qimg
+
+    def photoshopObj(self, photoshop_obj):
+        self.photoshop_obj = photoshop_obj

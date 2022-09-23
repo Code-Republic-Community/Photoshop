@@ -21,14 +21,16 @@ from help import Help, Documentation
 import numpy as np
 import cv2 as cv
 from source.buttons import MoveText
-is_clicked = False
-gl_draggable = False
+from load_screen import app
 
 
 class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
+        self.is_clicked_move = False
+        self.is_clicked_text = False
         self.scribble_area = ScribbleArea()
+        self.scribble_area.photoshopObj(self)
         self.buttons_obj = Buttons()
         self.pressed_button = None
         self.main_window: QMainWindow = None
@@ -212,7 +214,8 @@ class PhotoshopEditor(QMainWindow):
         self.button_list[0].setMenu(pen_menu)
 
         rubber_menu = QMenu()
-        rubber_menu.addAction('Rubber', self.eraser)
+        rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
+        rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
         rubber_menu.addAction('Width', functools.partial(self.scribble_area.toolWidth, self, self, 'rubber'))
         self.button_list[6].setMenu(rubber_menu)
 
@@ -221,10 +224,7 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setStyleSheet('background-color: white;')
 
     def paint(self):
-        global is_clicked
-
-        is_clicked = False
-        print(is_clicked)
+        self.is_clicked_move = False
         self.scribble_area.pressed_button = 'paint'
         self.allButtonWhite()
         self.button_list[0].setStyleSheet('background-color: red;')
@@ -237,15 +237,10 @@ class PhotoshopEditor(QMainWindow):
         mask = pixmap.createMaskFromColor(Qt.red)
         pixmap.setMask(mask)
         cursor = QCursor(pixmap)
-        # app.setOverrideCursor(cursor)
+        app.setOverrideCursor(cursor)
 
     def moveText(self):
-        global is_clicked
-
-        is_clicked = True
-        print(is_clicked)
-        # cursor = QCursor().bitmap()
-        # app.setOverrideCursor(cursor)
+        self.is_clicked_move = True
         self.scribble_area.pressed_button = 'move'
         self.allButtonWhite()
         self.button_list[1].setStyleSheet('background-color: red;')
@@ -253,9 +248,7 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = True
 
     def marquee(self):
-        global is_clicked
-
-        is_clicked = False
+        self.is_clicked_move = False
         self.scribble_area.pressed_button = 'marquee'
         self.allButtonWhite()
         self.button_list[2].setStyleSheet('background-color: red;')
@@ -263,10 +256,7 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def lasso(self):
-        global is_clicked
-
-        is_clicked = False
-
+        self.is_clicked_move = False
         self.scribble_area.pressed_button = 'lasso'
         self.allButtonWhite()
         self.button_list[3].setStyleSheet('background-color: red;')
@@ -274,10 +264,7 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def crop(self):
-        global is_clicked
-
-        is_clicked = False
-
+        self.is_clicked_move = False
         self.scribble_area.pressed_button = 'crop'
         self.allButtonWhite()
         self.button_list[4].setStyleSheet('background-color: red;')
@@ -286,10 +273,7 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def eyedropper(self):
-        global is_clicked
-
-        is_clicked = False
-
+        self.is_clicked_move = False
         self.scribble_area.pressed_button = 'eyedropper'
         self.allButtonWhite()
         self.button_list[5].setStyleSheet('background-color: red;')
@@ -297,12 +281,13 @@ class PhotoshopEditor(QMainWindow):
         for i in self.band:
             i.draggable = False
 
-    def eraser(self):
-        global is_clicked
+    def eraser(self, type):
+        self.is_clicked_move = False
+        if type == 'transparent':
+            self.scribble_area.pressed_button = 'transparent'
+        else:
+            self.scribble_area.pressed_button = 'all image'
 
-        is_clicked = False
-
-        self.scribble_area.pressed_button = 'eraser'
         self.allButtonWhite()
         self.button_list[6].setStyleSheet('background-color: red;')
         for i in self.band:
@@ -315,13 +300,11 @@ class PhotoshopEditor(QMainWindow):
         mask = pixmap.createMaskFromColor(Qt.red)
         pixmap.setMask(mask)
         cursor = QCursor(pixmap)
-        # app.setOverrideCursor(cursor)
+        app.setOverrideCursor(cursor)
 
     def type(self):
-
-        global is_clicked
-
-        is_clicked = False
+        self.is_clicked_text = True
+        self.is_clicked_move = False
 
         self.scribble_area.pressed_button = 'type'
         self.allButtonWhite()
@@ -332,10 +315,11 @@ class PhotoshopEditor(QMainWindow):
                        self.scribble_area.bold, self.scribble_area.italic,
                        self.scribble_area.underline, self.scribble_area, self, dragable=False)
         self.band.append(obj)
+        self.moveText()
 
     def imageConverter(self):
-        global is_clicked
-        is_clicked = False
+        #global is_clicked
+        self.is_clicked_move = False
 
         self.scribble_area.pressed_button = 'image_converter'
         self.allButtonWhite()
@@ -345,16 +329,16 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def help(self, obj1, obj2):
-        global is_clicked
-        is_clicked = False
+        #global is_clicked
+        self.is_clicked_move = False
         self.window = QDialog()
         self.ui = Help()
         self.ui.setupUi(self.window)
         self.window.show()
 
     def documentation(self, obj1, obj2):
-        global is_clicked
-        is_clicked =False
+        #global is_clicked
+        self.is_clicked_move =False
         self.window = QDialog()
         self.ui = Documentation()
         self.ui.setupUi(self.window)
