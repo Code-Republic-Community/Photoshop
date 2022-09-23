@@ -46,6 +46,7 @@ class Filter():
         qimg_draw.loadFromData(bytes_img_draw.getvalue())
 
         obj.scribble_area.image_draw = qimg_draw
+        obj.scribble_area.check = True
         obj.scribble_area.update()
 
     def noise(self, obj):
@@ -59,6 +60,7 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(speckle_noisy)
         obj.scribble_area.image = qimg
+        obj.scribble_area.check = True
 
         obj.scribble_area.update()
 
@@ -87,7 +89,7 @@ class Filter():
 
         qimg = obj.scribble_area.CvToQimage(spiral)
         obj.scribble_area.image = qimg
-
+        obj.scribble_area.check = True
         obj.scribble_area.update()
 
     def pixelate(self, obj):
@@ -99,4 +101,5 @@ class Filter():
         output = cv.resize(temp, (width, height), interpolation=cv.INTER_NEAREST)
         qimg = obj.scribble_area.CvToQimage(output)
         obj.scribble_area.image = qimg
+        obj.scribble_area.check = True
         obj.scribble_area.update()

@@ -315,6 +315,7 @@ class PhotoshopEditor(QMainWindow):
                        self.scribble_area.bold, self.scribble_area.italic,
                        self.scribble_area.underline, self.scribble_area, self, dragable=False)
         self.band.append(obj)
+        self.scribble_area.check = True
         self.moveText()
 
     def imageConverter(self):

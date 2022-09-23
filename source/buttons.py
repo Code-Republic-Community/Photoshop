@@ -48,6 +48,7 @@ class Buttons(QMainWindow):
         # obj.scribble_area.resizeImageDraw(obj.scribble_area.image_draw, QSize(new_size))
         # painter = QPainter(obj.scribble_area.image_draw)
         # painter.drawImage(obj.scribble_area.shape_draw, cropped)
+        obj.scribble_area.check = True
 
         obj.scribble_area.update()
 
@@ -292,7 +293,7 @@ class MoveText(QWidget):
 
     def paintEvent(self, event):
         if not self.phj_obj.is_clicked_move:
-            painter = QPainter(self.scribble_obj.image)
+            painter = QPainter(self.scribble_obj.image_draw)
 
             pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1], self.scribble_obj.color_text[2],
                               self.scribble_obj.color_text[3]))
