@@ -36,18 +36,19 @@ class Buttons(QMainWindow):
 
     def crop(self, obj):
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
-        obj.scribble_area.image = QImage(self.size(), QImage.Format_ARGB32)
+        cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
+
+        obj.scribble_area.image_draw.fill((Qt.transparent))
+        obj.scribble_area.image.fill(qRgb(255,255,255))
+
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
-        painter = QPainter(obj.scribble_area.image)
-        painter.drawImage(obj.scribble_area.shape, cropped)
 
-        # cropped = obj.scribble_area.image_draw.copy(obj.scribble_area.shape_draw)
-        # obj.scribble_area.image_draw = QImage(self.size(), QImage.Format_ARGB32)
-        # new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
-        # obj.scribble_area.resizeImageDraw(obj.scribble_area.image_draw, QSize(new_size))
-        # painter = QPainter(obj.scribble_area.image_draw)
-        # painter.drawImage(obj.scribble_area.shape_draw, cropped)
+
+        painter = QPainter(obj.scribble_area.image)
+        painter2 = QPainter(obj.scribble_area.image_draw)
+        painter.drawImage(obj.scribble_area.shape, cropped)
+        painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
         obj.scribble_area.check = True
 
         obj.scribble_area.update()
@@ -301,14 +302,15 @@ class MoveText(QWidget):
             if not self.phj_obj.is_clicked_move:
                 pen.setWidth(10)
                 painter.setPen(pen)
-
+                self.y_pos = self.geometry()
                 font = QFont()
                 font.setBold(self.scribble_obj.bold)
                 font.setItalic(self.scribble_obj.italic)
                 font.setUnderline(self.scribble_obj.underline)
                 font.setPointSize(self.scribble_obj.width_text)
                 painter.setFont(font)
-                painter.drawText(self.x(), self.y(), self.scribble_obj.text)
+
+                painter.drawText(self.geometry().x(), self.geometry().y() +self.scribble_obj.width_text*20/15, self.scribble_obj.text)
                 self.hide()
 
 
