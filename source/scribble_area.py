@@ -58,10 +58,13 @@ class ScribbleArea(QWidget):
 
     def openImage(self, img):
         self.open = True
-        # new_size = img.size().expandedTo(self.size())
         new_size = QSize(img.shape[0], img.shape[1])
         self.resizeImage(img, new_size)
+        image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = self.CvToQimage(img)
+        image_draw.scaled(new_size)
+        self.image_draw = image_draw
+
         self.update()
         return True
 
@@ -135,26 +138,29 @@ class ScribbleArea(QWidget):
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
             if not self.begin.isNull() and not self.end.isNull():
-                self.shape = QRect(self.begin, self.end)
+                if self.begin.x() < self.end.x():
+                    self.shape = QRect(self.begin, self.end)
+                else:
+                    self.shape = QRect(self.end, self.begin)
                 # self.coords = self.shape.getCoords()
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
 
-        if not self.photoshop_obj.is_clicked_move:
-            painter = QPainter(self.image)
-
-            pen = QPen(QColor(self.color_text[0], self.color_text[1], self.color_text[2],
-                              self.color_text[3]))
-            pen.setWidth(10)
-            painter.setPen(pen)
-
-            font = QFont()
-            font.setBold(self.bold)
-            font.setItalic(self.italic)
-            font.setUnderline(self.underline)
-            font.setPointSize(self.width_text)
-            painter.setFont(font)
-            painter.drawText(self.x, self.y, self.text)
+        # if not self.photoshop_obj.is_clicked_move:
+        #     painter = QPainter(self.image)
+        #
+        #     pen = QPen(QColor(self.color_text[0], self.color_text[1], self.color_text[2],
+        #                       self.color_text[3]))
+        #     pen.setWidth(10)
+        #     painter.setPen(pen)
+        #
+        #     font = QFont()
+        #     font.setBold(self.bold)
+        #     font.setItalic(self.italic)
+        #     font.setUnderline(self.underline)
+        #     font.setPointSize(self.width_text)
+        #     painter.setFont(font)
+        #     painter.drawText(self.x, self.y, self.text)
 
     def mousePressEvent(self, event):
         self.makeUndoCommand()

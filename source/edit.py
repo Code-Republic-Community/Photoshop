@@ -50,14 +50,19 @@ class Edit():
         band.adjustSize()
 
     def clear_screen(self, obj):
-        width, height = obj.scribble_area.currentWindowSize()
-        obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
+
+        print("yes")
+
+        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
+
+        #obj.scribble_area.image = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
+        obj.scribble_area.image.fill(qRgb(255,255,255))
 
-        obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
         obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
+
 
         obj.scribble_area.update()
 

@@ -9,7 +9,7 @@ import numpy as np
 import sys
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-#import aspose.words as aw
+# import aspose.words as aw
 from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
@@ -196,7 +196,7 @@ class InputTextDialog(QDialog):
         self.is_size = 15
 
         self.text = QLineEdit(self)
-        #self.text.setFocus(Qt.MouseFocusReason)
+        # self.text.setFocus(Qt.MouseFocusReason)
         font = self.text.font()
         font.setPointSize(15)
         self.text.setFixedSize(580, 400)
@@ -248,10 +248,11 @@ class InputTextDialog(QDialog):
 
 class MoveText(QWidget):
     def __init__(self, text, text_width, text_color, bold, italic, underline,
-                 parent, phj_obj,dragable=False):
+                 parent, phj_obj, dragable=False):
         super(MoveText, self).__init__(parent)
-
         self.draggable = dragable
+        self.scribble_obj = parent
+        self.phj_obj = phj_obj
         self.dragging_threshold = 5
         self.mouse_press_pos = None
         self.mouse_move_pos = None
@@ -286,21 +287,36 @@ class MoveText(QWidget):
 
         self.show()
 
-    # def resizeEvent(self, event):
-    #     self._band.resize(self.size())
-    #
-    # def paintEvent(self, event):
-    #     qp = QPainter()
-    #     qp.begin(self)
-    #     qp.setRenderHint(QPainter.Antialiasing, True)
-    #     qp.drawRoundedRect(0, 0, self.label.width(), self.label.height(),
-    #                        self.border_radius, self.border_radius)
-    #     qp.end()
+    def resizeEvent(self, event):
+        self._band.resize(self.size())
+
+    def paintEvent(self, event):
+        if not self.phj_obj.is_clicked_move:
+            painter = QPainter(self.scribble_obj.image)
+
+            pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1], self.scribble_obj.color_text[2],
+                              self.scribble_obj.color_text[3]))
+
+            if not self.phj_obj.is_clicked_move:
+                pen.setWidth(10)
+                painter.setPen(pen)
+
+                font = QFont()
+                font.setBold(self.scribble_obj.bold)
+                font.setItalic(self.scribble_obj.italic)
+                font.setUnderline(self.scribble_obj.underline)
+                font.setPointSize(self.scribble_obj.width_text)
+                painter.setFont(font)
+                painter.drawText(self.x(), self.y(), self.scribble_obj.text)
+                self.hide()
+
 
     def mousePressEvent(self, event):
+
         if self.draggable and event.button() == Qt.LeftButton:
             self.mouse_press_pos = event.globalPos()  # global
             self.mouse_move_pos = event.globalPos() - self.pos()  # local
+
         super(MoveText, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -315,6 +331,7 @@ class MoveText(QWidget):
         super(MoveText, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
+
         if self.mouse_press_pos is not None:
             if event.button() == Qt.RightButton:
                 moved = event.globalPos() - self.mouse_press_pos
