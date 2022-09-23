@@ -52,7 +52,7 @@ class Edit():
         band.adjustSize()
         obj.scribble_area.check = True
 
-    def clear_screen(self, obj):
+    def clearScreen(self, obj):
 
         obj.scribble_area.image_draw = QImage(1000,1000, QImage.Format_ARGB32)
 
@@ -67,7 +67,7 @@ class Edit():
 
         obj.scribble_area.update()
 
-    def keyboard_shortcuts(self, obj):
+    def keyboardShortcuts(self, obj):
         obj.is_clicked_move = False
         KeyShortcut().exec()
 

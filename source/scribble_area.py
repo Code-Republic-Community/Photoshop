@@ -148,22 +148,6 @@ class ScribbleArea(QWidget):
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
 
-        # if not self.photoshop_obj.is_clicked_move:
-        #     painter = QPainter(self.image)
-        #
-        #     pen = QPen(QColor(self.color_text[0], self.color_text[1], self.color_text[2],
-        #                       self.color_text[3]))
-        #     pen.setWidth(10)
-        #     painter.setPen(pen)
-        #
-        #     font = QFont()
-        #     font.setBold(self.bold)
-        #     font.setItalic(self.italic)
-        #     font.setUnderline(self.underline)
-        #     font.setPointSize(self.width_text)
-        #     painter.setFont(font)
-        #     painter.drawText(self.x, self.y, self.text)
-
     def mousePressEvent(self, event):
         self.makeUndoCommand()
         if event.button() == Qt.LeftButton:
@@ -209,7 +193,6 @@ class ScribbleArea(QWidget):
             self.last_point = event.pos()
             self.update()
 
-
         elif self.pressed_button == 'all image':
             painters = [QPainter(self.image), QPainter(self.image_draw)]
             for painter in painters:
@@ -232,12 +215,19 @@ class ScribbleArea(QWidget):
     def toolWidth(self, obj_photoshop_editor, obj1, tool: str):
         if tool == 'pen':
             num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
-            self.pen_width = num
-            obj_photoshop_editor.paint()
+            if ok:
+                self.pen_width = num
+                obj_photoshop_editor.paint()
+
         elif tool == 'rubber':
             num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
-            self.rubber_width = num
-            #obj_photoshop_editor.eraser()
+            if ok:
+                self.rubber_width = num
+                if self.pressed_button == ('transparent' or 'all image'):
+                    obj_photoshop_editor.eraser(self.pressed_button)
+                else:
+                    obj_photoshop_editor.eraser('all image')
+
 
     def makeUndoCommand(self):
         self.undo_stack.push(UndoCommand(self))
