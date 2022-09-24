@@ -42,9 +42,8 @@ class Image:
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.currentWindowSize())
-        width, height = obj.scribble_area.currentWindowSize()
-        obj.scribble_area.resizeImage(image, QtCore.QSize(width, height))
+        image = cv.resize(image, (obj.scribble_area.image_size_x, obj.scribble_area.image_size_y))
+        obj.scribble_area.resizeImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)
@@ -87,12 +86,13 @@ class InputSize(QtWidgets.QDialog):
                 height = int(self.height.text())
                 img = self.obj.scribble_area.image
                 img = self.obj.scribble_area.QimageToCv(img)
+                self.obj.scribble_area.image_size_x = width
+                self.obj.scribble_area.image_size_y = height
                 image = cv.resize(img, (width, height))
-                self.obj.scribble_area.resizeImage(image, QtCore.QSize(width, height))
+                self.obj.scribble_area.resizeImage(image)
                 self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
 
-                self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw,
-                                                       width, height)
+                self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw)
 
                 self.obj.scribble_area.update()
                 self.close()

@@ -58,11 +58,11 @@ class Edit():
 
         #obj.scribble_area.image = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
+        obj.scribble_area.resizeImage(obj.scribble_area.image)
         obj.scribble_area.image.fill(qRgb(255,255,255))
 
         new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(new_size))
+        obj.scribble_area.resizeImage(obj.scribble_area.image_draw)
         obj.scribble_area.check = False
 
         obj.scribble_area.update()

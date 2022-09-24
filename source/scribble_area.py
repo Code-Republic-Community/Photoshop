@@ -25,6 +25,8 @@ class ScribbleArea(QWidget):
         self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = QImage(self.size(), QImage.Format_ARGB32)
         self.image.fill(qRgb(255, 255, 255))
+        self.image_size_x = 900
+        self.image_size_y = 600
         self.buttons = Buttons()
         self.pressed_button = None
         # newSize = self.image.size().expandedTo(self.size())
@@ -56,8 +58,7 @@ class ScribbleArea(QWidget):
     def openImage(self, img):
         self.open = True
         new_size = QSize(img.shape[0], img.shape[1])
-        print(new_size)
-        self.resizeImage(img, new_size)
+        self.resizeImage(img)
         image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = self.CvToQimage(img)
         image_draw.scaled(new_size)
@@ -66,8 +67,12 @@ class ScribbleArea(QWidget):
         self.update()
         return True
 
-    def resizeImage(self, image, new_size):
-        new_image = QImage(new_size, QImage.Format_RGB32)
+    def resizeImage(self, image, new_size=None):
+        if new_size is None:
+            new_image = QImage(QSize(self.image_size_x, self.image_size_y), QImage.Format_RGB32)
+        else:
+            new_image = QImage(QSize(new_size), QImage.Format_RGB32)
+
         new_image.fill(qRgb(255, 255, 255))
         painter = QPainter(new_image)
         image = self.CvToQimage(image)
@@ -76,11 +81,16 @@ class ScribbleArea(QWidget):
 
     def resizeEvent(self, event):
         if self.open:
-            img = cv.resize(self.QimageToCv(self.image), self.currentWindowSize())
+            if self.currentWindowSize()[0] != self.image_size_x \
+                    or self.currentWindowSize()[1] != self.image_size_y:
+                img = cv.resize(self.QimageToCv(self.image), (self.image_size_x, self.image_size_y))
+            else:
+                img = cv.resize(self.QimageToCv(self.image), (self.currentWindowSize()))
+
             self.image = self.CvToQimage(img)
         else:
             pixmap = QPixmap()
-            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.width(), self.height(),
+            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.image_size_x, self.image_size_y,
                                                                 Qt.IgnoreAspectRatio,
                                                                 Qt.SmoothTransformation))
             self.image_copy = self.image.copy()
@@ -88,7 +98,7 @@ class ScribbleArea(QWidget):
 
         pixmap = QPixmap()
         pixamp2 = pixmap.fromImage(
-            self.image_draw.copy().scaled(self.width(), self.height(),
+            self.image_draw.copy().scaled(self.image_size_x, self.image_size_y,
                                           Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         self.image_copy = self.image.copy()
         self.image_draw = pixamp2.toImage()
@@ -96,14 +106,18 @@ class ScribbleArea(QWidget):
 
         super(ScribbleArea, self).resizeEvent(event)
 
-    def resizeImageDraw(self, image, width=None, height=None):
-        if (width and height) == None:
-            width = self.width()
-            height = self.height()
+    def resizeImageDraw(self, image, new_size=None):
         pixmap = QPixmap()
-        pixamp2 = pixmap.fromImage(
-            image.copy().scaled(width, height,
-                                Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        if new_size is None:
+            pixamp2 = pixmap.fromImage(
+                image.copy().scaled(self.image_size_x, self.image_size_y,
+                                    Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        else:
+            width, height = self.currentWindowSize()
+            pixamp2 = pixmap.fromImage(
+                image.copy().scaled(width, height,
+                                    Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+
         self.image_copy = self.image.copy()
 
         self.image_draw = pixamp2.toImage()
@@ -116,7 +130,7 @@ class ScribbleArea(QWidget):
         height = (background.height - front_image.height) // 2
         background.paste(front_image, (width, height), front_image)
         visible_image = self.PilToQimage(background)
-        self.resizeImage(visible_image, self.size())
+        self.resizeImage(visible_image)
 
         if None != (file_name and file_format):
             if visible_image.save(file_name, file_format):

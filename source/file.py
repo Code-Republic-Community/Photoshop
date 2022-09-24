@@ -29,11 +29,11 @@ class File(QMainWindow):
             width, height = obj.scribble_area.currentWindowSize()
             obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
             newSize = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-            obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(newSize))
+            obj.scribble_area.resizeImage(obj.scribble_area.image, newSize)
 
             obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
-            newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
-            obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(newSize))
+            #newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
+            obj.scribble_area.resizeImageDraw(obj.scribble_area.image_draw, newSize)
 
             obj.scribble_area.update()
 

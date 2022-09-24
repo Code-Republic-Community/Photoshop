@@ -42,7 +42,7 @@ class Buttons(QMainWindow):
         obj.scribble_area.image.fill(qRgb(255, 255, 255))
 
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
+        obj.scribble_area.resizeImage(obj.scribble_area.image)
 
         painter = QPainter(obj.scribble_area.image)
         painter2 = QPainter(obj.scribble_area.image_draw)
