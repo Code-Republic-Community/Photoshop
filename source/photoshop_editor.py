@@ -38,6 +38,7 @@ class PhotoshopEditor(QMainWindow):
         self.screen_width = 0
         self.screen_height = 0
         self.band = []
+        self.button_clicked = [False, False, False, False, False, False, False, False, False]
 
     def setupUi(self, main_window):
 
@@ -194,6 +195,7 @@ class PhotoshopEditor(QMainWindow):
             size_policy.setHorizontalStretch(0)
             size_policy.setVerticalStretch(0)
             size_policy.setHeightForWidth(self.button_list[i].sizePolicy().hasHeightForWidth())
+            self.button_list[i].clicked.connect(value, self.button_clicked[i])
             self.button_list[i].setSizePolicy(size_policy)
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
