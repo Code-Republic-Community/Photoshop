@@ -38,7 +38,6 @@ class PhotoshopEditor(QMainWindow):
         self.screen_width = 0
         self.screen_height = 0
         self.band = []
-        self.button_clicked = [False, False, False, False, False, False, False, False, False]
 
     def setupUi(self, main_window):
 
@@ -50,8 +49,9 @@ class PhotoshopEditor(QMainWindow):
         main_window.setObjectName("MainWindow")
         main_window.setWindowTitle("Photoshop Clone")
         main_window.setGeometry((self.screen_width - 826) // 2, (self.screen_height - 561) // 2, 900, 600)
-        main_window.setMinimumSize(QtCore.QSize(600, 400))
-        main_window.setMaximumSize(self.screen_width, self.screen_height)
+        #main_window.setMinimumSize(QtCore.QSize(600, 400))
+        main_window.setFixedSize(900, 600)
+        #main_window.setMaximumSize(self.screen_width, self.screen_height)
         main_window.setWindowIcon(QIcon('../content/photoshop.png'))
         # main_window.setStyleSheet("background-color: #222; color: #FFF")
         self.central_widget = QWidget(main_window)
@@ -197,7 +197,6 @@ class PhotoshopEditor(QMainWindow):
             self.button_list[i].setSizePolicy(size_policy)
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
-            self.button_list[i].clicked.connect(value,self.button_clicked[i])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.vertical_layout.addWidget(self.button_list[i])
@@ -357,6 +356,7 @@ class PhotoshopEditor(QMainWindow):
         elif width < 600:
             width = 600
 
+        self.main_window.setFixedSize(width, height)
         if bigger:
             self.main_window.setGeometry((self.screen_width - width) // 2,
                                          (self.screen_height - height + 27) // 2, width, height)
