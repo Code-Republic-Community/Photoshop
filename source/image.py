@@ -8,16 +8,26 @@ class Image:
     """asfsd"""
 
     @classmethod
-    def image_size(cls, obj):
+    def image_size(cls, obj, obj1, obj2):
         """ffffff"""
         obj.is_clicked_move = False
         InputSize(obj, 'image size').exec()
 
     @classmethod
-    def canvas_size(cls, obj):
+    def canvas_size(cls, obj, obj1, obj2):
         """kjl"""
         obj.is_clicked_move = False
         InputSize(obj, 'canvas size').exec()
+
+    @classmethod
+    def rotate_left(cls, obj, obj1, obj2):
+        """ytutyu"""
+        Image().rotate(obj, 'left')
+
+    @classmethod
+    def rotate_right(cls, obj, obj1, obj2):
+        """hjghgvn"""
+        Image().rotate(obj, 'right')
 
     @classmethod
     def rotate(cls, obj, rotate_type):
@@ -40,16 +50,6 @@ class Image:
         obj.scribble_area.resizeImageDraw(image_draw)
         obj.scribble_area.check = True
         obj.scribble_area.update()
-
-    @classmethod
-    def rotate_left(cls, obj):
-        """ytutyu"""
-        Image().rotate(obj, 'left')
-
-    @classmethod
-    def rotate_right(cls, obj):
-        """hjghgvn"""
-        Image().rotate(obj, 'right')
 
 
 class InputSize(QtWidgets.QDialog):

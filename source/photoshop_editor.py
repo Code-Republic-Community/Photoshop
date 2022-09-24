@@ -306,13 +306,17 @@ class PhotoshopEditor(QMainWindow):
         self.scribble_area.pressed_button = 'type'
         self.allButtonWhite()
         self.button_list[7].setStyleSheet('background-color: red;')
+        #self.scribble_area.text = ''
         InputTextDialog(self.scribble_area).exec()
-        obj = MoveText(self.scribble_area.text,
+
+        if self.scribble_area.text != '':
+            print(self.scribble_area.text)
+            obj = MoveText(self.scribble_area.text,
                        self.scribble_area.width_text, self.scribble_area.color_text,
                        self.scribble_area.bold, self.scribble_area.italic,
                        self.scribble_area.underline, self.scribble_area, self, dragable=False)
-        self.band.append(obj)
-        if self.scribble_area.text != '':
+            self.band.append(obj)
+
             self.moveText()
         else:
             self.allButtonWhite()

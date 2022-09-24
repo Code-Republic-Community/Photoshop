@@ -17,9 +17,9 @@ from source.buttons import MoveText
 
 class ScribbleArea(QWidget):
     def __init__(self):
-        self.x = 0
-        self.y = 0
         super(ScribbleArea, self).__init__()
+        # self.x = 0
+        # self.y = 0
         self.setAttribute(Qt.WA_StaticContents)
         self.photoshop_obj = None
         self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
@@ -46,11 +46,8 @@ class ScribbleArea(QWidget):
         self.begin = QPoint()
         self.end = QPoint()
         self.shape = QRect()
-        self.shape_draw = QRect()
         self.update()
-        self.brush_size = 2
         self.rubber_width = 10
-        self.brush_color = QColor(Qt.black)
         self.open = False
 
     def currentWindowSize(self):
@@ -121,7 +118,7 @@ class ScribbleArea(QWidget):
         visible_image = self.PilToQimage(background)
         self.resizeImage(visible_image, self.size())
 
-        if (file_name and file_format) != None:
+        if None != (file_name and file_format):
             if visible_image.save(file_name, file_format):
                 return True
             return False
@@ -162,8 +159,6 @@ class ScribbleArea(QWidget):
                 super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.x = event.x()
-        self.y = event.y()
         if self.pressed_button == 'paint':
             painter = QPainter(self.image_draw)
             painter.setPen(QPen(
@@ -214,20 +209,21 @@ class ScribbleArea(QWidget):
 
     def toolWidth(self, obj_photoshop_editor, obj1, tool: str):
         if tool == 'pen':
-            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
+            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width',
+                                          0, 1, 30)
             if ok:
                 self.pen_width = num
                 obj_photoshop_editor.paint()
 
         elif tool == 'rubber':
-            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
+            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width',
+                                          0, 1, 50)
             if ok:
                 self.rubber_width = num
                 if self.pressed_button == ('transparent' or 'all image'):
                     obj_photoshop_editor.eraser(self.pressed_button)
                 else:
                     obj_photoshop_editor.eraser('all image')
-
 
     def makeUndoCommand(self):
         self.undo_stack.push(UndoCommand(self))
