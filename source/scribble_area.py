@@ -51,6 +51,8 @@ class ScribbleArea(QWidget):
         self.update()
         self.rubber_width = 10
         self.open = False
+        self.rotated = "None"
+        self.is_text = False
 
     def currentWindowSize(self):
         return self.width(), self.height()

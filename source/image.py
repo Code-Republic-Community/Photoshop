@@ -22,13 +22,17 @@ class Image:
     @classmethod
     def rotate_left(cls, obj, obj1, obj2):
         """ytutyu"""
-        Image().rotate(obj, 'left')
+        obj.scribble_area.rotated = "left"
+        if obj.is_clicked_move == False:
+            Image().rotate(obj, 'left')
+
 
     @classmethod
     def rotate_right(cls, obj, obj1, obj2):
         """hjghgvn"""
-        Image().rotate(obj, 'right')
-
+        obj.scribble_area.rotated = "right"
+        if obj.is_clicked_move == False:
+            Image().rotate(obj, 'right')
     @classmethod
     def rotate(cls, obj, rotate_type):
         """hguty"""
@@ -49,6 +53,7 @@ class Image:
         obj.scribble_area.resizeImageDraw(image_draw)
         obj.scribble_area.check = True
         obj.scribble_area.update()
+        print(obj.scribble_area.rotated,"rot_none_worked")
 
 
 class InputSize(QtWidgets.QDialog):

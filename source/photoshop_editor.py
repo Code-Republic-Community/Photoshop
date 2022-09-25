@@ -302,6 +302,7 @@ class PhotoshopEditor(QMainWindow):
         app.setOverrideCursor(cursor)
 
     def type(self):
+        self.scribble_area.rotated = "None"
         self.is_clicked_move = False
         self.scribble_area.check = True
         self.scribble_area.pressed_button = 'type'

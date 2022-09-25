@@ -14,6 +14,7 @@ from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
+from image import Image
 
 
 class Buttons(QMainWindow):
@@ -182,6 +183,7 @@ class TextType(QDialog):
                 self.font_size.setItalic(self.obj.is_italic)
                 self.font_size.setBold(self.obj.is_bold)
                 self.text.setFont(self.font_size)
+                self.obj.is_text = True
                 self.close()
 
 
@@ -246,6 +248,7 @@ class InputTextDialog(QDialog):
             self.obj.text = self.text.text()
             self.obj.width_text = self.is_size
             self.obj.color_text = self.color_text
+
             self.close()
 
 
@@ -294,25 +297,31 @@ class MoveText(QWidget):
         self._band.resize(self.size())
 
     def paintEvent(self, event):
-        # if not self.phj_obj.is_clicked_move:
-        #     painter = QPainter(self.scribble_obj.image_draw)
-        #
-        #     pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1],
-        #                       self.scribble_obj.color_text[2],
-        #                       self.scribble_obj.color_text[3]))
-        #
-        #     pen.setWidth(10)
-        #     painter.setPen(pen)
-        #
-        #     font = QFont()
-        #     font.setBold(self.scribble_obj.bold)
-        #     font.setItalic(self.scribble_obj.italic)
-        #     font.setUnderline(self.scribble_obj.underline)
-        #     font.setPointSize(self.scribble_obj.width_text)
-        #     painter.setFont(font)
-        #     painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
-        #     self.hide()
-        pass
+
+        if not self.phj_obj.is_clicked_move or self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
+            print(self.phj_obj.is_clicked_move)
+            painter = QPainter(self.scribble_obj.image_draw)
+
+            pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1],
+                              self.scribble_obj.color_text[2],
+                              self.scribble_obj.color_text[3]))
+
+            pen.setWidth(10)
+            painter.setPen(pen)
+
+            font = QFont()
+            font.setBold(self.scribble_obj.bold)
+            font.setItalic(self.scribble_obj.italic)
+            font.setUnderline(self.scribble_obj.underline)
+            font.setPointSize(self.scribble_obj.width_text)
+            painter.setFont(font)
+            painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
+            painter.end()
+
+            self.hide()
+            if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
+                Image.rotate(self.phj_obj, self.scribble_obj.rotated)
+
 
     def mousePressEvent(self, event):
 
