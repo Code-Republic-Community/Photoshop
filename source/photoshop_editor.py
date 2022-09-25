@@ -28,7 +28,6 @@ class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.is_clicked_move = False
-        self.is_clicked_text = False
         self.scribble_area = ScribbleArea()
         self.scribble_area.photoshopObj(self)
         self.buttons_obj = Buttons()
@@ -51,11 +50,11 @@ class PhotoshopEditor(QMainWindow):
         main_window.setObjectName("MainWindow")
         main_window.setWindowTitle("Photoshop Clone")
         main_window.setGeometry((self.screen_width - 826) // 2, (self.screen_height - 561) // 2, 900, 600)
-        main_window.setMinimumSize(QtCore.QSize(600, 400))
-        main_window.setMaximumSize(self.screen_width, self.screen_height)
+        #main_window.setMinimumSize(QtCore.QSize(600, 400))
+        main_window.setFixedSize(900, 600)
+        #main_window.setMaximumSize(self.screen_width, self.screen_height)
         main_window.setWindowIcon(QIcon('../content/photoshop.png'))
         # main_window.setStyleSheet("background-color: #222; color: #FFF")
-
         self.central_widget = QWidget(main_window)
         self.central_widget.setObjectName("centralwidget")
         horizontal_layout = QHBoxLayout(self.central_widget)
@@ -81,10 +80,10 @@ class PhotoshopEditor(QMainWindow):
         self.retranslateUi(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
-    def retranslateUi(self, Main_window):
-        main_menu = QMenuBar(Main_window)
+    def retranslateUi(self, main_window):
+        main_menu = QMenuBar(main_window)
         main_menu.setGeometry(QtCore.QRect(0, 0, 800, 24))
-        Main_window.setMenuBar(main_menu)
+        main_window.setMenuBar(main_menu)
         file_menu = QMenu(main_menu)
         edit_menu = QMenu(main_menu)
         image_menu = QMenu(main_menu)
@@ -97,8 +96,8 @@ class PhotoshopEditor(QMainWindow):
 
         dict_edit = {'Undo': edit.Edit.undo, 'Redo': edit.Edit.redo,
                      'Cut': edit.Edit.cut, 'Copy': edit.Edit.copy,
-                     'Paste': edit.Edit.paste, 'Clear screen': edit.Edit.clear_screen,
-                     'Keyboard shortcuts': edit.Edit.keyboard_shortcuts}
+                     'Paste': edit.Edit.paste, 'Clear screen': edit.Edit.clearScreen,
+                     'Keyboard shortcuts': edit.Edit.keyboardShortcuts}
 
         dict_image = {'Image size': image.Image.image_size,
                       'Canvas size': image.Image.canvas_size,
@@ -114,7 +113,7 @@ class PhotoshopEditor(QMainWindow):
         lst_file_shortcut = ['Ctrl+N', 'Ctrl+O', 'Ctrl+S', 'Ctrl+Shift+S', 'Ctrl+P', 'Ctrl+W']
         i = 0
         for key, value in dict_file.items():
-            extract_action = QAction(Main_window)
+            extract_action = QAction(main_window)
             extract_action.setShortcut(lst_file_shortcut[i])
             file_menu.addAction(extract_action)
             main_menu.addAction(file_menu.menuAction())
@@ -126,7 +125,7 @@ class PhotoshopEditor(QMainWindow):
         i = 0
 
         for key, value in dict_edit.items():
-            extract_action = QAction(Main_window)
+            extract_action = QAction(main_window)
             extract_action.setShortcut(lst_edit_shortcut[i])
             edit_menu.addAction(extract_action)
             main_menu.addAction(edit_menu.menuAction())
@@ -138,7 +137,7 @@ class PhotoshopEditor(QMainWindow):
         i = 0
 
         for key, value in dict_image.items():
-            extract_action = QAction(Main_window)
+            extract_action = QAction(main_window)
             extract_action.setShortcut(lst_image_shortcut[i])
             image_menu.addAction(extract_action)
             main_menu.addAction(image_menu.menuAction())
@@ -150,7 +149,7 @@ class PhotoshopEditor(QMainWindow):
         i = 0
 
         for key, value in dict_filter.items():
-            extract_action = QAction(Main_window)
+            extract_action = QAction(main_window)
             extract_action.setShortcut(lst_filter_shortcut[i])
             filter_menu.addAction(extract_action)
             main_menu.addAction(filter_menu.menuAction())
@@ -162,7 +161,7 @@ class PhotoshopEditor(QMainWindow):
         i = 0
 
         for key, value in dict_help.items():
-            extract_action = QAction(Main_window)
+            extract_action = QAction(main_window)
             extract_action.setShortcut(lst_help_shortcut[i])
             help_menu.addAction(extract_action)
             main_menu.addAction(help_menu.menuAction())
@@ -196,10 +195,10 @@ class PhotoshopEditor(QMainWindow):
             size_policy.setHorizontalStretch(0)
             size_policy.setVerticalStretch(0)
             size_policy.setHeightForWidth(self.button_list[i].sizePolicy().hasHeightForWidth())
+            self.button_list[i].clicked.connect(value, self.button_clicked[i])
             self.button_list[i].setSizePolicy(size_policy)
             self.button_list[i].setMaximumSize(QtCore.QSize(50, 50))
             self.button_list[i].setIcon(QIcon(key))
-            self.button_list[i].clicked.connect(value,self.button_clicked[i])
             self.button_list[i].setStyleSheet("QPushButton:hover "
                                               "{background-color: lightgray}")
             self.vertical_layout.addWidget(self.button_list[i])
@@ -303,25 +302,29 @@ class PhotoshopEditor(QMainWindow):
         app.setOverrideCursor(cursor)
 
     def type(self):
-        self.is_clicked_text = True
+        self.scribble_area.rotated = "None"
         self.is_clicked_move = False
-
+        self.scribble_area.check = True
         self.scribble_area.pressed_button = 'type'
         self.allButtonWhite()
         self.button_list[7].setStyleSheet('background-color: red;')
+        #self.scribble_area.text = ''
         InputTextDialog(self.scribble_area).exec()
-        obj = MoveText(self.scribble_area.text,
+
+        if self.scribble_area.text != '':
+            print(self.scribble_area.text)
+            obj = MoveText(self.scribble_area.text,
                        self.scribble_area.width_text, self.scribble_area.color_text,
                        self.scribble_area.bold, self.scribble_area.italic,
                        self.scribble_area.underline, self.scribble_area, self, dragable=False)
-        self.band.append(obj)
-        self.scribble_area.check = True
-        self.moveText()
+            self.band.append(obj)
+
+            self.moveText()
+        else:
+            self.allButtonWhite()
 
     def imageConverter(self):
-        #global is_clicked
         self.is_clicked_move = False
-
         self.scribble_area.pressed_button = 'image_converter'
         self.allButtonWhite()
         self.button_list[8].setStyleSheet('background-color: red;')
@@ -330,7 +333,6 @@ class PhotoshopEditor(QMainWindow):
             i.draggable = False
 
     def help(self, obj1, obj2):
-        #global is_clicked
         self.is_clicked_move = False
         self.window = QDialog()
         self.ui = Help()
@@ -338,7 +340,6 @@ class PhotoshopEditor(QMainWindow):
         self.window.show()
 
     def documentation(self, obj1, obj2):
-        #global is_clicked
         self.is_clicked_move =False
         self.window = QDialog()
         self.ui = Documentation()
@@ -358,6 +359,7 @@ class PhotoshopEditor(QMainWindow):
         elif width < 600:
             width = 600
 
+        self.main_window.setFixedSize(width, height)
         if bigger:
             self.main_window.setGeometry((self.screen_width - width) // 2,
                                          (self.screen_height - height + 27) // 2, width, height)

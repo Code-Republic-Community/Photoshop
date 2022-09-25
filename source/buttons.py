@@ -14,6 +14,7 @@ from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
+from image import Image
 
 
 class Buttons(QMainWindow):
@@ -39,11 +40,10 @@ class Buttons(QMainWindow):
         cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
 
         obj.scribble_area.image_draw.fill((Qt.transparent))
-        obj.scribble_area.image.fill(qRgb(255,255,255))
+        obj.scribble_area.image.fill(qRgb(255, 255, 255))
 
         new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(new_size))
-
+        obj.scribble_area.resizeImage(obj.scribble_area.image)
 
         painter = QPainter(obj.scribble_area.image)
         painter2 = QPainter(obj.scribble_area.image_draw)
@@ -115,11 +115,13 @@ class ImgTypeComboBox(QDialog):
 
 class TextType(QDialog):
     def __init__(self, obj, text):
+        super().__init__()
+        self.setWindowTitle("Text Font")
+        self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.obj = obj
         self.text = text
-        super().__init__()
-        self.setFixedSize(250, 150)
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.font_size = self.text.font()
+        self.setFixedSize(0, 0)
 
         layout = QVBoxLayout()
         checkbox_layout = QHBoxLayout()
@@ -137,6 +139,7 @@ class TextType(QDialog):
         self.size.resize(150, 35)
         only_int = QIntValidator()
         self.size.setValidator(only_int)
+        self.size.setText(f'{self.obj.is_size}')
 
         self.bold = QCheckBox("Bold")
         self.bold.setChecked(self.obj.is_bold)
@@ -146,38 +149,42 @@ class TextType(QDialog):
         self.underline.setChecked(self.obj.is_underline)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
 
         checkbox_layout.addWidget(self.bold)
         checkbox_layout.addWidget(self.italic)
         checkbox_layout.addWidget(self.underline)
+        layout.addWidget(label)
         layout.addWidget(self.size)
         layout.addLayout(checkbox_layout)
         layout.addWidget(button_box)
         self.setLayout(layout)
-        self.setWindowTitle("Text Font")
-
-        button_box.accepted.connect(self.accept)
 
     def accept(self):
-        self.obj.is_bold = False
-        self.obj.is_italic = False
-        self.obj.is_underline = False
-        font_size = self.text.font()
-        if len(self.size.text()) != 0:
-            font_size.setPointSize(int(self.size.text()))
-            self.obj.is_size = int(self.size.text())
-        if self.bold.isChecked():
-            self.obj.is_bold = True
-        if self.italic.isChecked():
-            self.obj.is_italic = True
-        if self.underline.isChecked():
-            self.obj.is_underline = True
+        if self.size.text() != '' and int(self.size.text()) >= 1:
+            if self.bold.isChecked() or self.italic.isChecked() \
+                    or self.underline.isChecked():
+                self.obj.is_bold = False
+                self.obj.is_italic = False
+                self.obj.is_underline = False
+                self.font_size = self.text.font()
+                if len(self.size.text()) != 0:
+                    self.font_size.setPointSize(int(self.size.text()))
+                    self.obj.is_size = int(self.size.text())
+                if self.bold.isChecked():
+                    self.obj.is_bold = True
+                if self.italic.isChecked():
+                    self.obj.is_italic = True
+                if self.underline.isChecked():
+                    self.obj.is_underline = True
 
-        font_size.setUnderline(self.obj.is_underline)
-        font_size.setItalic(self.obj.is_italic)
-        font_size.setBold(self.obj.is_bold)
-        self.text.setFont(font_size)
-        self.close()
+                self.font_size.setUnderline(self.obj.is_underline)
+                self.font_size.setItalic(self.obj.is_italic)
+                self.font_size.setBold(self.obj.is_bold)
+                self.text.setFont(self.font_size)
+                self.obj.is_text = True
+                self.close()
 
 
 class InputTextDialog(QDialog):
@@ -187,24 +194,23 @@ class InputTextDialog(QDialog):
         self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setFixedSize(600, 500)
 
-        self.color_text = (0, 0, 0, 255)
         self.obj = obj_scribble_area
-        from scribble_area import ScribbleArea
-        self.scr_obj = ScribbleArea()
 
+        self.color_text = (0, 0, 0, 255)
         self.is_bold = False
         self.is_italic = False
         self.is_underline = False
         self.is_size = 15
 
         self.text = QLineEdit(self)
-        # self.text.setFocus(Qt.MouseFocusReason)
         font = self.text.font()
         font.setPointSize(15)
         self.text.setFixedSize(580, 400)
         self.text.setFont(font)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
 
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
@@ -226,9 +232,6 @@ class InputTextDialog(QDialog):
         layout.addWidget(self.text)
         layout.addWidget(button_box)
 
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-
     def select_color(self):
         self.color_text = QColorDialog().getColor().getRgb()
         self.obj.color_text = self.color_text
@@ -245,6 +248,7 @@ class InputTextDialog(QDialog):
             self.obj.text = self.text.text()
             self.obj.width_text = self.is_size
             self.obj.color_text = self.color_text
+
             self.close()
 
 
@@ -293,25 +297,30 @@ class MoveText(QWidget):
         self._band.resize(self.size())
 
     def paintEvent(self, event):
-        if not self.phj_obj.is_clicked_move:
+
+        if not self.phj_obj.is_clicked_move or self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
+            print(self.phj_obj.is_clicked_move)
             painter = QPainter(self.scribble_obj.image_draw)
 
-            pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1], self.scribble_obj.color_text[2],
+            pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1],
+                              self.scribble_obj.color_text[2],
                               self.scribble_obj.color_text[3]))
 
-            if not self.phj_obj.is_clicked_move:
-                pen.setWidth(10)
-                painter.setPen(pen)
-                self.y_pos = self.geometry()
-                font = QFont()
-                font.setBold(self.scribble_obj.bold)
-                font.setItalic(self.scribble_obj.italic)
-                font.setUnderline(self.scribble_obj.underline)
-                font.setPointSize(self.scribble_obj.width_text)
-                painter.setFont(font)
+            pen.setWidth(10)
+            painter.setPen(pen)
 
-                painter.drawText(self.geometry().x(), self.geometry().y() +self.scribble_obj.width_text*20/15, self.scribble_obj.text)
-                self.hide()
+            font = QFont()
+            font.setBold(self.scribble_obj.bold)
+            font.setItalic(self.scribble_obj.italic)
+            font.setUnderline(self.scribble_obj.underline)
+            font.setPointSize(self.scribble_obj.width_text)
+            painter.setFont(font)
+            painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
+            painter.end()
+
+            self.hide()
+            if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
+                Image.rotate(self.phj_obj, self.scribble_obj.rotated)
 
 
     def mousePressEvent(self, event):

@@ -17,14 +17,16 @@ from source.buttons import MoveText
 
 class ScribbleArea(QWidget):
     def __init__(self):
-        self.x = 0
-        self.y = 0
         super(ScribbleArea, self).__init__()
+        # self.x = 0
+        # self.y = 0
         self.setAttribute(Qt.WA_StaticContents)
         self.photoshop_obj = None
         self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = QImage(self.size(), QImage.Format_ARGB32)
         self.image.fill(qRgb(255, 255, 255))
+        self.image_size_x = 900
+        self.image_size_y = 600
         self.buttons = Buttons()
         self.pressed_button = None
         # newSize = self.image.size().expandedTo(self.size())
@@ -46,12 +48,11 @@ class ScribbleArea(QWidget):
         self.begin = QPoint()
         self.end = QPoint()
         self.shape = QRect()
-        self.shape_draw = QRect()
         self.update()
-        self.brush_size = 2
         self.rubber_width = 10
-        self.brush_color = QColor(Qt.black)
         self.open = False
+        self.rotated = "None"
+        self.is_text = False
 
     def currentWindowSize(self):
         return self.width(), self.height()
@@ -59,7 +60,7 @@ class ScribbleArea(QWidget):
     def openImage(self, img):
         self.open = True
         new_size = QSize(img.shape[0], img.shape[1])
-        self.resizeImage(img, new_size)
+        self.resizeImage(img)
         image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = self.CvToQimage(img)
         image_draw.scaled(new_size)
@@ -68,8 +69,12 @@ class ScribbleArea(QWidget):
         self.update()
         return True
 
-    def resizeImage(self, image, new_size):
-        new_image = QImage(new_size, QImage.Format_RGB32)
+    def resizeImage(self, image, new_size=None):
+        if new_size is None:
+            new_image = QImage(QSize(self.image_size_x, self.image_size_y), QImage.Format_RGB32)
+        else:
+            new_image = QImage(QSize(new_size), QImage.Format_RGB32)
+
         new_image.fill(qRgb(255, 255, 255))
         painter = QPainter(new_image)
         image = self.CvToQimage(image)
@@ -78,11 +83,16 @@ class ScribbleArea(QWidget):
 
     def resizeEvent(self, event):
         if self.open:
-            img = cv.resize(self.QimageToCv(self.image), self.currentWindowSize())
+            if self.currentWindowSize()[0] != self.image_size_x \
+                    or self.currentWindowSize()[1] != self.image_size_y:
+                img = cv.resize(self.QimageToCv(self.image), (self.image_size_x, self.image_size_y))
+            else:
+                img = cv.resize(self.QimageToCv(self.image), (self.currentWindowSize()))
+
             self.image = self.CvToQimage(img)
         else:
             pixmap = QPixmap()
-            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.width(), self.height(),
+            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.image_size_x, self.image_size_y,
                                                                 Qt.IgnoreAspectRatio,
                                                                 Qt.SmoothTransformation))
             self.image_copy = self.image.copy()
@@ -90,7 +100,7 @@ class ScribbleArea(QWidget):
 
         pixmap = QPixmap()
         pixamp2 = pixmap.fromImage(
-            self.image_draw.copy().scaled(self.width(), self.height(),
+            self.image_draw.copy().scaled(self.image_size_x, self.image_size_y,
                                           Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         self.image_copy = self.image.copy()
         self.image_draw = pixamp2.toImage()
@@ -98,31 +108,36 @@ class ScribbleArea(QWidget):
 
         super(ScribbleArea, self).resizeEvent(event)
 
-    def resizeImageDraw(self, image, width=None, height=None):
-        if (width and height) == None:
-            width = self.width()
-            height = self.height()
+    def resizeImageDraw(self, image, new_size=None):
         pixmap = QPixmap()
-        pixamp2 = pixmap.fromImage(
-            image.copy().scaled(width, height,
-                                Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        if new_size is None:
+            pixamp2 = pixmap.fromImage(
+                image.copy().scaled(self.image_size_x, self.image_size_y,
+                                    Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+        else:
+            width, height = self.currentWindowSize()
+            pixamp2 = pixmap.fromImage(
+                image.copy().scaled(width, height,
+                                    Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+
         self.image_copy = self.image.copy()
 
         self.image_draw = pixamp2.toImage()
         self.update()
 
-    def saveImage(self, file_name, file_format):
+    def saveImage(self, file_name=None, file_format=None):
         front_image = self.QimageToPil(self.image_draw).convert("RGBA")
         background = self.QimageToPil(self.image).convert("RGBA")
         width = (background.width - front_image.width) // 2
         height = (background.height - front_image.height) // 2
         background.paste(front_image, (width, height), front_image)
         visible_image = self.PilToQimage(background)
-        self.resizeImage(visible_image, self.size())
+        self.resizeImage(visible_image)
 
-        if visible_image.save(file_name, file_format):
-            return True
-        return False
+        if None != (file_name and file_format):
+            if visible_image.save(file_name, file_format):
+                return True
+            return False
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
@@ -146,22 +161,6 @@ class ScribbleArea(QWidget):
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
 
-        # if not self.photoshop_obj.is_clicked_move:
-        #     painter = QPainter(self.image)
-        #
-        #     pen = QPen(QColor(self.color_text[0], self.color_text[1], self.color_text[2],
-        #                       self.color_text[3]))
-        #     pen.setWidth(10)
-        #     painter.setPen(pen)
-        #
-        #     font = QFont()
-        #     font.setBold(self.bold)
-        #     font.setItalic(self.italic)
-        #     font.setUnderline(self.underline)
-        #     font.setPointSize(self.width_text)
-        #     painter.setFont(font)
-        #     painter.drawText(self.x, self.y, self.text)
-
     def mousePressEvent(self, event):
         self.makeUndoCommand()
         if event.button() == Qt.LeftButton:
@@ -176,8 +175,6 @@ class ScribbleArea(QWidget):
                 super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        self.x = event.x()
-        self.y = event.y()
         if self.pressed_button == 'paint':
             painter = QPainter(self.image_draw)
             painter.setPen(QPen(
@@ -207,7 +204,6 @@ class ScribbleArea(QWidget):
             self.last_point = event.pos()
             self.update()
 
-
         elif self.pressed_button == 'all image':
             painters = [QPainter(self.image), QPainter(self.image_draw)]
             for painter in painters:
@@ -229,13 +225,21 @@ class ScribbleArea(QWidget):
 
     def toolWidth(self, obj_photoshop_editor, obj1, tool: str):
         if tool == 'pen':
-            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
-            self.pen_width = num
-            obj_photoshop_editor.paint()
+            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width',
+                                          0, 1, 30)
+            if ok:
+                self.pen_width = num
+                obj_photoshop_editor.paint()
+
         elif tool == 'rubber':
-            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width')
-            self.rubber_width = num
-            #obj_photoshop_editor.eraser()
+            num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width',
+                                          0, 1, 50)
+            if ok:
+                self.rubber_width = num
+                if self.pressed_button == ('transparent' or 'all image'):
+                    obj_photoshop_editor.eraser(self.pressed_button)
+                else:
+                    obj_photoshop_editor.eraser('all image')
 
     def makeUndoCommand(self):
         self.undo_stack.push(UndoCommand(self))

@@ -18,6 +18,8 @@ class Filter():
         super().__init__()
 
     def blur(self, obj):
+        obj.scribble_area.saveImage()
+        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         obj.is_clicked_move = False
         img = obj.scribble_area.image
         buffer = QBuffer()
@@ -33,23 +35,25 @@ class Filter():
 
         obj.scribble_area.image = qimg
 
-        img_draw = obj.scribble_area.image_draw
-        buffer_draw = QBuffer()
-        buffer_draw.open(QBuffer.ReadWrite)
-        img_draw.save(buffer_draw, "PNG")
-        pil_im_draw = Image.open(io.BytesIO(buffer_draw.data())).filter(ImageFilter.BLUR)
-
-        bytes_img_draw = io.BytesIO()
-        pil_im_draw.save(bytes_img_draw, format='PNG')
-
-        qimg_draw = QImage()
-        qimg_draw.loadFromData(bytes_img_draw.getvalue())
-
-        obj.scribble_area.image_draw = qimg_draw
+        # img_draw = obj.scribble_area.image_draw
+        # buffer_draw = QBuffer()
+        # buffer_draw.open(QBuffer.ReadWrite)
+        # img_draw.save(buffer_draw, "PNG")
+        # pil_im_draw = Image.open(io.BytesIO(buffer_draw.data())).filter(ImageFilter.BLUR)
+        #
+        # bytes_img_draw = io.BytesIO()
+        # pil_im_draw.save(bytes_img_draw, format='PNG')
+        #
+        # qimg_draw = QImage()
+        # qimg_draw.loadFromData(bytes_img_draw.getvalue())
+        #
+        # obj.scribble_area.image_draw = qimg_draw
         obj.scribble_area.check = True
         obj.scribble_area.update()
 
     def noise(self, obj):
+        obj.scribble_area.saveImage()
+        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         obj.is_clicked_move = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
 
@@ -65,6 +69,8 @@ class Filter():
         obj.scribble_area.update()
 
     def twirling_spirals(self, obj):
+        obj.scribble_area.saveImage()
+        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         obj.is_clicked_move = False
         im = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         cx = im.shape[1] / 2
@@ -93,6 +99,8 @@ class Filter():
         obj.scribble_area.update()
 
     def pixelate(self, obj):
+        obj.scribble_area.saveImage()
+        obj.scribble_area.image_draw = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
         obj.is_clicked_move = False
         img = obj.scribble_area.QimageToCv(obj.scribble_area.image)
         height, width = img.shape[:2]
