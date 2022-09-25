@@ -49,6 +49,7 @@ class ScribbleArea(QWidget):
         self.open = False
         self.rotated = "None"
         self.is_text = False
+        self.selected = False
 
     def current_window_size(self):
         return self.width(), self.height()
@@ -122,12 +123,7 @@ class ScribbleArea(QWidget):
         self.update()
 
     def saveImage(self, file_name=None, file_format=None):
-        front_image = self.QimageToPil(self.image_draw).convert("RGBA")
-        background = self.QimageToPil(self.image).convert("RGBA")
-        width = (background.width - front_image.width) // 2
-        height = (background.height - front_image.height) // 2
-        background.paste(front_image, (width, height), front_image)
-        visible_image = self.PilToQimage(background)
+        visible_image = self.merge_two_images(self.image_draw,self.image)
         self.resizeImage(visible_image)
 
         if None != (file_name and file_format):
@@ -146,6 +142,7 @@ class ScribbleArea(QWidget):
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
 
         if self.pressed_button == "marquee":
+            self.selected = False
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
             if not self.begin.isNull() and not self.end.isNull():
@@ -156,6 +153,7 @@ class ScribbleArea(QWidget):
                 # self.coords = self.shape.getCoords()
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
+                self.selected = True
 
     def mousePressEvent(self, event):
         self.makeUndoCommand()
@@ -274,3 +272,12 @@ class ScribbleArea(QWidget):
 
     def photoshopObj(self, photoshop_obj):
         self.photoshop_obj = photoshop_obj
+
+    def merge_two_images(self, image1, image2):
+        front_image = self.QimageToPil(image1).convert("RGBA")
+        background = self.QimageToPil(image2).convert("RGBA")
+        width = (background.width - front_image.width) // 2
+        height = (background.height - front_image.height) // 2
+        background.paste(front_image, (width, height), front_image)
+        visible_image = self.PilToQimage(background)
+        return visible_image

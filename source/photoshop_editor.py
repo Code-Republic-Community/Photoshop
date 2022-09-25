@@ -32,6 +32,7 @@ class PhotoshopEditor(QMainWindow):
         self.button_clicked = [False, False, False, False, False, False, False, False, False]
 
     def setupUi(self, main_window):
+
         screen = QApplication.primaryScreen()
         rect = screen.availableGeometry()
         self.screen_width = rect.width()
@@ -40,9 +41,9 @@ class PhotoshopEditor(QMainWindow):
         main_window.setObjectName("MainWindow")
         main_window.setWindowTitle("Photoshop Clone")
         main_window.setGeometry((self.screen_width - 826) // 2, (self.screen_height - 561) // 2, 900, 600)
-        # main_window.setMinimumSize(QtCore.QSize(600, 400))
+        #main_window.setMinimumSize(QtCore.QSize(600, 400))
         main_window.setFixedSize(900, 600)
-        # main_window.setMaximumSize(self.screen_width, self.screen_height)
+        #main_window.setMaximumSize(self.screen_width, self.screen_height)
         main_window.setWindowIcon(QIcon('../content/photoshop.png'))
         # main_window.setStyleSheet("background-color: #222; color: #FFF")
         self.central_widget = QWidget(main_window)
@@ -266,7 +267,6 @@ class PhotoshopEditor(QMainWindow):
         self.scribble_area.pressed_button = 'eyedropper'
         self.allButtonWhite()
         self.button_list[5].setStyleSheet('background-color: red;')
-        self.buttons_obj.eyedropper(self)
         for i in self.band:
             i.draggable = False
 
@@ -298,12 +298,15 @@ class PhotoshopEditor(QMainWindow):
         self.scribble_area.pressed_button = 'type'
         self.allButtonWhite()
         self.button_list[7].setStyleSheet('background-color: red;')
+        #self.scribble_area.text = ''
         buttons.InputTextDialog(self.scribble_area).exec()
+
         if self.scribble_area.text != '':
+            print(self.scribble_area.text)
             obj = buttons.MoveText(self.scribble_area.text,
-                                   self.scribble_area.width_text, self.scribble_area.color_text,
-                                   self.scribble_area.bold, self.scribble_area.italic,
-                                   self.scribble_area.underline, self.scribble_area, self, dragable=False)
+                       self.scribble_area.width_text, self.scribble_area.color_text,
+                       self.scribble_area.bold, self.scribble_area.italic,
+                       self.scribble_area.underline, self.scribble_area, self, dragable=False)
             self.band.append(obj)
 
             self.moveText()
@@ -327,7 +330,7 @@ class PhotoshopEditor(QMainWindow):
         self.window.show()
 
     def documentation(self, obj1, obj2):
-        self.is_clicked_move = False
+        self.is_clicked_move =False
         self.window = QDialog()
         self.ui = help.Documentation()
         self.ui.setupUi(self.window)

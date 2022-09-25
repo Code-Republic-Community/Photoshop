@@ -9,7 +9,7 @@ import numpy as np
 import sys
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-import aspose.words as aw
+# import aspose.words as aw
 from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
@@ -19,40 +19,35 @@ from reportlab.graphics import renderPM
 # from image import Image
 
 class Buttons(QMainWindow):
-    obj_photoshop = None
-
     def __init__(self):
         super().__init__()
         self.image_type = ''
-
-    def eyedropper(self, obj):
-        global obj_photoshop
-        obj_photoshop = obj
 
     def get_color(self, obj_scribble, pos_x, pos_y):
         img = obj_scribble.image.pixel(pos_x, pos_y)
         color = QColor(img).getRgb()
         obj_scribble.color_pen = color
-        obj_photoshop.allButtonWhite()
-        obj_photoshop.paint()
+        obj_scribble.photoshop_obj.allButtonWhite()
+        obj_scribble.photoshop_obj.paint()
 
     def crop(self, obj):
-        cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
-        cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
+        if obj.scribble_area.selected:
+            cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
+            cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
 
-        obj.scribble_area.image_draw.fill((Qt.transparent))
-        obj.scribble_area.image.fill(qRgb(255, 255, 255))
+            obj.scribble_area.image_draw.fill((Qt.transparent))
+            obj.scribble_area.image.fill(qRgb(255, 255, 255))
 
-        new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image)
+            new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
+            obj.scribble_area.resizeImage(obj.scribble_area.image)
 
-        painter = QPainter(obj.scribble_area.image)
-        painter2 = QPainter(obj.scribble_area.image_draw)
-        painter.drawImage(obj.scribble_area.shape, cropped)
-        painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
-        obj.scribble_area.check = True
+            painter = QPainter(obj.scribble_area.image)
+            painter2 = QPainter(obj.scribble_area.image_draw)
+            painter.drawImage(obj.scribble_area.shape, cropped)
+            painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
+            obj.scribble_area.check = True
 
-        obj.scribble_area.update()
+            obj.scribble_area.update()
 
     def image_converter(self, obj):
         self.filename = ''
@@ -163,7 +158,7 @@ class TextType(QDialog):
         self.setLayout(layout)
 
     def accept(self):
-        if self.size.text() != '' and int(self.size.text()) >= 1 and int(self.size.text()) <= 50:
+        if self.size.text() != '' and int(self.size.text()) >= 1:
             self.obj.is_bold = False
             self.obj.is_italic = False
             self.obj.is_underline = False
@@ -183,7 +178,6 @@ class TextType(QDialog):
             self.font_size.setBold(self.obj.is_bold)
             self.text.setFont(self.font_size)
             self.obj.is_text = True
-            # self.obj.check = True
             self.close()
 
 
@@ -195,6 +189,7 @@ class InputTextDialog(QDialog):
         self.setFixedSize(600, 500)
 
         self.obj = obj_scribble_area
+
         self.color_text = (0, 0, 0, 255)
         self.is_bold = False
         self.is_italic = False
@@ -209,7 +204,7 @@ class InputTextDialog(QDialog):
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject_window)
+        button_box.rejected.connect(self.reject)
 
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
@@ -235,7 +230,6 @@ class InputTextDialog(QDialog):
         self.color_text = QColorDialog().getColor().getRgb()
         self.obj.color_text = self.color_text
         self.text.setStyleSheet(f'color: rgb{self.color_text};')
-        self.obj.text = ''
 
     def select_font(self):
         TextType(self, self.text).exec()
@@ -248,11 +242,9 @@ class InputTextDialog(QDialog):
             self.obj.text = self.text.text()
             self.obj.width_text = self.is_size
             self.obj.color_text = self.color_text
+
             self.close()
 
-    def reject_window(self):
-        self.obj.text = ''
-        self.close()
 
 
 class MoveText(QWidget):
@@ -320,10 +312,12 @@ class MoveText(QWidget):
             painter.setFont(font)
             painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
             painter.end()
-
             self.hide()
+
+
             if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
                 Image.rotate(self.phj_obj, self.scribble_obj.rotated)
+
 
     def mousePressEvent(self, event):
 

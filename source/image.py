@@ -20,7 +20,7 @@ class Image:
         InputSize(obj, 'canvas size').exec()
 
     @classmethod
-    def rotate_left(cls, obj):
+    def rotate_left(cls, obj, obj1):
         """ytutyu"""
         obj.scribble_area.rotated = "left"
         if not obj.is_clicked_move:

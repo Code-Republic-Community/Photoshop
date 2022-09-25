@@ -5,7 +5,9 @@ import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import QRect
-cropped = QImage()
+cropped_image = QImage()
+cropped_drawimage = QImage
+
 
 
 class Edit():
@@ -41,8 +43,10 @@ class Edit():
 
     def copy(self, obj):
         obj.is_clicked_move = False
-        global cropped
-        cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
+        global cropped_image, cropped_drawimage
+        cropped_image = obj.scribble_area.image.copy(obj.scribble_area.shape)
+        cropped_drawimage = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
+        cropped_image = obj.scribble_area.merge_two_images(cropped_drawimage,cropped_image)
         obj.scribble_area.check = True
 
     def paste(self, obj):
@@ -110,7 +114,7 @@ class MovePicrute(QtWidgets.QWidget):
         layout.addWidget(self.label)
         self.rectangle = QRect()
 
-        pixmap01 = QtGui.QPixmap.fromImage(cropped)
+        pixmap01 = QtGui.QPixmap.fromImage(cropped_image)
         self.label.setPixmap(pixmap01)
         self._band = QtWidgets.QRubberBand(
             QtWidgets.QRubberBand.Rectangle, self)
@@ -136,8 +140,8 @@ class MovePicrute(QtWidgets.QWidget):
             self.x_pos = self.pos()
             self.y_pos = self.geometry()
             painter = QPainter(self.parent.image_draw)
-            global cropped
-            painter.drawImage(self.y_pos, cropped)
+            global cropped_image
+            painter.drawImage(self.y_pos, cropped_image)
             self.parent.update()
             self.hide()
 
@@ -212,3 +216,35 @@ class KeyShortcut(QDialog):
         layout.addLayout(layout_shortcuts)
 
         self.setLayout(layout)
+
+
+class KeyShortcut_new(QDialog):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(645, 515)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Dialog)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setObjectName("label")
+        self.verticalLayout_4.addWidget(self.label)
+        self.horizontalLayout.addLayout(self.verticalLayout_4)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout_5.addWidget(self.label_2)
+        self.horizontalLayout.addLayout(self.verticalLayout_5)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout)
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.label.setText(_translate("Dialog", "TextLabel"))
+        self.label_2.setText(_translate("Dialog", "TextLabel"))
