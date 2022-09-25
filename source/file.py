@@ -1,9 +1,14 @@
+import sys
+
+from PIL import Image
 from PyQt5.QtCore import QPoint, Qt, QDir, QSize, QBuffer
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QPagedPaintDevice
 from PyQt5.QtCore import QDir
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget, QMainWindow
 from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
 import cv2 as cv
+
+closed = False
 
 
 class File(QMainWindow):
@@ -32,22 +37,25 @@ class File(QMainWindow):
             obj.scribble_area.resizeImage(obj.scribble_area.image, newSize)
 
             obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
-            #newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
+            # newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
             obj.scribble_area.resizeImageDraw(obj.scribble_area.image_draw, newSize)
 
             obj.scribble_area.update()
 
-
     def open(self, obj):
         obj.is_clicked_move = False
         self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
-                                                       "Image files (*.jpg *.png)")
+                                                       "Image files (*.jpg *.png *.gif)")
 
         if self.filename != '':
+            # if self.filename[-3:] == 'gif':
+            #     point_index = self.filename.rindex('.')
+            #     Image.open(self.filename).convert('RGB'). \
+            #         save(f'{self.filename[:point_index + 1]}png')
+
             img = cv.resize(cv.imread(self.filename), obj.scribble_area.current_window_size())
             if self.filename:
                 obj.scribble_area.openImage(img)
-            self.check = True
             obj.scribble_area.check = True
 
     def save(self, obj):
@@ -101,7 +109,8 @@ class File(QMainWindow):
         if self.filename:
             return obj.scribble_area.saveImage(self.filename, file_format)
 
-    def print(self, obj):
+    @classmethod
+    def print(cls, obj, obj1=None):
         obj.is_clicked_move = False
         printer = QPrinter(QPrinter.HighResolution)
         printer.setResolution(1200)
@@ -118,7 +127,7 @@ class File(QMainWindow):
         painter.drawImage(0, 0, im)
         painter.end()
 
-    def close_window(self, obj):
+    def close_window(self, obj, event):
         obj.is_clicked_move = False
         if not obj.scribble_area.check:
             close1 = QMessageBox.question(self,
@@ -126,7 +135,12 @@ class File(QMainWindow):
                                           "Are you sure want to close the program?",
                                           QMessageBox.Yes | QMessageBox.No)
             if close1 == QMessageBox.Yes:
-                exit()
+                global closed
+                closed = True
+                obj.main_window.close()
+            else:
+                if str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                    event.ignore()
         else:
             close = QMessageBox.question(self,
                                          "QUIT",
@@ -137,6 +151,5 @@ class File(QMainWindow):
                     File.save(self, obj)
                 else:
                     File.save_as(self, obj)
-                exit()
             else:
-                exit()
+                obj.main_window.close()
