@@ -106,5 +106,6 @@ class Documentation(QDialog):
         self.label_3.setText(
             _translate("Documentation", " It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
                                " photo editing feature tools are available on it."))
+
         self.label_2.setText(_translate("Help", "DOCUMENTATION"))
 

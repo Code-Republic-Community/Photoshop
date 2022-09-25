@@ -26,7 +26,7 @@ class File(QMainWindow):
             else:
                 obj.scribble_area.check = False
 
-            width, height = obj.scribble_area.currentWindowSize()
+            width, height = obj.scribble_area.current_window_size()
             obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
             newSize = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
             obj.scribble_area.resizeImage(obj.scribble_area.image, newSize)
@@ -44,12 +44,11 @@ class File(QMainWindow):
                                                        "Image files (*.jpg *.png)")
 
         if self.filename != '':
-            img = cv.resize(cv.imread(self.filename), obj.scribble_area.currentWindowSize())
+            img = cv.resize(cv.imread(self.filename), obj.scribble_area.current_window_size())
             if self.filename:
                 obj.scribble_area.openImage(img)
             self.check = True
             obj.scribble_area.check = True
-        is_clicked = False
 
     def save(self, obj):
         obj.is_clicked_move = False

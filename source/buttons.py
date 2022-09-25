@@ -14,44 +14,40 @@ from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
-from image import Image
 
+
+# from image import Image
 
 class Buttons(QMainWindow):
-    obj_photoshop = None
-
     def __init__(self):
         super().__init__()
         self.image_type = ''
-
-    def eyedropper(self, obj):
-        global obj_photoshop
-        obj_photoshop = obj
 
     def get_color(self, obj_scribble, pos_x, pos_y):
         img = obj_scribble.image.pixel(pos_x, pos_y)
         color = QColor(img).getRgb()
         obj_scribble.color_pen = color
-        obj_photoshop.allButtonWhite()
-        obj_scribble.pressed_button = None
+        obj_scribble.photoshop_obj.allButtonWhite()
+        obj_scribble.photoshop_obj.paint()
 
     def crop(self, obj):
-        cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
-        cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
+        if obj.scribble_area.selected:
+            cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
+            cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
 
-        obj.scribble_area.image_draw.fill((Qt.transparent))
-        obj.scribble_area.image.fill(qRgb(255, 255, 255))
+            obj.scribble_area.image_draw.fill((Qt.transparent))
+            obj.scribble_area.image.fill(qRgb(255, 255, 255))
 
-        new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image)
+            new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
+            obj.scribble_area.resizeImage(obj.scribble_area.image)
 
-        painter = QPainter(obj.scribble_area.image)
-        painter2 = QPainter(obj.scribble_area.image_draw)
-        painter.drawImage(obj.scribble_area.shape, cropped)
-        painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
-        obj.scribble_area.check = True
+            painter = QPainter(obj.scribble_area.image)
+            painter2 = QPainter(obj.scribble_area.image_draw)
+            painter.drawImage(obj.scribble_area.shape, cropped)
+            painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
+            obj.scribble_area.check = True
 
-        obj.scribble_area.update()
+            obj.scribble_area.update()
 
     def image_converter(self, obj):
         self.filename = ''
@@ -163,28 +159,26 @@ class TextType(QDialog):
 
     def accept(self):
         if self.size.text() != '' and int(self.size.text()) >= 1:
-            if self.bold.isChecked() or self.italic.isChecked() \
-                    or self.underline.isChecked():
-                self.obj.is_bold = False
-                self.obj.is_italic = False
-                self.obj.is_underline = False
-                self.font_size = self.text.font()
-                if len(self.size.text()) != 0:
-                    self.font_size.setPointSize(int(self.size.text()))
-                    self.obj.is_size = int(self.size.text())
-                if self.bold.isChecked():
-                    self.obj.is_bold = True
-                if self.italic.isChecked():
-                    self.obj.is_italic = True
-                if self.underline.isChecked():
-                    self.obj.is_underline = True
+            self.obj.is_bold = False
+            self.obj.is_italic = False
+            self.obj.is_underline = False
+            self.font_size = self.text.font()
+            if len(self.size.text()) != 0:
+                self.font_size.setPointSize(int(self.size.text()))
+                self.obj.is_size = int(self.size.text())
+            if self.bold.isChecked():
+                self.obj.is_bold = True
+            if self.italic.isChecked():
+                self.obj.is_italic = True
+            if self.underline.isChecked():
+                self.obj.is_underline = True
 
-                self.font_size.setUnderline(self.obj.is_underline)
-                self.font_size.setItalic(self.obj.is_italic)
-                self.font_size.setBold(self.obj.is_bold)
-                self.text.setFont(self.font_size)
-                self.obj.is_text = True
-                self.close()
+            self.font_size.setUnderline(self.obj.is_underline)
+            self.font_size.setItalic(self.obj.is_italic)
+            self.font_size.setBold(self.obj.is_bold)
+            self.text.setFont(self.font_size)
+            self.obj.is_text = True
+            self.close()
 
 
 class InputTextDialog(QDialog):
@@ -252,6 +246,7 @@ class InputTextDialog(QDialog):
             self.close()
 
 
+
 class MoveText(QWidget):
     def __init__(self, text, text_width, text_color, bold, italic, underline,
                  parent, phj_obj, dragable=False):
@@ -317,8 +312,9 @@ class MoveText(QWidget):
             painter.setFont(font)
             painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
             painter.end()
-
             self.hide()
+
+
             if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
                 Image.rotate(self.phj_obj, self.scribble_obj.rotated)
 

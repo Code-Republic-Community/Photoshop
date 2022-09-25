@@ -18,19 +18,15 @@ from source.buttons import MoveText
 class ScribbleArea(QWidget):
     def __init__(self):
         super(ScribbleArea, self).__init__()
-        # self.x = 0
-        # self.y = 0
         self.setAttribute(Qt.WA_StaticContents)
         self.photoshop_obj = None
         self.image_draw = QImage(self.size(), QImage.Format_ARGB32)
         self.image = QImage(self.size(), QImage.Format_ARGB32)
         self.image.fill(qRgb(255, 255, 255))
-        self.image_size_x = 900
-        self.image_size_y = 600
+        self.image_width = 900
+        self.image_height = 600
         self.buttons = Buttons()
         self.pressed_button = None
-        # newSize = self.image.size().expandedTo(self.size())
-        # self.resizeImage(self.image, QSize(newSize))
         self.update()
         self.last_point = QPoint()
         self.check = False
@@ -53,8 +49,9 @@ class ScribbleArea(QWidget):
         self.open = False
         self.rotated = "None"
         self.is_text = False
+        self.selected = False
 
-    def currentWindowSize(self):
+    def current_window_size(self):
         return self.width(), self.height()
 
     def openImage(self, img):
@@ -71,7 +68,7 @@ class ScribbleArea(QWidget):
 
     def resizeImage(self, image, new_size=None):
         if new_size is None:
-            new_image = QImage(QSize(self.image_size_x, self.image_size_y), QImage.Format_RGB32)
+            new_image = QImage(QSize(self.image_width, self.image_height), QImage.Format_RGB32)
         else:
             new_image = QImage(QSize(new_size), QImage.Format_RGB32)
 
@@ -83,16 +80,16 @@ class ScribbleArea(QWidget):
 
     def resizeEvent(self, event):
         if self.open:
-            if self.currentWindowSize()[0] != self.image_size_x \
-                    or self.currentWindowSize()[1] != self.image_size_y:
-                img = cv.resize(self.QimageToCv(self.image), (self.image_size_x, self.image_size_y))
+            if self.current_window_size()[0] > self.image_width \
+                    or self.current_window_size()[1] > self.image_height:
+                img = cv.resize(self.QimageToCv(self.image), (self.image_width, self.image_height))
             else:
-                img = cv.resize(self.QimageToCv(self.image), (self.currentWindowSize()))
+                img = cv.resize(self.QimageToCv(self.image), (self.current_window_size()))
 
             self.image = self.CvToQimage(img)
         else:
             pixmap = QPixmap()
-            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.image_size_x, self.image_size_y,
+            pixamp2 = pixmap.fromImage(self.image.copy().scaled(self.image_width, self.image_height,
                                                                 Qt.IgnoreAspectRatio,
                                                                 Qt.SmoothTransformation))
             self.image_copy = self.image.copy()
@@ -100,7 +97,7 @@ class ScribbleArea(QWidget):
 
         pixmap = QPixmap()
         pixamp2 = pixmap.fromImage(
-            self.image_draw.copy().scaled(self.image_size_x, self.image_size_y,
+            self.image_draw.copy().scaled(self.image_width, self.image_height,
                                           Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         self.image_copy = self.image.copy()
         self.image_draw = pixamp2.toImage()
@@ -112,10 +109,10 @@ class ScribbleArea(QWidget):
         pixmap = QPixmap()
         if new_size is None:
             pixamp2 = pixmap.fromImage(
-                image.copy().scaled(self.image_size_x, self.image_size_y,
+                image.copy().scaled(self.image_width, self.image_height,
                                     Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         else:
-            width, height = self.currentWindowSize()
+            width, height = self.current_window_size()
             pixamp2 = pixmap.fromImage(
                 image.copy().scaled(width, height,
                                     Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
@@ -126,12 +123,7 @@ class ScribbleArea(QWidget):
         self.update()
 
     def saveImage(self, file_name=None, file_format=None):
-        front_image = self.QimageToPil(self.image_draw).convert("RGBA")
-        background = self.QimageToPil(self.image).convert("RGBA")
-        width = (background.width - front_image.width) // 2
-        height = (background.height - front_image.height) // 2
-        background.paste(front_image, (width, height), front_image)
-        visible_image = self.PilToQimage(background)
+        visible_image = self.merge_two_images(self.image_draw,self.image)
         self.resizeImage(visible_image)
 
         if None != (file_name and file_format):
@@ -150,6 +142,7 @@ class ScribbleArea(QWidget):
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
 
         if self.pressed_button == "marquee":
+            self.selected = False
             painter.setPen(QPen(Qt.black, 1, Qt.DotLine))
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
             if not self.begin.isNull() and not self.end.isNull():
@@ -160,6 +153,7 @@ class ScribbleArea(QWidget):
                 # self.coords = self.shape.getCoords()
                 # painter.drawRect(self.shape.normalized())
                 painter.drawRect(QRect(self.begin, self.end).normalized())
+                self.selected = True
 
     def mousePressEvent(self, event):
         self.makeUndoCommand()
@@ -278,3 +272,12 @@ class ScribbleArea(QWidget):
 
     def photoshopObj(self, photoshop_obj):
         self.photoshop_obj = photoshop_obj
+
+    def merge_two_images(self, image1, image2):
+        front_image = self.QimageToPil(image1).convert("RGBA")
+        background = self.QimageToPil(image2).convert("RGBA")
+        width = (background.width - front_image.width) // 2
+        height = (background.height - front_image.height) // 2
+        background.paste(front_image, (width, height), front_image)
+        visible_image = self.PilToQimage(background)
+        return visible_image
