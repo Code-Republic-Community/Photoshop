@@ -1,10 +1,5 @@
 import functools
-import io
-import sys
-from functools import partial
-
 from PyQt5.QtCore import QBuffer, Qt
-
 from PyQt5.QtWidgets import QApplication, QPushButton, \
     QLabel, QVBoxLayout, QWidget, QBoxLayout, QMainWindow, QAction, QSizePolicy, QHBoxLayout, QMenuBar, QMenu, \
     QColorDialog, QSpinBox, QDialog
@@ -14,13 +9,9 @@ import file
 import edit
 import image
 import filter
+import scribble_area
 import buttons
-from scribble_area import ScribbleArea
-from source.buttons import Buttons, InputTextDialog
-from help import Help, Documentation
-import numpy as np
-import cv2 as cv
-from source.buttons import MoveText
+import help
 from load_screen import app
 
 
@@ -28,9 +19,9 @@ class PhotoshopEditor(QMainWindow):
     def __init__(self):
         super(PhotoshopEditor, self).__init__()
         self.is_clicked_move = False
-        self.scribble_area = ScribbleArea()
+        self.scribble_area = scribble_area.ScribbleArea()
         self.scribble_area.photoshopObj(self)
-        self.buttons_obj = Buttons()
+        self.buttons_obj = buttons.Buttons()
         self.pressed_button = None
         self.main_window: QMainWindow = None
         self.button_list = [None] * 9
@@ -309,11 +300,11 @@ class PhotoshopEditor(QMainWindow):
         self.allButtonWhite()
         self.button_list[7].setStyleSheet('background-color: red;')
         #self.scribble_area.text = ''
-        InputTextDialog(self.scribble_area).exec()
+        buttons.InputTextDialog(self.scribble_area).exec()
 
         if self.scribble_area.text != '':
             print(self.scribble_area.text)
-            obj = MoveText(self.scribble_area.text,
+            obj = buttons.MoveText(self.scribble_area.text,
                        self.scribble_area.width_text, self.scribble_area.color_text,
                        self.scribble_area.bold, self.scribble_area.italic,
                        self.scribble_area.underline, self.scribble_area, self, dragable=False)
@@ -335,14 +326,14 @@ class PhotoshopEditor(QMainWindow):
     def help(self, obj1, obj2):
         self.is_clicked_move = False
         self.window = QDialog()
-        self.ui = Help()
+        self.ui = help.Help()
         self.ui.setupUi(self.window)
         self.window.show()
 
     def documentation(self, obj1, obj2):
         self.is_clicked_move =False
         self.window = QDialog()
-        self.ui = Documentation()
+        self.ui = help.Documentation()
         self.ui.setupUi(self.window)
         self.window.show()
 
@@ -351,13 +342,9 @@ class PhotoshopEditor(QMainWindow):
         if height > 701:
             height = 701
             bigger = True
-        elif height < 400:
-            height = 400
 
         if width > 1360:
             width = 1360
-        elif width < 600:
-            width = 600
 
         self.main_window.setFixedSize(width, height)
         if bigger:

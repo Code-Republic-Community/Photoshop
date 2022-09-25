@@ -1,6 +1,6 @@
 """asdas"""
 
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui
 import cv2 as cv
 
 
@@ -8,31 +8,31 @@ class Image:
     """asfsd"""
 
     @classmethod
-    def image_size(cls, obj, obj1, obj2):
+    def image_size(cls, obj, obj1):
         """ffffff"""
         obj.is_clicked_move = False
         InputSize(obj, 'image size').exec()
 
     @classmethod
-    def canvas_size(cls, obj, obj1, obj2):
+    def canvas_size(cls, obj, obj1):
         """kjl"""
         obj.is_clicked_move = False
         InputSize(obj, 'canvas size').exec()
 
     @classmethod
-    def rotate_left(cls, obj, obj1, obj2):
+    def rotate_left(cls, obj, obj1):
         """ytutyu"""
         obj.scribble_area.rotated = "left"
-        if obj.is_clicked_move == False:
+        if not obj.is_clicked_move:
             Image().rotate(obj, 'left')
 
-
     @classmethod
-    def rotate_right(cls, obj, obj1, obj2):
+    def rotate_right(cls, obj, obj1):
         """hjghgvn"""
         obj.scribble_area.rotated = "right"
-        if obj.is_clicked_move == False:
+        if not obj.is_clicked_move:
             Image().rotate(obj, 'right')
+
     @classmethod
     def rotate(cls, obj, rotate_type):
         """hguty"""
@@ -46,14 +46,14 @@ class Image:
 
         image = obj.scribble_area.image.transformed(transform90)
         image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, (obj.scribble_area.image_size_x, obj.scribble_area.image_size_y))
+        image = cv.resize(image, (obj.scribble_area.image_width, obj.scribble_area.image_height))
         obj.scribble_area.resizeImage(image)
 
         image_draw = obj.scribble_area.image_draw.transformed(transform90)
         obj.scribble_area.resizeImageDraw(image_draw)
         obj.scribble_area.check = True
         obj.scribble_area.update()
-        print(obj.scribble_area.rotated,"rot_none_worked")
+        print(obj.scribble_area.rotated, "rot_none_worked")
 
 
 class InputSize(QtWidgets.QDialog):
@@ -91,8 +91,8 @@ class InputSize(QtWidgets.QDialog):
                 height = int(self.height.text())
                 img = self.obj.scribble_area.image
                 img = self.obj.scribble_area.QimageToCv(img)
-                self.obj.scribble_area.image_size_x = width
-                self.obj.scribble_area.image_size_y = height
+                self.obj.scribble_area.image_width = width
+                self.obj.scribble_area.image_height = height
                 image = cv.resize(img, (width, height))
                 self.obj.scribble_area.resizeImage(image)
                 self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
@@ -105,5 +105,11 @@ class InputSize(QtWidgets.QDialog):
             if len(self.width.text()) != 0 and len(self.height.text()):
                 width = int(self.width.text())
                 height = int(self.height.text())
+                if width < 600:
+                    width = 600
+                if height < 400:
+                    height = 400
+                self.obj.scribble_area.image_width = width
+                self.obj.scribble_area.image_height = height
                 self.obj.setWindowSize(width, height)
                 self.close()

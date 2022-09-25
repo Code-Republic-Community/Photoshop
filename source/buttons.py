@@ -9,13 +9,14 @@ import numpy as np
 import sys
 from PyQt5.QtCore import Qt, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-# import aspose.words as aw
+import aspose.words as aw
 from PIL import Image
 from edit import MovePicrute
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
-from image import Image
 
+
+# from image import Image
 
 class Buttons(QMainWindow):
     obj_photoshop = None
@@ -33,7 +34,7 @@ class Buttons(QMainWindow):
         color = QColor(img).getRgb()
         obj_scribble.color_pen = color
         obj_photoshop.allButtonWhite()
-        obj_scribble.pressed_button = None
+        obj_photoshop.paint()
 
     def crop(self, obj):
         cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
@@ -163,28 +164,26 @@ class TextType(QDialog):
 
     def accept(self):
         if self.size.text() != '' and int(self.size.text()) >= 1:
-            if self.bold.isChecked() or self.italic.isChecked() \
-                    or self.underline.isChecked():
-                self.obj.is_bold = False
-                self.obj.is_italic = False
-                self.obj.is_underline = False
-                self.font_size = self.text.font()
-                if len(self.size.text()) != 0:
-                    self.font_size.setPointSize(int(self.size.text()))
-                    self.obj.is_size = int(self.size.text())
-                if self.bold.isChecked():
-                    self.obj.is_bold = True
-                if self.italic.isChecked():
-                    self.obj.is_italic = True
-                if self.underline.isChecked():
-                    self.obj.is_underline = True
+            self.obj.is_bold = False
+            self.obj.is_italic = False
+            self.obj.is_underline = False
+            self.font_size = self.text.font()
+            if len(self.size.text()) != 0:
+                self.font_size.setPointSize(int(self.size.text()))
+                self.obj.is_size = int(self.size.text())
+            if self.bold.isChecked():
+                self.obj.is_bold = True
+            if self.italic.isChecked():
+                self.obj.is_italic = True
+            if self.underline.isChecked():
+                self.obj.is_underline = True
 
-                self.font_size.setUnderline(self.obj.is_underline)
-                self.font_size.setItalic(self.obj.is_italic)
-                self.font_size.setBold(self.obj.is_bold)
-                self.text.setFont(self.font_size)
-                self.obj.is_text = True
-                self.close()
+            self.font_size.setUnderline(self.obj.is_underline)
+            self.font_size.setItalic(self.obj.is_italic)
+            self.font_size.setBold(self.obj.is_bold)
+            self.text.setFont(self.font_size)
+            self.obj.is_text = True
+            self.close()
 
 
 class InputTextDialog(QDialog):
@@ -321,7 +320,6 @@ class MoveText(QWidget):
             self.hide()
             if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
                 Image.rotate(self.phj_obj, self.scribble_obj.rotated)
-
 
     def mousePressEvent(self, event):
 
