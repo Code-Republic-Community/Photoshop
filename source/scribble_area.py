@@ -220,7 +220,7 @@ class ScribbleArea(QWidget):
     def toolWidth(self, obj_photoshop_editor, obj1, tool: str):
         if tool == 'pen':
             num, ok = QInputDialog.getInt(self, f'{tool.title()} width', f'Choose the {tool} width',
-                                          0, 1, 30)
+                                          0, 1, 50)
             if ok:
                 self.pen_width = num
                 obj_photoshop_editor.paint()

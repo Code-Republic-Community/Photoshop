@@ -158,7 +158,7 @@ class TextType(QDialog):
         self.setLayout(layout)
 
     def accept(self):
-        if self.size.text() != '' and int(self.size.text()) >= 1:
+        if self.size.text() != '' and int(self.size.text()) >= 1 and int(self.size.text()) <= 50:
             self.obj.is_bold = False
             self.obj.is_italic = False
             self.obj.is_underline = False
@@ -178,6 +178,7 @@ class TextType(QDialog):
             self.font_size.setBold(self.obj.is_bold)
             self.text.setFont(self.font_size)
             self.obj.is_text = True
+            # self.obj.check = True
             self.close()
 
 
@@ -187,9 +188,9 @@ class InputTextDialog(QDialog):
         self.setWindowTitle("Input size")
         self.setWindowIcon(QIcon('../content/photoshop.png'))
         self.setFixedSize(600, 500)
+        self.closed_window = True
 
         self.obj = obj_scribble_area
-
         self.color_text = (0, 0, 0, 255)
         self.is_bold = False
         self.is_italic = False
@@ -204,7 +205,7 @@ class InputTextDialog(QDialog):
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
+        button_box.rejected.connect(self.reject_window)
 
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
@@ -230,21 +231,29 @@ class InputTextDialog(QDialog):
         self.color_text = QColorDialog().getColor().getRgb()
         self.obj.color_text = self.color_text
         self.text.setStyleSheet(f'color: rgb{self.color_text};')
+        self.obj.text = ''
 
     def select_font(self):
         TextType(self, self.text).exec()
 
     def accept(self):
         if self.text.text():
+            self.closed_window = False
             self.obj.bold = self.is_bold
             self.obj.italic = self.is_italic
             self.obj.underline = self.is_underline
             self.obj.text = self.text.text()
             self.obj.width_text = self.is_size
             self.obj.color_text = self.color_text
-
             self.close()
 
+    def reject_window(self):
+        self.obj.text = ''
+        self.close()
+
+    def closeEvent(self, event):
+        if self.closed_window:
+            self.reject_window()
 
 
 class MoveText(QWidget):
@@ -292,7 +301,6 @@ class MoveText(QWidget):
         self._band.resize(self.size())
 
     def paintEvent(self, event):
-
         if not self.phj_obj.is_clicked_move or self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
             print(self.phj_obj.is_clicked_move)
             painter = QPainter(self.scribble_obj.image_draw)
@@ -312,15 +320,12 @@ class MoveText(QWidget):
             painter.setFont(font)
             painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
             painter.end()
+
             self.hide()
-
-
             if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
                 Image.rotate(self.phj_obj, self.scribble_obj.rotated)
 
-
     def mousePressEvent(self, event):
-
         if self.draggable and event.button() == Qt.LeftButton:
             self.mouse_press_pos = event.globalPos()  # global
             self.mouse_move_pos = event.globalPos() - self.pos()  # local
@@ -339,7 +344,6 @@ class MoveText(QWidget):
         super(MoveText, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
-
         if self.mouse_press_pos is not None:
             if event.button() == Qt.RightButton:
                 moved = event.globalPos() - self.mouse_press_pos

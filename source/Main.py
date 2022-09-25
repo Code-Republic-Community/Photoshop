@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import *
 
 from load_screen import LoadScreen
 from photoshop_editor import PhotoshopEditor
+import file
 
 counter = 0
 
@@ -21,6 +22,10 @@ class MainWindow(QMainWindow):
 
         # QtCore.QTimer.singleShot(1500, lambda: self.setStyleSheet("background-color: #222; color: #FFF"))
 
+    def closeEvent(self, event):
+        if not file.closed:
+            file.File.close_window(self, self.ui, event)
+
 
 class SplashScreen(QMainWindow):
     def __init__(self):
@@ -28,7 +33,6 @@ class SplashScreen(QMainWindow):
         self.ui = LoadScreen()
         self.ui.setupUi(self)
 
-        ## REMOVE TITLE BAR
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
