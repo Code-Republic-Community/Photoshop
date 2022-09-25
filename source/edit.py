@@ -192,24 +192,21 @@ class KeyShortcut(QDialog):
                                 'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
                                 'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
 
-        y = 0
         myFont = QtGui.QFont()
         myFont.setBold(True)
         for key in dictionary_shortcuts.keys():
             label = QLabel(self)
             label.setText(key)
-            label.move(50, y)
             label.setFont(myFont)
             layout_options.addWidget(label)
-            y += 20
 
-        y = 4
+        #y = 4
         for value in dictionary_shortcuts.values():
             label = QLabel(self)
             label.setText(value)
-            label.move(200, y)
+            #label.move(200, y)
             layout_shortcuts.addWidget(label)
-            y += 17
+            #y += 17
 
         layout.addLayout(layout_options)
         layout.addLayout(layout_shortcuts)

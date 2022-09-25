@@ -163,7 +163,7 @@ class TextType(QDialog):
         self.setLayout(layout)
 
     def accept(self):
-        if self.size.text() != '' and int(self.size.text()) >= 1:
+        if self.size.text() != '' and int(self.size.text()) >= 1 and int(self.size.text()) <= 50:
             self.obj.is_bold = False
             self.obj.is_italic = False
             self.obj.is_underline = False
@@ -183,6 +183,7 @@ class TextType(QDialog):
             self.font_size.setBold(self.obj.is_bold)
             self.text.setFont(self.font_size)
             self.obj.is_text = True
+            # self.obj.check = True
             self.close()
 
 
@@ -194,7 +195,6 @@ class InputTextDialog(QDialog):
         self.setFixedSize(600, 500)
 
         self.obj = obj_scribble_area
-
         self.color_text = (0, 0, 0, 255)
         self.is_bold = False
         self.is_italic = False
@@ -209,7 +209,7 @@ class InputTextDialog(QDialog):
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
+        button_box.rejected.connect(self.reject_window)
 
         btn_select_color = QPushButton(self)
         btn_select_color.setText("Select Color")
@@ -235,6 +235,7 @@ class InputTextDialog(QDialog):
         self.color_text = QColorDialog().getColor().getRgb()
         self.obj.color_text = self.color_text
         self.text.setStyleSheet(f'color: rgb{self.color_text};')
+        self.obj.text = ''
 
     def select_font(self):
         TextType(self, self.text).exec()
@@ -247,8 +248,11 @@ class InputTextDialog(QDialog):
             self.obj.text = self.text.text()
             self.obj.width_text = self.is_size
             self.obj.color_text = self.color_text
-
             self.close()
+
+    def reject_window(self):
+        self.obj.text = ''
+        self.close()
 
 
 class MoveText(QWidget):
