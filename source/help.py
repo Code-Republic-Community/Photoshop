@@ -1,110 +1,159 @@
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QLabel
+
 
 class Help(QDialog):
-
-    def setupUi(self, help):
-        help.setObjectName("Help")
-        help.setWindowIcon(QIcon('../content/photoshop.png'))
-        help.resize(682, 556)
-        help.setMinimumSize(QtCore.QSize(682, 556))
-        vertical_layout = QtWidgets.QVBoxLayout(help)
-        vertical_layout.setObjectName("verticalLayout")
-        scroll_area = QtWidgets.QScrollArea(help)
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setObjectName("scrollArea")
-        scroll_area_widget_contents = QtWidgets.QWidget()
-        scroll_area_widget_contents.setGeometry(QtCore.QRect(0, 0, 656, 530))
-        scroll_area_widget_contents.setObjectName("scrollAreaWidgetContents")
-        horizontal_layout = QtWidgets.QHBoxLayout(scroll_area_widget_contents)
-        horizontal_layout.setObjectName("horizontalLayout")
-        frame = QtWidgets.QFrame(scroll_area_widget_contents)
-        frame.setMinimumSize(QtCore.QSize(613, 500))
-        frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        frame.setObjectName("frame")
-        grid_layout = QtWidgets.QGridLayout(frame)
-        grid_layout.setObjectName("gridLayout")
-        label = QtWidgets.QLabel(frame)
-        label.setText("")
-        label.setObjectName("label")
-        grid_layout.addWidget(label, 5, 0, 1, 1)
-        spacer_item = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        grid_layout.addItem(spacer_item, 2, 0, 1, 1)
-        self.label_3 = QtWidgets.QLabel(frame)
-        self.label_3.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_3.setStyleSheet("font: italic 18pt \"Gill Sans\";")
-        self.label_3.setObjectName("label_3")
-        grid_layout.addWidget(self.label_3, 1, 0, 1, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.label_2 = QtWidgets.QLabel(frame)
-        self.label_2.setStyleSheet("font: italic 24pt \"Gill Sans\";")
-        self.label_2.setObjectName("label_2")
-        grid_layout.addWidget(self.label_2, 0, 0, 1, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        horizontal_layout.addWidget(frame)
-        scroll_area.setWidget(scroll_area_widget_contents)
-        vertical_layout.addWidget(scroll_area)
-        self.retranslateUi(help)
-        QtCore.QMetaObject.connectSlotsByName(help)
-
-    def retranslateUi(self, Help):
-        _translate = QtCore.QCoreApplication.translate
-        Help.setWindowTitle(_translate("Help", "Help"))
-        self.label_3.setText(
-            _translate("Help", " It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
-                               " photo editing feature tools are available on it."))
-        self.label_2.setText(_translate("Help", "HELP"))
-
-class Documentation(QDialog):
-
-    def setupUi(self, Documentation):
-        Documentation.setObjectName("Help")
-        Documentation.setWindowIcon(QIcon('../content/photoshop.png'))
-        Documentation.resize(682, 556)
-        Documentation.setMinimumSize(QtCore.QSize(682, 556))
-        self.verticalLayout = QtWidgets.QVBoxLayout(Documentation)
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(665, 585)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.scrollArea = QtWidgets.QScrollArea(Documentation)
+        self.scrollArea = QtWidgets.QScrollArea(Dialog)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 656, 530))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 639, 559))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.scrollAreaWidgetContents)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.frame = QtWidgets.QFrame(self.scrollAreaWidgetContents)
-        self.frame.setMinimumSize(QtCore.QSize(613, 500))
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-        self.gridLayout = QtWidgets.QGridLayout(self.frame)
-        self.gridLayout.setObjectName("gridLayout")
-        self.label = QtWidgets.QLabel(self.frame)
-        self.label.setText("")
-        self.label.setObjectName("label")
-        self.gridLayout.addWidget(self.label, 5, 0, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 2, 0, 1, 1)
-        self.label_3 = QtWidgets.QLabel(self.frame)
-        self.label_3.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_3.setStyleSheet("font: italic 18pt \"Gill Sans\";")
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.label_2 = QtWidgets.QLabel(self.frame)
-        self.label_2.setStyleSheet("font: italic 24pt \"Gill Sans\";")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_2 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(24)
+        font.setItalic(True)
+        self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        self.horizontalLayout.addWidget(self.frame)
+        self.verticalLayout_3.addWidget(self.label_2, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.label_4 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(18)
+        font.setItalic(True)
+        self.label_4.setFont(font)
+        self.label_4.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_4.setTextFormat(QtCore.Qt.PlainText)
+        self.label_4.setScaledContents(False)
+        self.label_4.setWordWrap(False)
+        self.label_4.setOpenExternalLinks(False)
+        self.label_4.setObjectName("label_4")
+        self.verticalLayout_3.addWidget(self.label_4, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.scrollArea)
-        self.retranslateUi(Documentation)
-        QtCore.QMetaObject.connectSlotsByName(Documentation)
 
-    def retranslateUi(self, Documentation):
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Documentation.setWindowTitle(_translate("Documentation", "Documentation"))
-        self.label_3.setText(
-            _translate("Documentation", " It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
-                               " photo editing feature tools are available on it."))
-        self.label_2.setText(_translate("Help", "DOCUMENTATION"))
+        Dialog.setWindowTitle(_translate("Dialog", "Help"))
+        self.label_2.setText(_translate("Dialog", "Help"))
+        self.label_4.setText(_translate("Dialog", "It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
+"photo editing feature tools are available on it."))
+
+        dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
+                                'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
+                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X', 'Copy': 'Ctrl+C',
+                                'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
+                                'Keyboard shortcuts': 'Ctrl+K', 'Image size': 'Ctrl+Alt+I',
+                                'Canvas size': 'Ctrl+Alt+C', 'Rotate left': 'Shift+Ctrl+L',
+                                'Rotate right': 'Shift+Ctrl+R', 'Blur': 'Shift+Ctrl+B',
+                                'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
+                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
+
+        for key in dictionary_shortcuts.keys():
+            my_font = QtGui.QFont()
+            my_font.setFamily("Arial")
+            my_font.setPointSize(10)
+            my_font.setItalic(True)
+            my_font.setBold(True)
+            label = QLabel(self)
+            label.setText(key)
+            label.setFont(my_font)
+            self.verticalLayout_3.addWidget(label)
+
+
+
+class Documentation(QDialog):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(665, 585)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.scrollArea = QtWidgets.QScrollArea(Dialog)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName("scrollArea")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 639, 559))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_2 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(24)
+        font.setItalic(True)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout_3.addWidget(self.label_2, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.label_4 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(18)
+        font.setItalic(True)
+        self.label_4.setFont(font)
+        self.label_4.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_4.setTextFormat(QtCore.Qt.PlainText)
+        self.label_4.setScaledContents(False)
+        self.label_4.setWordWrap(False)
+        self.label_4.setOpenExternalLinks(False)
+        self.label_4.setObjectName("label_4")
+        self.verticalLayout_3.addWidget(self.label_4, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.verticalLayout.addWidget(self.scrollArea)
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Documentation"))
+        self.label_2.setText(_translate("Dialog", "Documentation"))
+        self.label_4.setText(_translate("Dialog", "It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
+"photo editing feature tools are available on it."))
+
+        dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
+                                'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
+                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X', 'Copy': 'Ctrl+C',
+                                'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
+                                'Keyboard shortcuts': 'Ctrl+K', 'Image size': 'Ctrl+Alt+I',
+                                'Canvas size': 'Ctrl+Alt+C', 'Rotate left': 'Shift+Ctrl+L',
+                                'Rotate right': 'Shift+Ctrl+R', 'Blur': 'Shift+Ctrl+B',
+                                'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
+                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
+
+        for key in dictionary_shortcuts.keys():
+            my_font = QtGui.QFont()
+            my_font.setFamily("Arial")
+            my_font.setPointSize(14)
+            my_font.setItalic(True)
+            my_font.setBold(True)
+            label = QLabel(self)
+            label.setText(key)
+            label.setFont(my_font)
+            self.verticalLayout_3.addWidget(label)
 

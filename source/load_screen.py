@@ -5,7 +5,9 @@ from PyQt5.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
                          QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
                          QRadialGradient)
 from PyQt5.QtWidgets import *
+
 app = QApplication(sys.argv)
+
 
 class LoadScreen(object):
     def setupUi(self, SplashScreen):
@@ -89,7 +91,6 @@ class LoadScreen(object):
 
         QMetaObject.connectSlotsByName(SplashScreen)
 
-
     def retranslateUi(self, SplashScreen):
         SplashScreen.setWindowTitle(QCoreApplication.translate("SplashScreen", u"Photoshop Editor", None))
         self.label_title.setText(QCoreApplication.translate("SplashScreen", u"<strong>Photoshop</strong> Clone", None))
@@ -98,6 +99,7 @@ class LoadScreen(object):
         self.label_loading.setText(QCoreApplication.translate("SplashScreen", u"loading...", None))
         self.label_credits.setText(
             QCoreApplication.translate("SplashScreen", u"<strong>Created</strong>: M.Davitavyan & G. Nersisyan", None))
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

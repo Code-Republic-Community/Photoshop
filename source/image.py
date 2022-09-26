@@ -1,120 +1,114 @@
-from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QTransform, QIcon, QIntValidator
-from PyQt5.QtWidgets import QLineEdit, QDialogButtonBox, QFormLayout, QDialog
+"""asdas"""
+
+from PyQt5 import QtWidgets, QtGui
 import cv2 as cv
 
 
-class InputDialogCanvasSize(QDialog):
-    def __init__(self, obj, parent=None):
-        self.obj = obj
-        self.only_int = QIntValidator()
+class Image:
+    """asfsd"""
+
+    @classmethod
+    def image_size(cls, photoshop_obj):
+        """ffffff"""
+        photoshop_obj.is_clicked_move = False
+        InputSize(photoshop_obj, 'image size').exec()
+
+    @classmethod
+    def canvas_size(cls, photoshop_obj):
+        """kjl"""
+        photoshop_obj.is_clicked_move = False
+        InputSize(photoshop_obj, 'canvas size').exec()
+
+    @classmethod
+    def rotate_left(cls, photoshop_obj):
+        """ytutyu"""
+        photoshop_obj.scribble_area.rotated = 'left'
+        if not photoshop_obj.is_clicked_move:
+            Image().rotate(photoshop_obj, 'left')
+
+    @classmethod
+    def rotate_right(cls, photoshop_obj):
+        """hjghgvn"""
+        photoshop_obj.scribble_area.rotated = 'right'
+        if not photoshop_obj.is_clicked_move:
+            Image().rotate(photoshop_obj, 'right')
+
+    @classmethod
+    def rotate(cls, photoshop_obj, rotate_type):
+        """hguty"""
+        photoshop_obj.is_clicked_move = False
+        transform90 = QtGui.QTransform()
+
+        if rotate_type == 'right':
+            transform90.rotate(90)
+        else:
+            transform90.rotate(-90)
+
+        image = photoshop_obj.scribble_area.image.transformed(transform90)
+        image = photoshop_obj.scribble_area.convert_q_image_to_cv(image)
+        image = cv.resize(image, (photoshop_obj.scribble_area.image_width, photoshop_obj.scribble_area.image_height))
+        photoshop_obj.scribble_area.resize_image(image)
+
+        image_draw = photoshop_obj.scribble_area.image_draw.transformed(transform90)
+        photoshop_obj.scribble_area.resize_image_draw(image_draw)
+        photoshop_obj.scribble_area.check = True
+        photoshop_obj.scribble_area.update()
+
+
+class InputSize(QtWidgets.QDialog):
+    """gfdgdfg"""
+
+    def __init__(self, photoshop_obj, btn_accepted, parent=None):
+        """fgdgdf"""
         super().__init__(parent)
-        self.width = QLineEdit(self)
-        self.height = QLineEdit(self)
+        self.setWindowTitle('Input size')
+        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.setFixedSize(0, 0)
+        self.btn_accepted = btn_accepted
+        self.photoshop_obj = photoshop_obj
+        self.only_int = QtGui.QIntValidator()
+        self.width = QtWidgets.QLineEdit(self)
+        self.height = QtWidgets.QLineEdit(self)
         self.width.setValidator(self.only_int)
         self.height.setValidator(self.only_int)
-        self.setWindowTitle("Input size")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.setFixedSize(200, 100)
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
 
-        layout = QFormLayout(self)
-        layout.addRow("Width", self.width)
-        layout.addRow("Height", self.height)
-        layout.addWidget(button_box)
-
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                                | QtWidgets.QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
 
-    def accept(self):
-        if len(self.width.text()) != 0 and len(self.height.text()):
-            width = int(self.width.text())
-            height = int(self.height.text())
-            self.obj.setWindowSize(width, height)
-            self.close()
-
-
-class InputDialogImageSize(QDialog):
-    def __init__(self, obj, parent=None):
-
-        self.obj = obj
-        self.only_int = QIntValidator()
-        super().__init__(parent)
-        self.width = QLineEdit(self)
-        self.height = QLineEdit(self)
-        self.width.setValidator(self.only_int)
-        self.height.setValidator(self.only_int)
-        self.setWindowTitle("Input size")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.setFixedSize(200, 100)
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
-
-        layout = QFormLayout(self)
-        layout.addRow("Width", self.width)
-        layout.addRow("Height", self.height)
+        layout = QtWidgets.QFormLayout(self)
+        layout.addRow('Width', self.width)
+        layout.addRow('Height', self.height)
         layout.addWidget(button_box)
 
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-
     def accept(self):
-        if len(self.width.text()) != 0 and len(self.height.text()):
-            width = int(self.width.text())
-            height = int(self.height.text())
-            img = self.obj.scribble_area.image
-            img = self.obj.scribble_area.QimageToCv(img)
-            image = cv.resize(img, (width, height))
-            self.obj.scribble_area.openImage(image)
-            self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
+        """gfdfg"""
+        if self.btn_accepted == 'image size':
+            if len(self.width.text()) != 0 and len(self.height.text()):
+                width = int(self.width.text())
+                height = int(self.height.text())
+                img = self.photoshop_obj.scribble_area.image
+                img = self.photoshop_obj.scribble_area.convert_q_image_to_cv(img)
+                self.photoshop_obj.scribble_area.image_width = width
+                self.photoshop_obj.scribble_area.image_height = height
+                image = cv.resize(img, (width, height))
+                self.photoshop_obj.scribble_area.resize_image(image)
+                self.photoshop_obj.scribble_area.image = self.photoshop_obj.scribble_area.convert_cv_to_q_image(image)
 
-            self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw, width, height)
+                self.photoshop_obj.scribble_area.resize_image_draw(self.photoshop_obj.scribble_area.image_draw)
 
-            self.obj.scribble_area.update()
-            self.close()
-
-
-class Image():
-    def __init__(self):
-        super(Image, self).__init__()
-
-    def image_size(self, obj):
-        obj.is_clicked_move = False
-        InputDialogImageSize(obj).exec()
-
-    def canvas_size(self, obj):
-        obj.is_clicked_move = False
-        InputDialogCanvasSize(obj).exec()
-
-    def rotate_left(self, obj):
-        obj.is_clicked_move = False
-
-        transform90 = QTransform()
-        transform90.rotate(-90)
-
-        image = obj.scribble_area.image.transformed(transform90)
-        image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.currentWindowSize())
-        obj.scribble_area.openImage(image)
-
-        image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resizeImageDraw(image_draw)
-        #self.photoshop.band[0].label.setStyle(myStyle(-45, QPoint(0, 100)))
-
-        obj.scribble_area.update()
-
-
-    def rotate_right(self, obj):
-        obj.is_clicked_move = False
-
-        transform90 = QTransform()
-        transform90.rotate(90)
-
-        image = obj.scribble_area.image.transformed(transform90)
-        image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, obj.scribble_area.currentWindowSize())
-        obj.scribble_area.openImage(image)
-
-        image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resizeImageDraw(image_draw)
-
-        obj.scribble_area.update()
+                self.photoshop_obj.scribble_area.update()
+                self.close()
+        else:
+            if len(self.width.text()) != 0 and len(self.height.text()):
+                width = int(self.width.text())
+                height = int(self.height.text())
+                if width < 600:
+                    width = 600
+                if height < 400:
+                    height = 400
+                self.photoshop_obj.scribble_area.image_width = width
+                self.photoshop_obj.scribble_area.image_height = height
+                self.photoshop_obj.setWindowSize(width, height)
+                self.close()

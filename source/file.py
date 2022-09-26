@@ -1,81 +1,91 @@
-from PyQt5.QtCore import QPoint, Qt, QDir, QSize, QBuffer
-from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QPagedPaintDevice
-from PyQt5.QtCore import QDir
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QWidget, QMainWindow
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
+from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
 import cv2 as cv
 
+CLOSED = False
 
-class File(QMainWindow):
+
+class File(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.filename = ''
 
-    def new(self, obj):
-        obj.is_clicked_move = False
-        if obj.scribble_area.check:
-            close = QMessageBox.question(self,
-                                         "QUIT",
-                                         "Do you want to save changes?",
-                                         QMessageBox.Yes | QMessageBox.No)
-            if close == QMessageBox.Yes:
-                if obj.scribble_area.open:
-                    File.save(self, obj)
+    def new(self, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        if photoshop_obj.scribble_area.check:
+            close = QtWidgets.QMessageBox.question(self,
+                                                   "QUIT",
+                                                   "Do you want to save changes?",
+                                                   QtWidgets.QMessageBox.Yes
+                                                   | QtWidgets.QMessageBox.No)
+            if close == QtWidgets.QMessageBox.Yes:
+                if photoshop_obj.scribble_area.open:
+                    File.save(self, photoshop_obj)
                 else:
-                    File.save_as(self, obj)
+                    File.save_as(self, photoshop_obj)
             else:
-                obj.scribble_area.check = False
+                photoshop_obj.scribble_area.check = False
 
-            width, height = obj.scribble_area.currentWindowSize()
-            obj.scribble_area.image = QImage(QSize(width, height), QImage.Format_ARGB32)
-            newSize = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-            obj.scribble_area.resizeImage(obj.scribble_area.image, QSize(newSize))
+            width, height = photoshop_obj.scribble_area.get_current_window_size()
+            photoshop_obj.scribble_area.image = QtGui.QImage(QtCore.QSize(width, height),
+                                                             QtGui.QImage.Format_ARGB32)
 
-            obj.scribble_area.image_draw = QImage(QSize(width, height), QImage.Format_ARGB32)
-            newSize = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
-            obj.scribble_area.resizeImage(obj.scribble_area.image_draw, QSize(newSize))
+            new_size = photoshop_obj.scribble_area.image.size(). \
+                expandedTo(photoshop_obj.scribble_area.size())
+            photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image,
+                                                     new_size)
 
-            obj.scribble_area.update()
+            photoshop_obj.scribble_area.image_draw = QtGui.QImage(QtCore.QSize(width, height),
+                                                                  QtGui.QImage.Format_ARGB32)
 
+            photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image_draw,
+                                                          new_size)
 
-    def open(self, obj):
-        obj.is_clicked_move = False
-        self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
-                                                       "Image files (*.jpg *.png)")
+            photoshop_obj.scribble_area.update()
+
+    def open(self, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        self.filename, _ = QtWidgets.QFileDialog.getOpenFileName(photoshop_obj, "Open File",
+                                                                 QtCore.QDir.currentPath(),
+                                                                 "Image files (*.jpg *.png)")
 
         if self.filename != '':
-            img = cv.resize(cv.imread(self.filename), obj.scribble_area.currentWindowSize())
+            img = cv.resize(cv.imread(self.filename),
+                            photoshop_obj.scribble_area.get_current_window_size())
             if self.filename:
-                obj.scribble_area.openImage(img)
-            self.check = True
-            obj.scribble_area.check = True
-        is_clicked = False
+                photoshop_obj.scribble_area.open_image(img)
+            photoshop_obj.scribble_area.check = True
 
-    def save(self, obj):
-        obj.is_clicked_move = False
+    def save(self, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
         try:
             if self.filename == '':
                 self.filename = 'C'
                 file_format = 'png'
-                initial_path = self.filename + f'/untitled.' + file_format
-                filename, _ = QFileDialog.getSaveFileName(obj, "Save", initial_path,
-                                                          "%s Files (*.%s);;All Files (*)" % (
-                                                              file_format.upper(), file_format))
+                initial_path = self.filename + '/untitled.' + file_format
+                filename, _ = QtWidgets.QFileDialog.getSaveFileName(photoshop_obj,
+                                                                    "Save", initial_path,
+                                                                    "%s Files (*.%s);;"
+                                                                    "All Files (*)" % (
+                                                                        file_format.upper(),
+                                                                        file_format))
 
                 self.filename = filename
                 if filename:
-                    return obj.scribble_area.saveImage(filename, file_format)
+                    return photoshop_obj.scribble_area.save_image(filename, file_format)
         except:
             self.filename = 'C'
             file_format = 'png'
-            initial_path = self.filename + f'/untitled.' + file_format
-            filename, _ = QFileDialog.getSaveFileName(obj, "Save", initial_path,
-                                                      "%s Files (*.%s);;All Files (*)" % (
-                                                          file_format.upper(), file_format))
+            initial_path = self.filename + '/untitled.' + file_format
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(photoshop_obj,
+                                                                "Save", initial_path,
+                                                                "%s Files (*.%s);;"
+                                                                "All Files (*)" % (
+                                                                    file_format.upper(),
+                                                                    file_format))
 
             self.filename = filename
             if filename:
-                return obj.scribble_area.saveImage(filename, file_format)
+                return photoshop_obj.scribble_area.save_image(filename, file_format)
             self.filename = ''
             return
 
@@ -83,61 +93,70 @@ class File(QMainWindow):
         image_name = str(lst[-1])
         file_format = image_name[len(image_name) - 3:]
         if self.filename:
-            obj.scribble_area.saveImage(self.filename, file_format)
+            photoshop_obj.scribble_area.save_image(self.filename, file_format)
 
-    def save_as(self, obj):
-        obj.is_clicked_move = False
+    def save_as(self, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
         self.filename = 'C'
-        options = QFileDialog.Options()
-        filename, _ = QFileDialog.getSaveFileName(self,
-                                                  "Save File", "", "All Files(*);; PNG File(*.png) ;; JPG File(*.jpg)",
-                                                  options=options)
+        options = QtWidgets.QFileDialog.Options()
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self,
+                                                            "Save File", "",
+                                                            "All Files(*);; "
+                                                            "PNG File(*.png) ;; "
+                                                            "JPG File(*.jpg)",
+                                                            options=options)
         if filename:
-            return obj.scribble_area.saveImage(filename, filename[-1:-4])
+            return photoshop_obj.scribble_area.save_image(filename, filename[-1:-4])
 
         lst = str(self.filename).split('/')
         image_name = str(lst[-1])
         file_format = image_name[len(image_name) - 3:]
 
         if self.filename:
-            return obj.scribble_area.saveImage(self.filename, file_format)
+            return photoshop_obj.scribble_area.save_image(self.filename, file_format)
 
-    def print(self, obj):
-        obj.is_clicked_move = False
-        printer = QPrinter(QPrinter.HighResolution)
+    def print(self, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        printer = QtPrintSupport.QPrinter(QtPrintSupport.QPrinter.HighResolution)
         printer.setResolution(1200)
         printer.setFullPage(True)
-        printer.setPageSize(QPagedPaintDevice.Legal)
+        printer.setPageSize(QtGui.QPagedPaintDevice.Legal)
 
-        dialog = QPrintDialog(printer)
+        dialog = QtPrintSupport.QPrintDialog(printer)
         dialog.exec_()
-        im = QImage(obj.scribble_area.image)
-        im = im.scaledToWidth(printer.pageRect().width(), Qt.SmoothTransformation)
+        img = QtGui.QImage(photoshop_obj.scribble_area.image)
+        img = img.scaledToWidth(printer.pageRect().width(), QtCore.Qt.SmoothTransformation)
 
-        painter = QPainter()
+        painter = QtGui.QPainter()
         painter.begin(printer)
-        painter.drawImage(0, 0, im)
+        painter.drawImage(0, 0, img)
         painter.end()
 
-    def close_window(self, obj):
-        obj.is_clicked_move = False
-        if not obj.scribble_area.check:
-            close1 = QMessageBox.question(self,
-                                          "QUIT",
-                                          "Are you sure want to close the program?",
-                                          QMessageBox.Yes | QMessageBox.No)
-            if close1 == QMessageBox.Yes:
-                exit()
-        else:
-            close = QMessageBox.question(self,
-                                         "QUIT",
-                                         "Do you want to save changes?",
-                                         QMessageBox.Yes | QMessageBox.No)
-            if close == QMessageBox.Yes:
-                if obj.scribble_area.open:
-                    File.save(self, obj)
-                else:
-                    File.save_as(self, obj)
-                exit()
+    def close_window(self, photoshop_obj, event):
+        photoshop_obj.is_clicked_move = False
+        if not photoshop_obj.scribble_area.check:
+            close1 = QtWidgets.QMessageBox.question(self,
+                                                    "QUIT",
+                                                    "Are you sure want to close the program?",
+                                                    QtWidgets.QMessageBox.Yes
+                                                    | QtWidgets.QMessageBox.No)
+            if close1 == QtWidgets.QMessageBox.Yes:
+                global CLOSED
+                CLOSED = True
+                photoshop_obj.main_window.close()
             else:
-                exit()
+                if str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                    event.ignore()
+        else:
+            close = QtWidgets.QMessageBox.question(self,
+                                                   "QUIT",
+                                                   "Do you want to save changes?",
+                                                   QtWidgets.QMessageBox.Yes
+                                                   | QtWidgets.QMessageBox.No)
+            if close == QtWidgets.QMessageBox.Yes:
+                if photoshop_obj.scribble_area.open:
+                    File.save(self, photoshop_obj)
+                else:
+                    File.save_as(self, photoshop_obj)
+            else:
+                photoshop_obj.main_window.close()
