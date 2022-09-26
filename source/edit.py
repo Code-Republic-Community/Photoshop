@@ -181,10 +181,19 @@ class KeyShortcut(QDialog):
         super().__init__()
         self.setWindowTitle("Keyboard shortcuts")
         self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.setFixedSize(400, 410)
+        self.setFixedSize(400, 650)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.horizontalLayout.addLayout(self.verticalLayout_4)
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.horizontalLayout.addLayout(self.verticalLayout_5)
+        self.horizontalLayout_2.addLayout(self.horizontalLayout)
 
-        layout_options = QVBoxLayout(self)
-        layout_shortcuts = QVBoxLayout(self)
         layout = QHBoxLayout(self)
         dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
                                 'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
@@ -202,49 +211,16 @@ class KeyShortcut(QDialog):
             label = QLabel(self)
             label.setText(key)
             label.setFont(myFont)
-            layout_options.addWidget(label)
+            self.verticalLayout_4.addWidget(label)
 
-        #y = 4
         for value in dictionary_shortcuts.values():
             label = QLabel(self)
             label.setText(value)
-            #label.move(200, y)
-            layout_shortcuts.addWidget(label)
-            #y += 17
+            self.verticalLayout_5.addWidget(label)
 
-        layout.addLayout(layout_options)
-        layout.addLayout(layout_shortcuts)
+        layout.addLayout(self.verticalLayout_4)
+        layout.addLayout(self.verticalLayout_5)
 
-        self.setLayout(layout)
+        self.setLayout(self.horizontalLayout_2)
 
 
-class KeyShortcut_new(QDialog):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(645, 515)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(Dialog)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.label = QtWidgets.QLabel(Dialog)
-        self.label.setObjectName("label")
-        self.verticalLayout_4.addWidget(self.label)
-        self.horizontalLayout.addLayout(self.verticalLayout_4)
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.label_2 = QtWidgets.QLabel(Dialog)
-        self.label_2.setObjectName("label_2")
-        self.verticalLayout_5.addWidget(self.label_2)
-        self.horizontalLayout.addLayout(self.verticalLayout_5)
-        self.horizontalLayout_2.addLayout(self.horizontalLayout)
-
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label.setText(_translate("Dialog", "TextLabel"))
-        self.label_2.setText(_translate("Dialog", "TextLabel"))
