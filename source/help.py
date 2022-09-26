@@ -71,7 +71,7 @@ class Help(QDialog):
         for key in dictionary_shortcuts.keys():
             my_font = QtGui.QFont()
             my_font.setFamily("Arial")
-            my_font.setPointSize(14)
+            my_font.setPointSize(10)
             my_font.setItalic(True)
             my_font.setBold(True)
             label = QLabel(self)

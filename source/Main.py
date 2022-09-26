@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         # QtCore.QTimer.singleShot(1500, lambda: self.setStyleSheet("background-color: #222; color: #FFF"))
 
     def closeEvent(self, event):
-        if not file.closed:
+        if not file.CLOSED:
             file.File.close_window(self, self.ui, event)
 
 
