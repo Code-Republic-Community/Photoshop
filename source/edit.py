@@ -117,8 +117,6 @@ class MovePicture(QtWidgets.QWidget):
         self.band = QtWidgets.QRubberBand(
             QtWidgets.QRubberBand.Rectangle, self)
         self.rect = self.band.rect().getRect()
-        self.x_pos = 0
-        self.y_pos = 0
         self.band.show()
         self.show()
 
@@ -135,11 +133,9 @@ class MovePicture(QtWidgets.QWidget):
         painter.end()
 
         if not self.photoshop_obj.is_clicked_move:
-            self.x_pos = self.pos()
-            self.y_pos = self.geometry()
             painter = QtGui.QPainter(self.parent.image_draw)
             global CROPPED_IMAGE
-            painter.drawImage(self.y_pos, CROPPED_IMAGE)
+            painter.drawImage(self.geometry(), CROPPED_IMAGE)
             self.parent.update()
             self.hide()
 

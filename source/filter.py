@@ -1,6 +1,6 @@
 import io
 from PyQt5 import QtCore, QtGui
-import PIL
+from PIL import Image, ImageFilter
 import numpy as np
 import cv2 as cv
 
@@ -16,7 +16,7 @@ class Filter:
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
         img.save(buffer, "PNG")
-        pil_im = PIL.Image.open(io.BytesIO(buffer.data())).filter(PIL.ImageFilter.BLUR)
+        pil_im = Image.open(io.BytesIO(buffer.data())).filter(ImageFilter.BLUR)
 
         bytes_img = io.BytesIO()
         pil_im.save(bytes_img, format='PNG')

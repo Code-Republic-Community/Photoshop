@@ -13,8 +13,8 @@ class File(QtWidgets.QMainWindow):
         photoshop_obj.is_clicked_move = False
         if photoshop_obj.scribble_area.check:
             close = QtWidgets.QMessageBox.question(self,
-                                                   "QUIT",
-                                                   "Do you want to save changes?",
+                                                   'QUIT',
+                                                   'Do you want to save changes?',
                                                    QtWidgets.QMessageBox.Yes
                                                    | QtWidgets.QMessageBox.No)
             if close == QtWidgets.QMessageBox.Yes:
@@ -44,9 +44,9 @@ class File(QtWidgets.QMainWindow):
 
     def open(self, photoshop_obj):
         photoshop_obj.is_clicked_move = False
-        self.filename, _ = QtWidgets.QFileDialog.getOpenFileName(photoshop_obj, "Open File",
+        self.filename, _ = QtWidgets.QFileDialog.getOpenFileName(photoshop_obj, 'Open File',
                                                                  QtCore.QDir.currentPath(),
-                                                                 "Image files (*.jpg *.png)")
+                                                                 'Image files (*.jpg *.png)')
 
         if self.filename != '':
             img = cv.resize(cv.imread(self.filename),
@@ -63,9 +63,9 @@ class File(QtWidgets.QMainWindow):
                 file_format = 'png'
                 initial_path = self.filename + '/untitled.' + file_format
                 filename, _ = QtWidgets.QFileDialog.getSaveFileName(photoshop_obj,
-                                                                    "Save", initial_path,
-                                                                    "%s Files (*.%s);;"
-                                                                    "All Files (*)" % (
+                                                                    'Save', initial_path,
+                                                                    '%s Files (*.%s);;'
+                                                                    'All Files (*)' % (
                                                                         file_format.upper(),
                                                                         file_format))
 
@@ -77,9 +77,9 @@ class File(QtWidgets.QMainWindow):
             file_format = 'png'
             initial_path = self.filename + '/untitled.' + file_format
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(photoshop_obj,
-                                                                "Save", initial_path,
-                                                                "%s Files (*.%s);;"
-                                                                "All Files (*)" % (
+                                                                'Save', initial_path,
+                                                                '%s Files (*.%s);;'
+                                                                'All Files (*)' % (
                                                                     file_format.upper(),
                                                                     file_format))
 
@@ -100,10 +100,10 @@ class File(QtWidgets.QMainWindow):
         self.filename = 'C'
         options = QtWidgets.QFileDialog.Options()
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self,
-                                                            "Save File", "",
-                                                            "All Files(*);; "
-                                                            "PNG File(*.png) ;; "
-                                                            "JPG File(*.jpg)",
+                                                            'Save File', '',
+                                                            'All Files(*);; '
+                                                            'PNG File(*.png) ;; '
+                                                            'JPG File(*.jpg)',
                                                             options=options)
         if filename:
             return photoshop_obj.scribble_area.save_image(filename, filename[-1:-4])
@@ -134,23 +134,23 @@ class File(QtWidgets.QMainWindow):
 
     def close_window(self, photoshop_obj, event):
         photoshop_obj.is_clicked_move = False
+        global CLOSED
         if not photoshop_obj.scribble_area.check:
             close1 = QtWidgets.QMessageBox.question(self,
-                                                    "QUIT",
-                                                    "Are you sure want to close the program?",
+                                                    'QUIT',
+                                                    'Are you sure want to close the program?',
                                                     QtWidgets.QMessageBox.Yes
                                                     | QtWidgets.QMessageBox.No)
             if close1 == QtWidgets.QMessageBox.Yes:
-                global CLOSED
                 CLOSED = True
                 photoshop_obj.main_window.close()
             else:
-                if str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                if str(type(event)) == '<class "PyQt5.QtGui.QCloseEvent">':
                     event.ignore()
         else:
             close = QtWidgets.QMessageBox.question(self,
-                                                   "QUIT",
-                                                   "Do you want to save changes?",
+                                                   'QUIT',
+                                                   'Do you want to save changes?',
                                                    QtWidgets.QMessageBox.Yes
                                                    | QtWidgets.QMessageBox.No)
             if close == QtWidgets.QMessageBox.Yes:
@@ -159,4 +159,5 @@ class File(QtWidgets.QMainWindow):
                 else:
                     File.save_as(self, photoshop_obj)
             else:
+                CLOSED = True
                 photoshop_obj.main_window.close()

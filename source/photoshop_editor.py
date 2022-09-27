@@ -24,7 +24,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.screen_width = 0
         self.screen_height = 0
         self.band = []
-        self.button_clicked = [False, False, False, False, False, False, False, False, False]
+        self.button_clicked = [False] * 9
 
     def setupUi(self, main_window):
         screen = QtWidgets.QApplication.primaryScreen()
