@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import aspose.words as aw
-import PIL
-
+from PIL import Image
 
 class Buttons(QtWidgets.QMainWindow):
     def __init__(self):
@@ -70,7 +69,7 @@ class Buttons(QtWidgets.QMainWindow):
                     return
 
                 if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
-                    PIL.Image.open(self.filename).convert('RGB'). \
+                    Image.open(self.filename).convert('RGB'). \
                         save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
         photoshop_obj.all_button_white()
@@ -318,7 +317,7 @@ class MoveText(QtWidgets.QWidget):
 
             self.hide()
             if self.photoshop_obj.is_clicked_move and self.scribble_obj.rotated != 'None':
-                PIL.Image.rotate(self.photoshop_obj, self.scribble_obj.rotated)
+                Image.rotate(self.photoshop_obj, self.scribble_obj.rotated)
 
     def mousePressEvent(self, event):
         if self.draggable and event.button() == QtCore.Qt.LeftButton:
