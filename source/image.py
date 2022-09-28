@@ -8,35 +8,35 @@ class Image:
     """asfsd"""
 
     @classmethod
-    def image_size(cls, obj, obj1):
+    def image_size(cls, photoshop_obj):
         """ffffff"""
-        obj.is_clicked_move = False
-        InputSize(obj, 'image size').exec()
+        photoshop_obj.is_clicked_move = False
+        InputSize(photoshop_obj, 'image size').exec()
 
     @classmethod
-    def canvas_size(cls, obj, obj1):
+    def canvas_size(cls, photoshop_obj):
         """kjl"""
-        obj.is_clicked_move = False
-        InputSize(obj, 'canvas size').exec()
+        photoshop_obj.is_clicked_move = False
+        InputSize(photoshop_obj, 'canvas size').exec()
 
     @classmethod
-    def rotate_left(cls, obj, obj1):
+    def rotate_left(cls, photoshop_obj):
         """ytutyu"""
-        obj.scribble_area.rotated = "left"
-        if not obj.is_clicked_move:
-            Image().rotate(obj, 'left')
+        photoshop_obj.scribble_area.rotated = 'left'
+        if not photoshop_obj.is_clicked_move:
+            Image().rotate(photoshop_obj, 'left')
 
     @classmethod
-    def rotate_right(cls, obj, obj1):
+    def rotate_right(cls, photoshop_obj):
         """hjghgvn"""
-        obj.scribble_area.rotated = "right"
-        if not obj.is_clicked_move:
-            Image().rotate(obj, 'right')
+        photoshop_obj.scribble_area.rotated = 'right'
+        if not photoshop_obj.is_clicked_move:
+            Image().rotate(photoshop_obj, 'right')
 
     @classmethod
-    def rotate(cls, obj, rotate_type):
+    def rotate(cls, photoshop_obj, rotate_type):
         """hguty"""
-        obj.is_clicked_move = False
+        photoshop_obj.is_clicked_move = False
         transform90 = QtGui.QTransform()
 
         if rotate_type == 'right':
@@ -44,29 +44,28 @@ class Image:
         else:
             transform90.rotate(-90)
 
-        image = obj.scribble_area.image.transformed(transform90)
-        image = obj.scribble_area.QimageToCv(image)
-        image = cv.resize(image, (obj.scribble_area.image_width, obj.scribble_area.image_height))
-        obj.scribble_area.resizeImage(image)
+        image = photoshop_obj.scribble_area.image.transformed(transform90)
+        image = photoshop_obj.scribble_area.convert_q_image_to_cv(image)
+        image = cv.resize(image, (photoshop_obj.scribble_area.image_width, photoshop_obj.scribble_area.image_height))
+        photoshop_obj.scribble_area.resize_image(image)
 
-        image_draw = obj.scribble_area.image_draw.transformed(transform90)
-        obj.scribble_area.resizeImageDraw(image_draw)
-        obj.scribble_area.check = True
-        obj.scribble_area.update()
-        print(obj.scribble_area.rotated, "rot_none_worked")
+        image_draw = photoshop_obj.scribble_area.image_draw.transformed(transform90)
+        photoshop_obj.scribble_area.resize_image_draw(image_draw)
+        photoshop_obj.scribble_area.check = True
+        photoshop_obj.scribble_area.update()
 
 
 class InputSize(QtWidgets.QDialog):
     """gfdgdfg"""
 
-    def __init__(self, obj, btn_accepted, parent=None):
+    def __init__(self, photoshop_obj, btn_accepted, parent=None):
         """fgdgdf"""
         super().__init__(parent)
-        self.setWindowTitle("Input size")
+        self.setWindowTitle('Input size')
         self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
         self.setFixedSize(0, 0)
         self.btn_accepted = btn_accepted
-        self.obj = obj
+        self.photoshop_obj = photoshop_obj
         self.only_int = QtGui.QIntValidator()
         self.width = QtWidgets.QLineEdit(self)
         self.height = QtWidgets.QLineEdit(self)
@@ -79,8 +78,8 @@ class InputSize(QtWidgets.QDialog):
         button_box.rejected.connect(self.reject)
 
         layout = QtWidgets.QFormLayout(self)
-        layout.addRow("Width", self.width)
-        layout.addRow("Height", self.height)
+        layout.addRow('Width', self.width)
+        layout.addRow('Height', self.height)
         layout.addWidget(button_box)
 
     def accept(self):
@@ -89,17 +88,17 @@ class InputSize(QtWidgets.QDialog):
             if len(self.width.text()) != 0 and len(self.height.text()):
                 width = int(self.width.text())
                 height = int(self.height.text())
-                img = self.obj.scribble_area.image
-                img = self.obj.scribble_area.QimageToCv(img)
-                self.obj.scribble_area.image_width = width
-                self.obj.scribble_area.image_height = height
+                img = self.photoshop_obj.scribble_area.image
+                img = self.photoshop_obj.scribble_area.convert_q_image_to_cv(img)
+                self.photoshop_obj.scribble_area.image_width = width
+                self.photoshop_obj.scribble_area.image_height = height
                 image = cv.resize(img, (width, height))
-                self.obj.scribble_area.resizeImage(image)
-                self.obj.scribble_area.image = self.obj.scribble_area.CvToQimage(image)
+                self.photoshop_obj.scribble_area.resize_image(image)
+                self.photoshop_obj.scribble_area.image = self.photoshop_obj.scribble_area.convert_cv_to_q_image(image)
 
-                self.obj.scribble_area.resizeImageDraw(self.obj.scribble_area.image_draw)
+                self.photoshop_obj.scribble_area.resize_image_draw(self.photoshop_obj.scribble_area.image_draw)
 
-                self.obj.scribble_area.update()
+                self.photoshop_obj.scribble_area.update()
                 self.close()
         else:
             if len(self.width.text()) != 0 and len(self.height.text()):
@@ -109,7 +108,7 @@ class InputSize(QtWidgets.QDialog):
                     width = 600
                 if height < 400:
                     height = 400
-                self.obj.scribble_area.image_width = width
-                self.obj.scribble_area.image_height = height
-                self.obj.setWindowSize(width, height)
+                self.photoshop_obj.scribble_area.image_width = width
+                self.photoshop_obj.scribble_area.image_height = height
+                self.photoshop_obj.setWindowSize(width, height)
                 self.close()

@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QLabel
 
 
@@ -164,4 +163,3 @@ class Documentation(QDialog):
             label.setText(key)
             label.setFont(my_font)
             self.verticalLayout_3.addWidget(label)
-

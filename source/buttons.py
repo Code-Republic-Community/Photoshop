@@ -1,58 +1,48 @@
-from PyQt5 import QtSvg
-from PyQt5.QtCore import QPoint, Qt, QSize, QDir
-from PyQt5.QtGui import QColor, QIcon, QPen, QPainter, qRgb, QImage, QFont, QIntValidator, QPixmap
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QCheckBox, QDialogButtonBox, QDialog, QHBoxLayout, \
-    QLabel, QLineEdit, QPushButton, QColorDialog, QFileDialog, QComboBox, QSizeGrip, QRubberBand, QApplication
-import cv2 as cv
-import argparse
-import numpy as np
-import sys
-from PyQt5.QtCore import Qt, QPoint, QRect
-from PyQt5.QtGui import QPainter, QPen, QBrush, QIcon
-# import aspose.words as aw
+from PyQt5 import QtWidgets, QtCore, QtGui
+#import aspose.words as aw
 from PIL import Image
-from edit import MovePicrute
-from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPM
+from image import Image
 
-
-# from image import Image
-
-class Buttons(QMainWindow):
+class Buttons(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.image_type = ''
 
-    def get_color(self, obj_scribble, pos_x, pos_y):
+    @classmethod
+    def get_color(cls, obj_scribble, pos_x, pos_y):
         img = obj_scribble.image.pixel(pos_x, pos_y)
-        color = QColor(img).getRgb()
+        color = QtGui.QColor(img).getRgb()
         obj_scribble.color_pen = color
-        obj_scribble.photoshop_obj.allButtonWhite()
+        obj_scribble.photoshop_obj.all_button_white()
         obj_scribble.photoshop_obj.paint()
 
-    def crop(self, obj):
-        if obj.scribble_area.selected:
-            cropped = obj.scribble_area.image.copy(obj.scribble_area.shape)
-            cropped_imgdr = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
+    @classmethod
+    def crop(cls, photoshop_obj):
+        if photoshop_obj.scribble_area.selected:
+            cropped = photoshop_obj.scribble_area.image.copy(photoshop_obj.scribble_area.shape)
+            cropped_img_draw = photoshop_obj.scribble_area.image_draw \
+                .copy(photoshop_obj.scribble_area.shape)
 
-            obj.scribble_area.image_draw.fill((Qt.transparent))
-            obj.scribble_area.image.fill(qRgb(255, 255, 255))
+            photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
+            photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
 
-            new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-            obj.scribble_area.resizeImage(obj.scribble_area.image)
+            photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image)
 
-            painter = QPainter(obj.scribble_area.image)
-            painter2 = QPainter(obj.scribble_area.image_draw)
-            painter.drawImage(obj.scribble_area.shape, cropped)
-            painter2.drawImage(obj.scribble_area.shape, cropped_imgdr)
-            obj.scribble_area.check = True
+            painter = QtGui.QPainter(photoshop_obj.scribble_area.image)
+            painter_draw = QtGui.QPainter(photoshop_obj.scribble_area.image_draw)
+            painter.drawImage(photoshop_obj.scribble_area.shape, cropped)
+            painter_draw.drawImage(photoshop_obj.scribble_area.shape, cropped_img_draw)
+            photoshop_obj.scribble_area.check = True
 
-            obj.scribble_area.update()
+            photoshop_obj.scribble_area.update()
 
-    def image_converter(self, obj):
+    def image_converter(self, photoshop_obj):
         self.filename = ''
-        self.filename, _ = QFileDialog.getOpenFileName(obj, "Open File", QDir.currentPath(),
-                                                       "Image files (*.jpg *.png *.gif *.svg *.bmp *.jpeg *.jfif)")
+        self.filename, _ = QtWidgets.QFileDialog.getOpenFileName(photoshop_obj,
+                                                                 'Open File',
+                                                                 QtCore.QDir.currentPath(),
+                                                                 'Image files (*.jpg *.png *.gif '
+                                                                 '*.svg *.bmp *.jpeg *.jfif)')
 
         if self.filename != '':
             point_index = self.filename.rindex('.')
@@ -64,8 +54,10 @@ class Buttons(QMainWindow):
                     builder = aw.DocumentBuilder(doc)
                     shape = builder.insert_image(self.filename)
                     save_options = aw.saving.ImageSaveOptions(aw.SaveFormat.SVG)
-                    shape.get_shape_renderer().save(f'{self.filename[:point_index + 1]}{self.image_type}', save_options)
-                    obj.allButtonWhite()
+                    shape.get_shape_renderer(). \
+                        save(f'{self.filename[:point_index + 1]}{self.image_type}',
+                             save_options)
+                    photoshop_obj.all_button_white()
                     return
 
             elif self.image_type in ('png', 'bmp', 'jpeg', 'jpg'):
@@ -74,28 +66,29 @@ class Buttons(QMainWindow):
                     builder = aw.DocumentBuilder(doc)
                     shape = builder.insert_image(self.filename)
                     shape.image_data.save(f'{self.filename[:-3]}{self.image_type}')
-                    obj.allButtonWhite()
+                    photoshop_obj.all_button_white()
                     return
 
                 if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
                     Image.open(self.filename).convert('RGB'). \
                         save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
-        obj.allButtonWhite()
+        photoshop_obj.all_button_white()
 
 
-class ImgTypeComboBox(QDialog):
-    def __init__(self, obj):
-        self.obj = obj
+class ImgTypeComboBox(QtWidgets.QDialog):
+    def __init__(self, buttons_obj):
         super().__init__()
+        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.buttons_obj = buttons_obj
         self.setFixedSize(250, 120)
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
 
-        layout = QVBoxLayout()
-        self.combo_box = QComboBox(self)
+        layout = QtWidgets.QVBoxLayout()
+        self.combo_box = QtWidgets.QComboBox(self)
         img_types = ['jpeg', 'jpg', 'png', 'svg', 'bmp']
         self.combo_box.addItems(img_types)
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                                | QtWidgets.QDialogButtonBox.Cancel, self)
 
         layout.addWidget(self.combo_box)
         layout.addWidget(button_box)
@@ -104,47 +97,48 @@ class ImgTypeComboBox(QDialog):
         button_box.accepted.connect(self.accept)
 
     def accept(self):
-        type = self.combo_box.currentText()
-        self.obj.image_type = type
+        img_type = self.combo_box.currentText()
+        self.buttons_obj.image_type = img_type
         self.close()
 
 
-class TextType(QDialog):
-    def __init__(self, obj, text):
+class TextType(QtWidgets.QDialog):
+    def __init__(self, text_window_obj, text):
         super().__init__()
-        self.setWindowTitle("Text Font")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
-        self.obj = obj
+        self.setWindowTitle('Text Font')
+        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.text_window_obj = text_window_obj
         self.text = text
         self.font_size = self.text.font()
         self.setFixedSize(0, 0)
 
-        layout = QVBoxLayout()
-        checkbox_layout = QHBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
+        checkbox_layout = QtWidgets.QHBoxLayout()
 
-        label = QLabel("Font Size", self)
-        label.setFont(QFont("Arial", 10))
+        label = QtWidgets.QLabel('Font Size', self)
+        label.setFont(QtGui.QFont('Arial', 10))
         label.move(12, 0)
 
-        self.size = QLineEdit(self)
+        self.size = QtWidgets.QLineEdit(self)
         font_size = self.size.font()
         font_size.setPointSize(13)
         self.size.setFont(font_size)
-        self.size.setStyleSheet("border : 1px solid black")
+        self.size.setStyleSheet('border : 1px solid black')
         self.size.move(140, 185)
         self.size.resize(150, 35)
-        only_int = QIntValidator()
+        only_int = QtGui.QIntValidator()
         self.size.setValidator(only_int)
-        self.size.setText(f'{self.obj.is_size}')
+        self.size.setText(f'{self.text_window_obj.is_size}')
 
-        self.bold = QCheckBox("Bold")
-        self.bold.setChecked(self.obj.is_bold)
-        self.italic = QCheckBox("Italic")
-        self.italic.setChecked(self.obj.is_italic)
-        self.underline = QCheckBox("Underline")
-        self.underline.setChecked(self.obj.is_underline)
+        self.bold = QtWidgets.QCheckBox('Bold')
+        self.bold.setChecked(self.text_window_obj.is_bold)
+        self.italic = QtWidgets.QCheckBox('Italic')
+        self.italic.setChecked(self.text_window_obj.is_italic)
+        self.underline = QtWidgets.QCheckBox('Underline')
+        self.underline.setChecked(self.text_window_obj.is_underline)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                                | QtWidgets.QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
 
@@ -158,80 +152,79 @@ class TextType(QDialog):
         self.setLayout(layout)
 
     def accept(self):
-        if self.size.text() != '' and int(self.size.text()) >= 1 and int(self.size.text()) <= 50:
-            self.obj.is_bold = False
-            self.obj.is_italic = False
-            self.obj.is_underline = False
+        if self.size.text() != '' and 1 <= int(self.size.text()) <= 50:
+            self.text_window_obj.is_bold = False
+            self.text_window_obj.is_italic = False
+            self.text_window_obj.is_underline = False
             self.font_size = self.text.font()
             if len(self.size.text()) != 0:
                 self.font_size.setPointSize(int(self.size.text()))
-                self.obj.is_size = int(self.size.text())
+                self.text_window_obj.is_size = int(self.size.text())
             if self.bold.isChecked():
-                self.obj.is_bold = True
+                self.text_window_obj.is_bold = True
             if self.italic.isChecked():
-                self.obj.is_italic = True
+                self.text_window_obj.is_italic = True
             if self.underline.isChecked():
-                self.obj.is_underline = True
+                self.text_window_obj.is_underline = True
 
-            self.font_size.setUnderline(self.obj.is_underline)
-            self.font_size.setItalic(self.obj.is_italic)
-            self.font_size.setBold(self.obj.is_bold)
+            self.font_size.setUnderline(self.text_window_obj.is_underline)
+            self.font_size.setItalic(self.text_window_obj.is_italic)
+            self.font_size.setBold(self.text_window_obj.is_bold)
             self.text.setFont(self.font_size)
-            self.obj.is_text = True
-            # self.obj.check = True
             self.close()
 
 
-class InputTextDialog(QDialog):
+class TextWindow(QtWidgets.QDialog):
     def __init__(self, obj_scribble_area):
         super().__init__()
-        self.setWindowTitle("Input size")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.setWindowTitle('Input size')
+        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
         self.setFixedSize(600, 500)
         self.closed_window = True
 
-        self.obj = obj_scribble_area
+        self.obj_scribble_area = obj_scribble_area
         self.color_text = (0, 0, 0, 255)
         self.is_bold = False
         self.is_italic = False
         self.is_underline = False
         self.is_size = 15
 
-        self.text = QLineEdit(self)
+        self.text = QtWidgets.QLineEdit(self)
         font = self.text.font()
         font.setPointSize(15)
         self.text.setFixedSize(580, 400)
         self.text.setFont(font)
 
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                                | QtWidgets.QDialogButtonBox.Cancel, self)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject_window)
 
-        btn_select_color = QPushButton(self)
-        btn_select_color.setText("Select Color")
+        btn_select_color = QtWidgets.QPushButton(self)
+        btn_select_color.setText('Select Color')
         btn_select_color.resize(100, 40)
         btn_select_color.move(20, 445)
-        btn_select_color.setFont(QFont("Arial", 12))
-        btn_select_color.setStyleSheet("border-radius:5; border:1px solid black;")
+        btn_select_color.setFont(QtGui.QFont('Arial', 12))
+        btn_select_color.setStyleSheet('border-radius:5; border:1px solid black;')
         btn_select_color.clicked.connect(self.select_color)
 
-        btn_select_type = QPushButton(self)
-        btn_select_type.setText("Select Font")
+        btn_select_type = QtWidgets.QPushButton(self)
+        btn_select_type.setText('Select Font')
         btn_select_type.resize(100, 40)
         btn_select_type.move(150, 445)
-        btn_select_type.setFont(QFont("Arial", 12))
-        btn_select_type.setStyleSheet("border-radius:5; border:1px solid black;")
+        btn_select_type.setFont(QtGui.QFont('Arial', 12))
+        btn_select_type.setStyleSheet('border-radius:5; border:1px solid black;')
         btn_select_type.clicked.connect(self.select_font)
 
-        layout = QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self.text)
         layout.addWidget(button_box)
 
     def select_color(self):
-        self.color_text = QColorDialog().getColor().getRgb()
-        self.obj.color_text = self.color_text
+        self.color_text = QtWidgets.QColorDialog().getColor().getRgb()
+        self.obj_scribble_area.color_text = self.color_text
         self.text.setStyleSheet(f'color: rgb{self.color_text};')
-        self.obj.text = ''
+        self.obj_scribble_area.text = ''
 
     def select_font(self):
         TextType(self, self.text).exec()
@@ -239,16 +232,16 @@ class InputTextDialog(QDialog):
     def accept(self):
         if self.text.text():
             self.closed_window = False
-            self.obj.bold = self.is_bold
-            self.obj.italic = self.is_italic
-            self.obj.underline = self.is_underline
-            self.obj.text = self.text.text()
-            self.obj.width_text = self.is_size
-            self.obj.color_text = self.color_text
+            self.obj_scribble_area.bold = self.is_bold
+            self.obj_scribble_area.italic = self.is_italic
+            self.obj_scribble_area.underline = self.is_underline
+            self.obj_scribble_area.text = self.text.text()
+            self.obj_scribble_area.width_text = self.is_size
+            self.obj_scribble_area.color_text = self.color_text
             self.close()
 
     def reject_window(self):
-        self.obj.text = ''
+        self.obj_scribble_area.text = ''
         self.close()
 
     def closeEvent(self, event):
@@ -256,63 +249,65 @@ class InputTextDialog(QDialog):
             self.reject_window()
 
 
-class MoveText(QWidget):
+class MoveText(QtWidgets.QWidget):
     def __init__(self, text, text_width, text_color, bold, italic, underline,
-                 parent, phj_obj, dragable=False):
+                 parent, photoshop_obj, dragable=False):
         super(MoveText, self).__init__(parent)
         self.draggable = dragable
         self.scribble_obj = parent
-        self.phj_obj = phj_obj
+        self.photoshop_obj = photoshop_obj
         self.dragging_threshold = 5
         self.mouse_press_pos = None
         self.mouse_move_pos = None
         self.border_radius = 0
-        self.setWindowFlags(Qt.SubWindow)
-        layout = QHBoxLayout(self)
+        self.setWindowFlags(QtCore.Qt.SubWindow)
+
+        layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(
-            QSizeGrip(self), 0,
-            Qt.AlignLeft | Qt.AlignTop)
+            QtWidgets.QSizeGrip(self), 0,
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         layout.addWidget(
-            QSizeGrip(self), 0,
-            Qt.AlignRight | Qt.AlignBottom)
+            QtWidgets.QSizeGrip(self), 0,
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
 
-        my_font = QFont()
+        my_font = QtGui.QFont()
         my_font.setBold(bold)
         my_font.setItalic(italic)
         my_font.setUnderline(underline)
         my_font.setPointSize(text_width)
 
-        self.label = QLabel(self)
+        self.label = QtWidgets.QLabel(self)
         self.label.setText(text)
         self.label.setFont(my_font)
         self.label.setStyleSheet(f'color: rgba{text_color}')
         self.label.adjustSize()
 
-        self._band = QRubberBand(
-            QRubberBand.Rectangle, self)
+        self.band = QtWidgets.QRubberBand(
+            QtWidgets.QRubberBand.Rectangle, self)
 
         self.setGeometry(150, 150, 300, 50)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         self.show()
 
     def resizeEvent(self, event):
-        self._band.resize(self.size())
+        self.band.resize(self.size())
 
     def paintEvent(self, event):
-        if not self.phj_obj.is_clicked_move or self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
-            print(self.phj_obj.is_clicked_move)
-            painter = QPainter(self.scribble_obj.image_draw)
+        if not self.photoshop_obj.is_clicked_move or self.photoshop_obj.is_clicked_move \
+                and self.scribble_obj.rotated != 'None':
+            painter = QtGui.QPainter(self.scribble_obj.image_draw)
 
-            pen = QPen(QColor(self.scribble_obj.color_text[0], self.scribble_obj.color_text[1],
-                              self.scribble_obj.color_text[2],
-                              self.scribble_obj.color_text[3]))
+            pen = QtGui.QPen(QtGui.QColor(self.scribble_obj.color_text[0],
+                                          self.scribble_obj.color_text[1],
+                                          self.scribble_obj.color_text[2],
+                                          self.scribble_obj.color_text[3]))
 
             pen.setWidth(10)
             painter.setPen(pen)
 
-            font = QFont()
+            font = QtGui.QFont()
             font.setBold(self.scribble_obj.bold)
             font.setItalic(self.scribble_obj.italic)
             font.setUnderline(self.scribble_obj.underline)
@@ -322,22 +317,21 @@ class MoveText(QWidget):
             painter.end()
 
             self.hide()
-            if self.phj_obj.is_clicked_move and self.scribble_obj.rotated != "None":
-                Image.rotate(self.phj_obj, self.scribble_obj.rotated)
+            if self.photoshop_obj.is_clicked_move and self.scribble_obj.rotated != 'None':
+                Image.rotate(self.photoshop_obj, self.scribble_obj.rotated)
 
     def mousePressEvent(self, event):
-        if self.draggable and event.button() == Qt.LeftButton:
-            self.mouse_press_pos = event.globalPos()  # global
-            self.mouse_move_pos = event.globalPos() - self.pos()  # local
+        if self.draggable and event.button() == QtCore.Qt.LeftButton:
+            self.mouse_press_pos = event.globalPos()
+            self.mouse_move_pos = event.globalPos() - self.pos()
 
         super(MoveText, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
-        if self.draggable and event.buttons() & Qt.LeftButton:
+        if self.draggable and event.buttons() & QtCore.Qt.LeftButton:
             global_pos = event.globalPos()
             moved = global_pos - self.mouse_press_pos
             if moved.manhattanLength() > self.dragging_threshold:
-                # Move when user drag window more than dragging_threshold
                 diff = global_pos - self.mouse_move_pos
                 self.move(diff)
                 self.mouse_move_pos = global_pos - self.pos()
@@ -345,10 +339,9 @@ class MoveText(QWidget):
 
     def mouseReleaseEvent(self, event):
         if self.mouse_press_pos is not None:
-            if event.button() == Qt.RightButton:
+            if event.button() == QtCore.Qt.RightButton:
                 moved = event.globalPos() - self.mouse_press_pos
                 if moved.manhattanLength() > self.dragging_threshold:
-                    # Do not call click event or so on
                     event.ignore()
                 self.mouse_press_pos = None
         super(MoveText, self).mouseReleaseEvent(event)

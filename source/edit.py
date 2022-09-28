@@ -1,147 +1,141 @@
-from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QImage, QColor, QPainter, qRgb, QIcon, QPen, QFont
-from PyQt5.QtWidgets import QUndoCommand, QWidget, QDialog, QDialogButtonBox, QVBoxLayout, QLabel, QHBoxLayout
-import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QImage
-from PyQt5.QtCore import QRect
-cropped_image = QImage()
-cropped_drawimage = QImage
+from PyQt5 import QtWidgets, QtCore, QtGui
+
+CROPPED_IMAGE = QtGui.QImage()
+CROPPED_DRAW_IMAGE = QtGui.QImage
 
 
-
-class Edit():
+class Edit:
     def __init__(self):
-        super(MovePicrute).__init__()
+        super(MovePicture).__init__()
 
-    def undo(self, obj):
-        obj.is_clicked_move = False
-        undo = UndoCommand(obj.scribble_area)
+    @classmethod
+    def undo(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        undo = UndoCommand(photoshop_obj.scribble_area)
         undo.undo()
-        obj.scribble_area.undo_stack.undo()
-        obj.scribble_area.update()
+        photoshop_obj.scribble_area.undo_stack.undo()
+        photoshop_obj.scribble_area.update()
 
-    def redo(self, obj):
-        obj.is_clicked_move = False
-        obj.scribble_area.undo_stack.redo()
-        redo = UndoCommand(obj.scribble_area)
+    @classmethod
+    def redo(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        photoshop_obj.scribble_area.undo_stack.redo()
+        redo = UndoCommand(photoshop_obj.scribble_area)
         redo.redo()
 
-    def cut(self, obj):
-        obj.is_clicked_move = False
-        image = QImage(100, 100, QImage.Format_RGB32)
-        image.fill(qRgb(255, 255, 255))
+    @classmethod
+    def cut(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        image = QtGui.QImage(100, 100, QtGui.QImage.Format_RGB32)
+        image.fill(QtGui.qRgb(255, 255, 255))
 
-        painter = QPainter(obj.scribble_area.image)
-        painter.drawImage(obj.scribble_area.shape, image)
+        painter = QtGui.QPainter(photoshop_obj.scribble_area.image)
+        painter.drawImage(photoshop_obj.scribble_area.shape, image)
 
-        painter_draw = QPainter(obj.scribble_area.image_draw)
-        painter_draw.drawImage(obj.scribble_area.shape, image)
-        obj.scribble_area.check = True
+        painter_draw = QtGui.QPainter(photoshop_obj.scribble_area.image_draw)
+        painter_draw.drawImage(photoshop_obj.scribble_area.shape, image)
+        photoshop_obj.scribble_area.check = True
 
-        obj.scribble_area.update()
+        photoshop_obj.scribble_area.update()
 
-    def copy(self, obj):
-        obj.is_clicked_move = False
-        global cropped_image, cropped_drawimage
-        cropped_image = obj.scribble_area.image.copy(obj.scribble_area.shape)
-        cropped_drawimage = obj.scribble_area.image_draw.copy(obj.scribble_area.shape)
-        cropped_image = obj.scribble_area.merge_two_images(cropped_drawimage,cropped_image)
-        obj.scribble_area.check = True
+    @classmethod
+    def copy(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        global CROPPED_IMAGE, CROPPED_DRAW_IMAGE
+        CROPPED_IMAGE = photoshop_obj.scribble_area.image.copy(photoshop_obj.scribble_area.shape)
+        CROPPED_DRAW_IMAGE = photoshop_obj.scribble_area.image_draw.copy(photoshop_obj.scribble_area.shape)
+        CROPPED_IMAGE = photoshop_obj.scribble_area.merge_two_images(CROPPED_DRAW_IMAGE, CROPPED_IMAGE)
+        photoshop_obj.scribble_area.check = True
 
-    def paste(self, obj):
-        obj.is_clicked_move = False
-        obj.moveText()
-        band = MovePicrute(obj, obj.scribble_area)
+    @classmethod
+    def paste(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
+        photoshop_obj.move_text()
+        band = MovePicture(photoshop_obj, photoshop_obj.scribble_area)
         band.adjustSize()
-        obj.scribble_area.check = True
+        photoshop_obj.scribble_area.check = True
 
-    def clearScreen(self, obj):
+    @classmethod
+    def clear_screen(cls, photoshop_obj):
+        photoshop_obj.scribble_area.image_draw = QtGui.QImage(1000, 1000, QtGui.QImage.Format_ARGB32)
 
-        obj.scribble_area.image_draw = QImage(1000,1000, QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image)
+        photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
 
-        #obj.scribble_area.image = QImage(obj.scribble_area.size(), QImage.Format_ARGB32)
-        new_size = obj.scribble_area.image.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image)
-        obj.scribble_area.image.fill(qRgb(255,255,255))
+        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image_draw)
+        photoshop_obj.scribble_area.check = False
 
-        new_size = obj.scribble_area.image_draw.size().expandedTo(obj.scribble_area.size())
-        obj.scribble_area.resizeImage(obj.scribble_area.image_draw)
-        obj.scribble_area.check = False
+        photoshop_obj.scribble_area.update()
 
-        obj.scribble_area.update()
-
-    def keyboardShortcuts(self, obj):
-        obj.is_clicked_move = False
+    @classmethod
+    def keyboard_shortcuts(cls, photoshop_obj):
+        photoshop_obj.is_clicked_move = False
         KeyShortcut().exec()
 
 
-class UndoCommand(QUndoCommand):
+class UndoCommand(QtWidgets.QUndoCommand):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
-        self.mPrevImage = parent.image_draw.copy()
-        self.mCurrImage = parent.image_draw.copy()
+        self.m_prev_image = parent.image_draw.copy()
+        self.m_curr_image = parent.image_draw.copy()
 
     def undo(self):
-        self.mCurrImage = self.parent.image_draw.copy()
-        self.parent.image_draw = self.mPrevImage
+        self.m_curr_image = self.parent.image_draw.copy()
+        self.parent.image_draw = self.m_prev_image
         self.parent.update()
 
     def redo(self):
-        self.parent.image_draw = self.mCurrImage
+        self.parent.image_draw = self.m_curr_image
         self.parent.update()
 
 
-class MovePicrute(QtWidgets.QWidget):
+class MovePicture(QtWidgets.QWidget):
     def __init__(self, photoshop_obj, parent=None):
-        super(MovePicrute, self).__init__(parent)
+        super(MovePicture, self).__init__(parent)
         self.photoshop_obj = photoshop_obj
         self.draggable = True
         self.dragging_threshold = 5
         self.mouse_press_pos = None
         self.mouse_move_pos = None
-        self.borderRadius = 5
-        self.moved = QPoint()
+        self.border_radius = 5
+        self.moved = QtCore.QPoint()
         self.parent = parent
 
         self.setWindowFlags(QtCore.Qt.SubWindow)
+
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         self.label = QtWidgets.QLabel(self)
         self.rect = self.label.rect()
-        self.label.setStyleSheet("border-style:transparent; background-color: transparent")
+        self.label.setStyleSheet('border-style:transparent; background-color: transparent')
         layout.addWidget(self.label)
-        self.rectangle = QRect()
+        self.rectangle = QtCore.QRect()
 
-        pixmap01 = QtGui.QPixmap.fromImage(cropped_image)
-        self.label.setPixmap(pixmap01)
-        self._band = QtWidgets.QRubberBand(
+        pixmap = QtGui.QPixmap.fromImage(CROPPED_IMAGE)
+        self.label.setPixmap(pixmap)
+        self.band = QtWidgets.QRubberBand(
             QtWidgets.QRubberBand.Rectangle, self)
-        self.rect = self._band.rect().getRect()
-        self.x_pos = 0
-        self.y_pos = 0
-        self._band.show()
+        self.rect = self.band.rect().getRect()
+        self.band.show()
         self.show()
 
     def resizeEvent(self, event):
-        self._band.resize(self.size())
+        self.band.resize(self.size())
 
     def paintEvent(self, event):
         window_size = self.size()
-        painter = QPainter()
+        painter = QtGui.QPainter()
         painter.begin(self)
-        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         painter.drawRoundedRect(0, 0, window_size.width(), window_size.height(),
-                           self.borderRadius, self.borderRadius)
+                                self.border_radius, self.border_radius)
         painter.end()
 
         if not self.photoshop_obj.is_clicked_move:
-            self.x_pos = self.pos()
-            self.y_pos = self.geometry()
-            painter = QPainter(self.parent.image_draw)
-            global cropped_image
-            painter.drawImage(self.y_pos, cropped_image)
+            painter = QtGui.QPainter(self.parent.image_draw)
+            global CROPPED_IMAGE
+            painter.drawImage(self.geometry(), CROPPED_IMAGE)
             self.parent.update()
             self.hide()
 
@@ -150,8 +144,7 @@ class MovePicrute(QtWidgets.QWidget):
             self.mouse_press_pos = event.globalPos()
             self.mouse_move_pos = event.globalPos() - self.pos()
 
-        super(MovePicrute, self).mousePressEvent(event)
-
+        super(MovePicture, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & QtCore.Qt.LeftButton:
@@ -162,65 +155,63 @@ class MovePicrute(QtWidgets.QWidget):
                 self.move(diff)
                 self.mouse_move_pos = global_pos - self.pos()
 
-        super(MovePicrute, self).mouseMoveEvent(event)
+        super(MovePicture, self).mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
-
         if self.mouse_press_pos is not None:
             if event.button() == QtCore.Qt.RightButton:
                 self.moved = event.globalPos() - self.mouse_press_pos
                 if self.moved.manhattanLength() > self.dragging_threshold:
                     event.ignore()
                 self.mouse_press_pos = None
-        super(MovePicrute, self).mouseReleaseEvent(event)
+        super(MovePicture, self).mouseReleaseEvent(event)
 
 
-
-class KeyShortcut(QDialog):
+class KeyShortcut(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Keyboard shortcuts")
-        self.setWindowIcon(QIcon('../content/photoshop.png'))
+        self.setWindowTitle('Keyboard shortcuts')
+        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
         self.setFixedSize(400, 650)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.horizontalLayout.addLayout(self.verticalLayout_4)
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.horizontalLayout.addLayout(self.verticalLayout_5)
-        self.horizontalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontal_layout_2 = QtWidgets.QHBoxLayout(self)
+        self.horizontal_layout_2.setObjectName('horizontalLayout_2')
+        self.horizontal_layout = QtWidgets.QHBoxLayout()
+        self.horizontal_layout.setObjectName('horizontalLayout')
+        self.vertical_layout_4 = QtWidgets.QVBoxLayout(self)
+        self.vertical_layout_4.setObjectName('verticalLayout_4')
+        self.horizontal_layout.addLayout(self.vertical_layout_4)
+        self.vertical_layout_5 = QtWidgets.QVBoxLayout(self)
+        self.vertical_layout_5.setObjectName('verticalLayout_5')
+        self.horizontal_layout.addLayout(self.vertical_layout_5)
+        self.horizontal_layout_2.addLayout(self.horizontal_layout)
 
-        layout = QHBoxLayout(self)
+        layout = QtWidgets.QHBoxLayout(self)
         dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
                                 'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
-                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X', 'Copy': 'Ctrl+C',
-                                'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
+                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X',
+                                'Copy': 'Ctrl+C', 'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
                                 'Keyboard shortcuts': 'Ctrl+K', 'Image size': 'Ctrl+Alt+I',
                                 'Canvas size': 'Ctrl+Alt+C', 'Rotate left': 'Shift+Ctrl+L',
                                 'Rotate right': 'Shift+Ctrl+R', 'Blur': 'Shift+Ctrl+B',
                                 'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
-                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
+                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H',
+                                'Documentation': 'Ctrl+D'}
 
-        myFont = QtGui.QFont()
-        myFont.setBold(True)
+        my_font = QtGui.QFont()
+        my_font.setBold(True)
+
         for key in dictionary_shortcuts.keys():
-            label = QLabel(self)
+            label = QtWidgets.QLabel(self)
             label.setText(key)
-            label.setFont(myFont)
-            self.verticalLayout_4.addWidget(label)
+            label.setFont(my_font)
+            self.vertical_layout_4.addWidget(label)
 
         for value in dictionary_shortcuts.values():
-            label = QLabel(self)
+            label = QtWidgets.QLabel(self)
             label.setText(value)
-            self.verticalLayout_5.addWidget(label)
+            self.vertical_layout_5.addWidget(label)
 
-        layout.addLayout(self.verticalLayout_4)
-        layout.addLayout(self.verticalLayout_5)
+        layout.addLayout(self.vertical_layout_4)
+        layout.addLayout(self.vertical_layout_5)
 
-        self.setLayout(self.horizontalLayout_2)
-
-
+        self.setLayout(self.horizontal_layout_2)
