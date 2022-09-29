@@ -29,6 +29,7 @@ class ScribbleArea(QtWidgets.QWidget):
         self.bold = False
         self.italic = False
         self.underline = False
+        self.text_font = 'MS Shell Dlg 2'
         self.text = ''
         self.undo_stack = QtWidgets.QUndoStack(self)
         self.undo_stack.setUndoLimit(20)
@@ -41,8 +42,7 @@ class ScribbleArea(QtWidgets.QWidget):
         self.rotated = 'None'
         self.selected = False
         self.lst = []
-        self.lst_x = []
-        self.lst_y = []
+        self.cord_lasso_pen = []
         self.polygon = QtGui.QPolygon()
         self.pressed_pos_x = 0
         self.pressed_pos_y = 0
@@ -189,7 +189,8 @@ class ScribbleArea(QtWidgets.QWidget):
 
         if self.pressed_button == 'lasso':
             self.move_step_count += 1
-            if self.move_step_count >= 10 and self.pressed_pos_x in list(range(event.pos().x() - 5, event.pos().x() + 5)) \
+            if self.move_step_count >= 10 and self.pressed_pos_x in list(
+                    range(event.pos().x() - 5, event.pos().x() + 5)) \
                     and self.pressed_pos_y in list(range(event.pos().y() - 5, event.pos().y() + 5)):
                 self.crossed = True
 
@@ -203,8 +204,10 @@ class ScribbleArea(QtWidgets.QWidget):
             painter.setPen(QtGui.QPen(
                 QtGui.QColor(self.color_pen[0], self.color_pen[1],
                              self.color_pen[2], self.color_pen[3]),
-                self.pen_width, QtCore.Qt.SolidLine))
+                3, QtCore.Qt.SolidLine))
             painter.drawLine(self.last_point, event.pos())
+            self.cord_lasso_pen.append(event.pos())
+
             self.last_point = event.pos()
 
             self.update()
@@ -235,6 +238,20 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         if self.pressed_button == 'lasso':
+
+            for pos in self.cord_lasso_pen:
+                painter = QtGui.QPainter(self.image_draw)
+                rubber = QtCore.QRect(QtCore.QPoint(), 200 * QtCore.QSize())
+                rubber.moveCenter(pos)
+                painter.save()
+                painter.setCompositionMode(QtGui.QPainter.CompositionMode_Clear)
+                painter.eraseRect(rubber)
+                painter.restore()
+                painter.end()
+
+                self.last_point = event.pos()
+                self.update()
+
             if self.crossed:
                 painter = QtGui.QPainter(self.image_draw)
                 painter.setBrush(QtGui.QColor(255, 255, 255, 255))

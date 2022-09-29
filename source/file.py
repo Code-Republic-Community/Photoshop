@@ -144,9 +144,8 @@ class File(QtWidgets.QMainWindow):
             if close1 == QtWidgets.QMessageBox.Yes:
                 CLOSED = True
                 photoshop_obj.main_window.close()
-            else:
-                if str(type(event)) == '<class "PyQt5.QtGui.QCloseEvent">':
-                    event.ignore()
+            elif str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                event.ignore()
         else:
             close = QtWidgets.QMessageBox.question(self,
                                                    'QUIT',
