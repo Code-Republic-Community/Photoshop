@@ -1,13 +1,12 @@
 import functools
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QWidget, QFrame
-
 import file
 import edit
 import image
 import filter
 import scribble_area
 import buttons
+import textinput
 import help
 from load_screen import app
 
@@ -331,12 +330,13 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background:#D600C9; border-radius:8px')
-        buttons.TextWindow(self.scribble_area).exec()
+        textinput.Ui_Dialog(self.scribble_area).exec()
         if self.scribble_area.text != '':
             obj = buttons.MoveText(self.scribble_area.text, self.scribble_area.width_text,
-                                   self.scribble_area.color_text, self.scribble_area.bold,
-                                   self.scribble_area.italic, self.scribble_area.underline,
-                                   self.scribble_area, self, dragable=False)
+                                   self.scribble_area.text_font, self.scribble_area.color_text,
+                                   self.scribble_area.bold, self.scribble_area.italic,
+                                   self.scribble_area.underline, self.scribble_area,
+                                   self, dragable=False)
             self.band.append(obj)
             self.move_text()
         else:
