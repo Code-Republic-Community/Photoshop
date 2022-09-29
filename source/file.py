@@ -12,11 +12,14 @@ class File(QtWidgets.QMainWindow):
     def new(self, photoshop_obj):
         photoshop_obj.is_clicked_move = False
         if photoshop_obj.scribble_area.check:
-            close = QtWidgets.QMessageBox.question(self,
-                                                   'QUIT',
-                                                   'Do you want to save changes?',
-                                                   QtWidgets.QMessageBox.Yes
-                                                   | QtWidgets.QMessageBox.No)
+            close = QtWidgets.QMessageBox()
+            close.question(self,
+                           'QUIT',
+                           'Do you want to save changes?',
+                           QtWidgets.QMessageBox.Yes
+                           | QtWidgets.QMessageBox.No)
+            close = QtWidgets.QMessageBox()
+
             if close == QtWidgets.QMessageBox.Yes:
                 if photoshop_obj.scribble_area.open:
                     File.save(self, photoshop_obj)
@@ -144,9 +147,8 @@ class File(QtWidgets.QMainWindow):
             if close1 == QtWidgets.QMessageBox.Yes:
                 CLOSED = True
                 photoshop_obj.main_window.close()
-            else:
-                if str(type(event)) == '<class "PyQt5.QtGui.QCloseEvent">':
-                    event.ignore()
+            elif str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                event.ignore()
         else:
             close = QtWidgets.QMessageBox.question(self,
                                                    'QUIT',

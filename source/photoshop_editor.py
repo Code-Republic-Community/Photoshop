@@ -1,13 +1,12 @@
 import functools
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QWidget, QFrame
-
 import file
 import edit
 import image
 import filter
 import scribble_area
 import buttons
+import textinput
 import help
 from load_screen import app
 
@@ -39,8 +38,13 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                 (self.screen_height - 561) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
         main_window.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
-        main_window.setStyleSheet("background: #686868\n""")
+        main_window.setStyleSheet("background: #686868; color:white")
 
+        self.choose_width = QtWidgets.QSlider(QtCore.Qt.Horizontal,self.scribble_area)
+        self.choose_width.setAutoFillBackground(True)
+        self.choose_width.setMinimum(1)
+        self.choose_width.setMaximum(50)
+        self.choose_width.hide()
 
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName('central_widget')
@@ -200,17 +204,10 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
             self.vertical_layout.addWidget(self.button_list[i])
             i += 1
 
-        pen_menu = QtWidgets.QMenu()
-        pen_menu.addAction('Paint', self.paint)
-        pen_menu.addAction('Width', functools.partial(self.scribble_area.set_tool_width,
-                                                      self, 'pen'))
-        self.button_list[0].setMenu(pen_menu)
-
         rubber_menu = QtWidgets.QMenu()
         rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
         rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
-        rubber_menu.addAction('Width', functools.partial(self.scribble_area.set_tool_width,
-                                                         self, 'rubber'))
+
         self.button_list[6].setMenu(rubber_menu)
         self.button_list[9].setMaximumSize(QtCore.QSize(36, 36))
         self.button_list[9].setStyleSheet("""
@@ -331,12 +328,13 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background:#D600C9; border-radius:8px')
-        buttons.TextWindow(self.scribble_area).exec()
+        textinput.Ui_Dialog(self.scribble_area).exec()
         if self.scribble_area.text != '':
             obj = buttons.MoveText(self.scribble_area.text, self.scribble_area.width_text,
-                                   self.scribble_area.color_text, self.scribble_area.bold,
-                                   self.scribble_area.italic, self.scribble_area.underline,
-                                   self.scribble_area, self, dragable=False)
+                                   self.scribble_area.text_font, self.scribble_area.color_text,
+                                   self.scribble_area.bold, self.scribble_area.italic,
+                                   self.scribble_area.underline, self.scribble_area,
+                                   self, dragable=False)
             self.band.append(obj)
             self.move_text()
         else:
