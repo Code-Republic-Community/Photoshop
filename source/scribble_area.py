@@ -3,6 +3,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import cv2 as cv
 from PIL import Image
+from PyQt5.QtCore import Qt
+
 import edit
 import buttons
 
@@ -201,9 +203,8 @@ class ScribbleArea(QtWidgets.QWidget):
 
             painter = QtGui.QPainter(self.image_draw)
             painter.setPen(QtGui.QPen(
-                QtGui.QColor(self.color_pen[0], self.color_pen[1],
-                             self.color_pen[2], self.color_pen[3]),
-                self.pen_width, QtCore.Qt.SolidLine))
+                QtGui.QColor(Qt.darkGray),
+                1, QtCore.Qt.DotLine))
             painter.drawLine(self.last_point, event.pos())
             self.last_point = event.pos()
 
@@ -247,8 +248,10 @@ class ScribbleArea(QtWidgets.QWidget):
     def set_pen_color(self, obj_photoshop_editor):
         color_dialog = QtWidgets.QColorDialog(self)
         color_dialog.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
-        self.color_pen = color_dialog.getColor().getRgb()
+        selected_color = color_dialog.getColor()
+        self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
+        obj_photoshop_editor.button_list[9].setStyleSheet(f'background:{selected_color.name()}; border-radius:8px')
 
     def set_tool_width(self, obj_photoshop_editor, tool: str):
         if tool == 'pen':

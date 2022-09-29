@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import aspose.words as aw
+#import aspose.words as aw
 from PIL import Image
+from image import Image
 
 class Buttons(QtWidgets.QMainWindow):
     def __init__(self):
