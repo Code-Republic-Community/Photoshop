@@ -14,8 +14,24 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.resize(530, 415)
         self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.setAutoFillBackground(False)
-        #self.setStyleSheet("background: #686868")
+        self.centralwidget = QtWidgets.QWidget(self)
+        self.centralwidget.resize(self.width(), self.height())
 
+        # Initial
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        #self.setWindowOpacity(0.6)
+
+        radius = 30
+        self.centralwidget.setStyleSheet(
+            """
+            background:#686868;
+            border-top-left-radius:{0}px;
+            border-bottom-left-radius:{0}px;
+            border-top-right-radius:{0}px;
+            border-bottom-right-radius:{0}px;
+            """.format(radius)
+        )
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -104,8 +120,8 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.cancel.setToolTipDuration(-1)
         self.cancel.setAutoFillBackground(False)
         self.cancel.setStyleSheet("border-radius:8px;\n"
-                                  "background: White\n"
-                                  "\n"
+                                  "background: White;color: #D600C9\n"
+                                  ""
                                   "\n"
                                   "                                                    ")
         self.cancel.setAutoRepeat(False)
@@ -129,7 +145,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.accept.setAutoFillBackground(False)
         self.accept.setStyleSheet("QPushButton{\n"
                                   "       border-radius:8px;\n"
-                                  "       background:#D600C9\n"
+                                  "       background:#D600C9;color: white\n"
                                   "       \n"
                                   "         }\n"
                                   "\n"
