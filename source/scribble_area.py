@@ -167,6 +167,12 @@ class ScribbleArea(QtWidgets.QWidget):
                 self.begin = self.end = event.pos()
                 self.update()
                 super().mousePressEvent(event)
+            self.photoshop_obj.choose_width.hide()
+            self.pen_width = self.photoshop_obj.choose_width.value()
+            self.rubber_width = self.photoshop_obj.choose_width.value()
+        if event.button() == QtCore.Qt.RightButton:
+            self.photoshop_obj.choose_width.move(self.last_point)
+            self.photoshop_obj.choose_width.show()
 
     def mouseMoveEvent(self, event):
         if self.pressed_button == 'paint':
@@ -267,30 +273,14 @@ class ScribbleArea(QtWidgets.QWidget):
         self.color_pen = color_dialog.getColor().getRgb()
         obj_photoshop_editor.paint()
 
-    def set_tool_width(self, obj_photoshop_editor, tool: str):
-        if tool == 'pen':
-            num, accept = QtWidgets.QInputDialog.getInt(self, f'{tool.title()} width',
-                                                        f'Choose the {tool} width',
-                                                        0, 1, 50)
-            if accept:
-                self.pen_width = num
-                obj_photoshop_editor.paint()
-
-        elif tool == 'rubber':
-            num, accept = QtWidgets.QInputDialog.getInt(self, f'{tool.title()} width',
-                                                        f'Choose the {tool} width',
-                                                        0, 1, 50)
-            if accept:
-                self.rubber_width = num
-                if self.pressed_button == ('transparent' or 'all image'):
-                    obj_photoshop_editor.eraser(self.pressed_button)
-                else:
-                    obj_photoshop_editor.eraser('all image')
 
     def make_undo_command(self):
         self.undo_stack.push(edit.UndoCommand(self))
 
+
     @classmethod
+
+
     def convert_q_image_to_cv(cls, img: QtGui.QImage):
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
@@ -298,6 +288,7 @@ class ScribbleArea(QtWidgets.QWidget):
         img_stream = io.BytesIO((buffer.data()))
         img = cv.imdecode(np.frombuffer(img_stream.read(), np.uint8), 1)
         return img
+
 
     @classmethod
     def convert_cv_to_q_image(cls, img):
@@ -309,6 +300,7 @@ class ScribbleArea(QtWidgets.QWidget):
             return q_img
         return img
 
+
     @classmethod
     def q_image_to_pil(cls, img):
         buffer = QtCore.QBuffer()
@@ -316,6 +308,7 @@ class ScribbleArea(QtWidgets.QWidget):
         img.save(buffer, 'PNG')
         pil_im = Image.open(io.BytesIO(buffer.data()))
         return pil_im
+
 
     @classmethod
     def pil_to_q_image(cls, img):
@@ -325,8 +318,10 @@ class ScribbleArea(QtWidgets.QWidget):
         q_img.loadFromData(bytes_img.getvalue())
         return q_img
 
+
     def get_photoshop_obj(self, photoshop_obj):
         self.photoshop_obj = photoshop_obj
+
 
     def merge_two_images(self, image1, image2):
         front_image = self.q_image_to_pil(image1).convert('RGBA')

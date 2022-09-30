@@ -14,7 +14,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.resize(530, 415)
         self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.setAutoFillBackground(False)
-        self.setStyleSheet("background: #686868")
+        #self.setStyleSheet("background: #686868")
 
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
