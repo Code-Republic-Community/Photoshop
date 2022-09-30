@@ -88,8 +88,8 @@ class Filter:
         photoshop_obj.is_clicked_move = False
         img = photoshop_obj.scribble_area.convert_q_image_to_cv(photoshop_obj.scribble_area.image)
         height, width = img.shape[:2]
-        weight, height = (16, 16)
-        temp = cv.resize(img, (weight, height), interpolation=cv.INTER_LINEAR)
+        width_, height_ = (16, 16)
+        temp = cv.resize(img, (width_, height_), interpolation=cv.INTER_LINEAR)
         output = cv.resize(temp, (width, height), interpolation=cv.INTER_NEAREST)
         q_img = photoshop_obj.scribble_area.convert_cv_to_q_image(output)
         photoshop_obj.scribble_area.image = q_img

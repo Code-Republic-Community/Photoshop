@@ -24,7 +24,8 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         if not file.CLOSED:
-            file.File.close_window(self, self.ui, event)
+            # file.File.close_window(self, self.ui, event)
+            file.File.close_window(file.File(), self.ui, event)
 
 
 class SplashScreen(QMainWindow):

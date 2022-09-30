@@ -160,6 +160,8 @@ class File(QtWidgets.QMainWindow):
                     File.save(self, photoshop_obj)
                 else:
                     File.save_as(self, photoshop_obj)
-            else:
+            elif str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+                event.accept()
+            elif close == QtWidgets.QMessageBox.No:
                 CLOSED = True
                 photoshop_obj.main_window.close()

@@ -48,6 +48,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.fontsize.setOrientation(QtCore.Qt.Horizontal)
         self.fontsize.setObjectName("fontsize")
         self.fontsize.setMaximum(50)
+        self.fontsize.setSliderPosition(15)
         self.fontsize.valueChanged.connect(functools.partial(self.set_font, 'size'))
         self.horizontalLayout_2.addWidget(self.fontsize)
 
