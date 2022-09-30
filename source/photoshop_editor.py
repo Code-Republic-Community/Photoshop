@@ -38,6 +38,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                 (self.screen_height - 561) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
         main_window.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+
         main_window.setStyleSheet("background: #686868; color:white")
 
         self.choose_width = QtWidgets.QSlider(QtCore.Qt.Horizontal,self.scribble_area)
@@ -48,6 +49,8 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
 
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName('central_widget')
+
+
         horizontal_layout = QtWidgets.QHBoxLayout(self.central_widget)
         horizontal_layout.setObjectName('horizontalLayout')
         horizontal_layout_2 = QtWidgets.QHBoxLayout()

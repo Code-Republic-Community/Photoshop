@@ -259,7 +259,7 @@ class ScribbleArea(QtWidgets.QWidget):
                 self.update()
 
             if self.crossed:
-                painter = QtGui.QPainter(self.image_draw)
+                painter = QtGui.QPainter(self.image)
                 painter.setBrush(QtGui.QColor(255, 255, 255, 255))
                 painter.drawPolygon(self.polygon)
 
