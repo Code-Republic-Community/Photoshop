@@ -1,21 +1,3 @@
-<p align="center">
-<img width="300" src="https://raw.githubusercontent.com/amplication/amplication/master/light.svg#gh-light-mode-only">
-<img width="300" src="https://raw.githubusercontent.com/amplication/amplication/master/dark.svg#gh-dark-mode-only">
-</p>
-
-<p align="center">
-  <img src="https://github.com/amplication/amplication/workflows/Node.js%20CI/badge.svg" alt="Node.js CI">
-  <a href="https://amplication.com/discord">
-    <img src="https://img.shields.io/discord/757179260417867879?label=discord" alt="Discord">
-  </a>
-  <a href="CODE_OF_CONDUCT.md">
-    <img src="https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg" alt="Contributor Covenant">
-  </a>
-  <a href="https://opensource.org/licenses/Apache-2.0">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
-  </a>
-  <img alt="GitHub release (latest by date)" src="[https://img.shields.io/github/v/release/amplication/amplication?color=purple](https://github.com/Code-Republic-Community/Photoshop/blob/martun_branch/content/editor_design.png)"/>
-</p>
 
 <div align="center">
  
