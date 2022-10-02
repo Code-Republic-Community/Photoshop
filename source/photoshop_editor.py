@@ -300,7 +300,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('../content/paint-brush.png')
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 

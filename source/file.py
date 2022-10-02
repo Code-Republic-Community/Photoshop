@@ -13,6 +13,7 @@ class File(QtWidgets.QMainWindow):
         photoshop_obj.is_clicked_move = False
         if photoshop_obj.scribble_area.check:
             msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
             msgBox.setText("The image has been modified.")
             msgBox.setInformativeText("Do you want to save your changes?")
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
@@ -144,6 +145,7 @@ class File(QtWidgets.QMainWindow):
         photoshop_obj.is_clicked_move = False
         global CLOSED
         msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
         msgBox.setInformativeText("Are you sure want to close the program?")
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
         msgBox.button(QtWidgets.QMessageBox.No).setMinimumSize(QtCore.QSize(60, 25))
