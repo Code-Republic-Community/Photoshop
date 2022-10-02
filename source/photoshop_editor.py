@@ -58,7 +58,6 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName('central_widget')
 
-
         horizontal_layout = QtWidgets.QHBoxLayout(self.central_widget)
         horizontal_layout.setObjectName('horizontalLayout')
         horizontal_layout_2 = QtWidgets.QHBoxLayout()
@@ -212,7 +211,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                                         background-color: #FF7DF7;
                                                     }
                                                     """)
-            #self.button_list[i].setToolTip("dasdasdasdsdgdf")
+            # self.button_list[i].setToolTip("dasdasdasdsdgdf")
             self.vertical_layout.addWidget(self.button_list[i])
             i += 1
 
@@ -261,8 +260,6 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                    QtCore.Qt.IgnoreAspectRatio,
                                    QtCore.Qt.SmoothTransformation)
 
-        mask = pixmap.createMaskFromColor(QtCore.Qt.red)
-        pixmap.setMask(mask)
         cursor = QtGui.QCursor(pixmap)
         app.setOverrideCursor(cursor)
 
@@ -291,6 +288,13 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
+        pixmap = QtGui.QPixmap('../content/crop_black.png')
+        pixmap = pixmap.scaled(20, 20,
+                               QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
+
+        cursor = QtGui.QCursor(pixmap)
+        app.setOverrideCursor(cursor)
+
     def lasso(self):
         self.is_clicked_move = False
         self.scribble_area.pressed_button = 'lasso'
@@ -304,8 +308,6 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 
-        mask = pixmap.createMaskFromColor(QtCore.Qt.red)
-        pixmap.setMask(mask)
         cursor = QtGui.QCursor(pixmap)
         app.setOverrideCursor(cursor)
 
