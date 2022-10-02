@@ -1,4 +1,5 @@
-![1  Amplication main]([https://user-images.githubusercontent.com/53312820/190913686-02c7deb1-da2f-41b8-aa31-065e00f6155c.png](https://github.com/Code-Republic-Community/Photoshop/blob/d4f933490c4ea6dc949c24e2012b9fff4be8fb24/content/editor_design.png))
+![1  Amplication main](https://github.com/Code-Republic-Community/Photoshop/blob/446cf2f75d243b0c750578fa65ef394bd5ac561c/content/editor_design.png)
+
 
 Photo Edit is an open‑source photo editing platform. It helps users to eidt images such croping, resizing, adding some filters, etc.
 
