@@ -174,78 +174,103 @@ class Help(object):
 
 
 
-class Documentation(QDialog):
+class Documentation(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(665, 585)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        Dialog.resize(624, 413)
+        Dialog.setStyleSheet("background: #686868")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.scrollArea = QtWidgets.QScrollArea(Dialog)
+        self.scrollArea.setMinimumSize(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setPointSize(2)
+        font.setKerning(False)
+        self.scrollArea.setFont(font)
+        self.scrollArea.setLineWidth(1)
+        self.scrollArea.setMidLineWidth(1)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 639, 559))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -169, 596, 554))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.label_2 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(24)
-        font.setItalic(True)
-        self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
-        self.verticalLayout_3.addWidget(self.label_2, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.verticalLayout_3.addWidget(self.label_2, 0, QtCore.Qt.AlignHCenter)
+        self.label = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.label.setObjectName("label")
+        self.verticalLayout_3.addWidget(self.label)
+        self.line_2 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
+        self.line_2.setMaximumSize(QtCore.QSize(70, 400))
+        self.line_2.setStyleSheet("background: #FF7DF7;")
+        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2.setObjectName("line_2")
+        self.verticalLayout_3.addWidget(self.line_2)
+        self.label_3 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.label_3.setObjectName("label_3")
+        self.verticalLayout_3.addWidget(self.label_3)
+        self.line_3 = QtWidgets.QFrame(self.scrollAreaWidgetContents)
+        self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.verticalLayout_3.addWidget(self.line_3)
         self.label_4 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
-        self.label_4.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(18)
-        font.setItalic(True)
-        self.label_4.setFont(font)
-        self.label_4.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_4.setTextFormat(QtCore.Qt.PlainText)
-        self.label_4.setScaledContents(False)
-        self.label_4.setWordWrap(False)
-        self.label_4.setOpenExternalLinks(False)
         self.label_4.setObjectName("label_4")
-        self.verticalLayout_3.addWidget(self.label_4, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignTop)
+        self.verticalLayout_3.addWidget(self.label_4)
+        self.line = QtWidgets.QFrame(self.scrollAreaWidgetContents)
+        self.line.setEnabled(True)
+        self.line.setMaximumSize(QtCore.QSize(140, 70))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        font.setKerning(True)
+        self.line.setFont(font)
+        self.line.setStyleSheet("background: #FF7DF7;\n"
+"border-radius:20px\n"
+"")
+        self.line.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line.setLineWidth(0)
+        self.line.setMidLineWidth(0)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setObjectName("line")
+        self.verticalLayout_3.addWidget(self.line)
+        self.label_5 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
+        self.label_5.setObjectName("label_5")
+        self.verticalLayout_3.addWidget(self.label_5)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.scrollArea)
+        self.verticalLayout_2.addLayout(self.verticalLayout)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Documentation"))
-        self.label_2.setText(_translate("Dialog", "Documentation"))
-        self.label_4.setText(_translate("Dialog", "It\'s a Photoshop alternative that you can use. Photoshop interface and \n"
-"photo editing feature tools are available on it."))
-
-        dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
-                                'Save As': 'Ctrl+Shift+S', 'Print': 'Ctrl+P', 'Close': 'Ctrl+W',
-                                'Undo': 'Ctrl+Z', 'Redo': 'Ctrl+Y', 'Cut': 'Ctrl+X', 'Copy': 'Ctrl+C',
-                                'Paste': 'Ctrl+V', 'Clear screen': 'Ctrl+L',
-                                'Keyboard shortcuts': 'Ctrl+K', 'Image size': 'Ctrl+Alt+I',
-                                'Canvas size': 'Ctrl+Alt+C', 'Rotate left': 'Shift+Ctrl+L',
-                                'Rotate right': 'Shift+Ctrl+R', 'Blur': 'Shift+Ctrl+B',
-                                'Noise': 'Shift+Ctrl+N', 'Twirling spirals': 'Shift+Ctrl+P',
-                                'Pixelate': 'Shift+Ctrl+P', 'Help': 'Ctrl+H', 'Documentation': 'Ctrl+D'}
-
-        for key in dictionary_shortcuts.keys():
-            my_font = QtGui.QFont()
-            my_font.setFamily("Arial")
-            my_font.setPointSize(14)
-            my_font.setItalic(True)
-            my_font.setBold(True)
-            label = QLabel(self)
-            label.setText(key)
-            label.setFont(my_font)
-            self.verticalLayout_3.addWidget(label)
+        Dialog.setWindowTitle(_translate("Dialog", "Help"))
+        self.label_2.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:18pt; color:#ffffff;\">DOCUMENTATION</span></p></body></html>"))
+        self.label.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#fefdfc;\">FEATURES</span></p></body></html>"))
+        self.label_3.setText(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Draw</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image resizing</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image rotating</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image filters such as blur, noise, twirling spirals and pixelate</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Adding a text</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Converting any image to a different format</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Eraser, transparent eraser</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Removal of unwanted outer areas</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Lasso tool</span></p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Paste a copied area on your image</span></p></body></html>"))
+        self.label_4.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PACKAGES WE USED</span></p></body></html>"))
+        self.label_5.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PyQt5</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">OpenCV</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PIL</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">Functools</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">Numpy</span></p></body></html>"))

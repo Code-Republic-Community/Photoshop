@@ -184,6 +184,7 @@ class KeyShortcut(QtWidgets.QDialog):
         self.vertical_layout_5.setObjectName('verticalLayout_5')
         self.horizontal_layout.addLayout(self.vertical_layout_5)
         self.horizontal_layout_2.addLayout(self.horizontal_layout)
+        self.setStyleSheet("background:#686868")
 
         layout = QtWidgets.QHBoxLayout(self)
         dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
@@ -204,11 +205,13 @@ class KeyShortcut(QtWidgets.QDialog):
             label = QtWidgets.QLabel(self)
             label.setText(key)
             label.setFont(my_font)
+            label.setStyleSheet("color:white")
             self.vertical_layout_4.addWidget(label)
 
         for value in dictionary_shortcuts.values():
             label = QtWidgets.QLabel(self)
             label.setText(value)
+            label.setStyleSheet("color:white")
             self.vertical_layout_5.addWidget(label)
 
         layout.addLayout(self.vertical_layout_4)
