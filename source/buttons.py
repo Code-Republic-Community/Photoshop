@@ -11,7 +11,7 @@ class Buttons(QtWidgets.QMainWindow):
 
     @classmethod
     def get_color(cls, obj_scribble, pos_x, pos_y):
-        img = obj_scribble.image.pixel(pos_x, pos_y)
+        img = obj_scribble.mer.pixel(pos_x, pos_y)
         color = QtGui.QColor(img).getRgb()
         obj_scribble.color_pen = color
         obj_scribble.photoshop_obj.all_button_white()

@@ -54,43 +54,36 @@ class Ui_Dialog(QtWidgets.QDialog):
 
         self.bold = QtWidgets.QPushButton(self)
         self.bold.setMaximumSize(QtCore.QSize(24, 24))
-        self.bold.setStyleSheet("background-color: #FF7DF7;\n"
-                                "border-radius:8px\n"
-                                "")
+        self.bold.setStyleSheet("border-radius:8px\n")
         self.bold.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../content/font.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../content/bold.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.bold.setIcon(icon)
         self.bold.setObjectName("bold")
         self.bold.clicked.connect(functools.partial(self.set_font, 'bold'))
         self.horizontalLayout_2.addWidget(self.bold)
-
+        icon.addPixmap(QtGui.QPixmap("../content/italic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.italic = QtWidgets.QPushButton(self)
         self.italic.setMaximumSize(QtCore.QSize(24, 24))
-        self.italic.setStyleSheet("background-color: #FF7DF7;\n"
-                                  "border-radius:8px\n"
-                                  "")
+        self.italic.setStyleSheet("border-radius:8px\n")
         self.italic.setText("")
         self.italic.setIcon(icon)
         self.italic.setObjectName("italic")
         self.italic.clicked.connect(functools.partial(self.set_font, 'italic'))
         self.horizontalLayout_2.addWidget(self.italic)
-
+        icon.addPixmap(QtGui.QPixmap("../content/underline.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.underline = QtWidgets.QPushButton(self)
         self.underline.setMaximumSize(QtCore.QSize(24, 24))
-        self.underline.setStyleSheet("background-color: #FF7DF7;\n"
-                                     "border-radius:8px\n")
+        self.underline.setStyleSheet("border-radius:8px\n")
         self.underline.setText("")
         self.underline.setIcon(icon)
         self.underline.setObjectName("underline")
         self.underline.clicked.connect(functools.partial(self.set_font, 'underline'))
         self.horizontalLayout_2.addWidget(self.underline)
-
+        icon.addPixmap(QtGui.QPixmap("../content/color.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.color = QtWidgets.QPushButton(self)
         self.color.setMaximumSize(QtCore.QSize(24, 24))
-        self.color.setStyleSheet("background-color: #FF7DF7;\n"
-                                 "border-radius:8px\n"
-                                 "")
+        self.color.setStyleSheet("border-radius:8px\n")
         self.color.setText("")
         self.color.setIcon(icon)
         self.color.setObjectName("color")
