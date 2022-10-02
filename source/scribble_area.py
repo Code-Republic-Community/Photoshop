@@ -24,7 +24,8 @@ class ScribbleArea(QtWidgets.QWidget):
         self.draw = False
         self.color_pen = (0, 0, 0, 255)
         self.color_text = (0, 0, 0, 255)
-        self.pen_width = 3
+        self.pen_width = 7
+        self.rubber_width = 10
         self.width_text = 15
         self.bold = False
         self.italic = False
@@ -37,7 +38,6 @@ class ScribbleArea(QtWidgets.QWidget):
         self.end = QtCore.QPoint()
         self.shape = QtCore.QRect()
         self.update()
-        self.rubber_width = 10
         self.open = False
         self.rotated = 'None'
         self.selected = False
@@ -48,6 +48,8 @@ class ScribbleArea(QtWidgets.QWidget):
         self.pressed_pos_y = 0
         self.crossed = False
         self.move_step_count = 0
+        self.slider_clicked_pen = False
+        self.slider_clicked_rubber = False
 
     def get_current_window_size(self):
         return self.width(), self.height()
@@ -167,12 +169,28 @@ class ScribbleArea(QtWidgets.QWidget):
                 self.begin = self.end = event.pos()
                 self.update()
                 super().mousePressEvent(event)
-            self.photoshop_obj.choose_width.hide()
-            self.pen_width = self.photoshop_obj.choose_width.value()
-            self.rubber_width = self.photoshop_obj.choose_width.value()
+            if self.pressed_button == 'paint' and self.slider_clicked_pen:
+                self.photoshop_obj.choose_width_pen.hide()
+                self.pen_width = self.photoshop_obj.choose_width_pen.value()
+                self.photoshop_obj.paint()
+            else:
+                self.pen_width = 5
+            if self.pressed_button in ('transparent', 'all image') and self.slider_clicked_rubber:
+                self.photoshop_obj.choose_width_rubber.hide()
+                self.rubber_width = self.photoshop_obj.choose_width_rubber.value()
+                self.photoshop_obj.eraser(self.pressed_button)
+            else:
+                self.rubber_width = 5
+
         if event.button() == QtCore.Qt.RightButton:
-            self.photoshop_obj.choose_width.move(self.last_point)
-            self.photoshop_obj.choose_width.show()
+            if self.pressed_button == 'paint':
+                self.slider_clicked_pen = True
+                self.photoshop_obj.choose_width_pen.move(self.last_point)
+                self.photoshop_obj.choose_width_pen.show()
+            elif self.pressed_button in ('transparent', 'all image'):
+                self.slider_clicked_rubber = True
+                self.photoshop_obj.choose_width_rubber.move(self.last_point)
+                self.photoshop_obj.choose_width_rubber.show()
 
     def mouseMoveEvent(self, event):
         if self.pressed_button == 'paint':
@@ -196,8 +214,8 @@ class ScribbleArea(QtWidgets.QWidget):
         if self.pressed_button == 'lasso':
             self.move_step_count += 1
             if self.move_step_count >= 10 and self.pressed_pos_x in list(
-                    range(event.pos().x() - 5, event.pos().x() + 5)) \
-                    and self.pressed_pos_y in list(range(event.pos().y() - 5, event.pos().y() + 5)):
+                    range(event.pos().x() - 7, event.pos().x() + 7)) \
+                    and self.pressed_pos_y in list(range(event.pos().y() - 7, event.pos().y() + 7)):
                 self.crossed = True
 
             if not self.crossed:
@@ -244,7 +262,6 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         if self.pressed_button == 'lasso':
-
             for pos in self.cord_lasso_pen:
                 painter = QtGui.QPainter(self.image_draw)
                 rubber = QtCore.QRect(QtCore.QPoint(), 200 * QtCore.QSize())
@@ -274,15 +291,12 @@ class ScribbleArea(QtWidgets.QWidget):
         self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
         obj_photoshop_editor.button_list[9].setStyleSheet(f'background:{selected_color.name()}; border-radius:8px')
-
+        obj_photoshop_editor.paint()
 
     def make_undo_command(self):
         self.undo_stack.push(edit.UndoCommand(self))
 
-
     @classmethod
-
-
     def convert_q_image_to_cv(cls, img: QtGui.QImage):
         buffer = QtCore.QBuffer()
         buffer.open(QtCore.QBuffer.ReadWrite)
@@ -290,7 +304,6 @@ class ScribbleArea(QtWidgets.QWidget):
         img_stream = io.BytesIO((buffer.data()))
         img = cv.imdecode(np.frombuffer(img_stream.read(), np.uint8), 1)
         return img
-
 
     @classmethod
     def convert_cv_to_q_image(cls, img):
@@ -302,7 +315,6 @@ class ScribbleArea(QtWidgets.QWidget):
             return q_img
         return img
 
-
     @classmethod
     def q_image_to_pil(cls, img):
         buffer = QtCore.QBuffer()
@@ -310,7 +322,6 @@ class ScribbleArea(QtWidgets.QWidget):
         img.save(buffer, 'PNG')
         pil_im = Image.open(io.BytesIO(buffer.data()))
         return pil_im
-
 
     @classmethod
     def pil_to_q_image(cls, img):
@@ -320,10 +331,8 @@ class ScribbleArea(QtWidgets.QWidget):
         q_img.loadFromData(bytes_img.getvalue())
         return q_img
 
-
     def get_photoshop_obj(self, photoshop_obj):
         self.photoshop_obj = photoshop_obj
-
 
     def merge_two_images(self, image1, image2):
         front_image = self.q_image_to_pil(image1).convert('RGBA')

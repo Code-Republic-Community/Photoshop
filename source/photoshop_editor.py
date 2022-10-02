@@ -41,11 +41,19 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
 
         main_window.setStyleSheet("background: #686868; color:white")
 
-        self.choose_width = QtWidgets.QSlider(QtCore.Qt.Horizontal,self.scribble_area)
-        self.choose_width.setAutoFillBackground(True)
-        self.choose_width.setMinimum(1)
-        self.choose_width.setMaximum(50)
-        self.choose_width.hide()
+        self.choose_width_pen = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.scribble_area)
+        self.choose_width_pen.setAutoFillBackground(True)
+        self.choose_width_pen.setMinimum(1)
+        self.choose_width_pen.setMaximum(50)
+        self.choose_width_pen.setSliderPosition(15)
+        self.choose_width_pen.hide()
+
+        self.choose_width_rubber = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.scribble_area)
+        self.choose_width_rubber.setAutoFillBackground(True)
+        self.choose_width_rubber.setMinimum(1)
+        self.choose_width_rubber.setMaximum(50)
+        self.choose_width_rubber.setSliderPosition(15)
+        self.choose_width_rubber.hide()
 
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName('central_widget')
@@ -55,8 +63,8 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         horizontal_layout.setObjectName('horizontalLayout')
         horizontal_layout_2 = QtWidgets.QHBoxLayout()
         horizontal_layout_2.setObjectName('horizontalLayout_2')
-        #self.panel = QFrame(self.central_widget)
-        #self.panel.setStyleSheet("background: #686868;")
+        # self.panel = QtWidgets.QFrame(self.central_widget)
+        # self.panel.setStyleSheet("background: #686868;")
         self.vertical_layout = QtWidgets.QVBoxLayout(self.central_widget)
         self.vertical_layout.setObjectName('verticalLayout')
         horizontal_layout_2.addLayout(self.vertical_layout)
@@ -141,7 +149,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
             extract_action.setText(translate('MainWindow', key))
             i += 1
 
-        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+P', 'Shift+Ctrl+P']
+        lst_filter_shortcut = ['Shift+Ctrl+B', 'Shift+Ctrl+N', 'Shift+Ctrl+T', 'Shift+Ctrl+P']
         i = 0
         for key, value in dict_filter.items():
             extract_action = QtWidgets.QAction(main_window)
@@ -179,9 +187,10 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                         '../content/eraser.png': self.eraser,
                         '../content/font.png': self.type,
                         '../content/recovery.png': self.image_converter,
-                        '':functools.partial(self.scribble_area.set_pen_color,self)
+                        '': functools.partial(self.scribble_area.set_pen_color, self)
                         }
         i = 0
+        QtWidgets.QToolTip.setFont(QtGui.QFont('Arial', 14))
         for key, value in dict_buttons.items():
             self.button_list[i] = QtWidgets.QPushButton(self.central_widget)
 
@@ -193,7 +202,6 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
             size_policy.setHeightForWidth(self.button_list[i].sizePolicy().hasHeightForWidth())
             self.button_list[i].clicked.connect(value, self.button_clicked[i])
             self.button_list[i].setSizePolicy(size_policy)
-
             self.button_list[i].setIcon(QtGui.QIcon(key))
             self.button_list[i].setIconSize(QtCore.QSize(24, 24))
             self.button_list[i].setStyleSheet("""
@@ -204,6 +212,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                                         background-color: #FF7DF7;
                                                     }
                                                     """)
+            #self.button_list[i].setToolTip("dasdasdasdsdgdf")
             self.vertical_layout.addWidget(self.button_list[i])
             i += 1
 
@@ -233,20 +242,24 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
                                                         background-color: #FF7DF7;
                                                     }
                                                     """)
-        pass
 
     def paint(self):
         self.is_clicked_move = False
         self.scribble_area.pressed_button = 'paint'
         self.all_button_white()
         self.button_list[0].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[0].setToolTip('Pen')
 
-
-        icon = QtGui.QIcon('../content/paint-brush.png')
-        pixmap = QtGui.QPixmap('../content/paint-brush.png')
-        pixmap = pixmap.scaled(20 + self.scribble_area.pen_width,
-                               20 + self.scribble_area.pen_width,
-                               QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
+        if self.scribble_area.pen_width > 10:
+            pixmap = pixmap.scaled(self.scribble_area.pen_width,
+                                   self.scribble_area.pen_width,
+                                   QtCore.Qt.IgnoreAspectRatio,
+                                   QtCore.Qt.SmoothTransformation)
+        else:
+            pixmap = pixmap.scaled(10, 10,
+                                   QtCore.Qt.IgnoreAspectRatio,
+                                   QtCore.Qt.SmoothTransformation)
 
         mask = pixmap.createMaskFromColor(QtCore.Qt.red)
         pixmap.setMask(mask)
@@ -258,14 +271,23 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'move'
         self.all_button_white()
         self.button_list[1].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[1].setToolTip('Move')
         for i in self.band:
             i.draggable = True
+
+        pixmap = QtGui.QPixmap('../content/move_black.png')
+        pixmap = pixmap.scaled(20, 20,
+                               QtCore.Qt.IgnoreAspectRatio,
+                               QtCore.Qt.SmoothTransformation)
+        cursor = QtGui.QCursor(pixmap)
+        app.setOverrideCursor(cursor)
 
     def marquee(self):
         self.is_clicked_move = False
         self.scribble_area.pressed_button = 'marquee'
         self.all_button_white()
         self.button_list[2].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[2].setToolTip('Marquee')
         for i in self.band:
             i.draggable = False
 
@@ -274,6 +296,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'lasso'
         self.all_button_white()
         self.button_list[3].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[3].setToolTip('Lasso')
         for i in self.band:
             i.draggable = False
 
@@ -291,6 +314,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'crop'
         self.all_button_white()
         self.button_list[4].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[4].setToolTip('Crop')
         self.buttons_obj.crop(self)
         for i in self.band:
             i.draggable = False
@@ -300,8 +324,15 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'eyedropper'
         self.all_button_white()
         self.button_list[5].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[5].setToolTip('Eyedropper')
         for i in self.band:
             i.draggable = False
+        pixmap = QtGui.QPixmap('../content/eyedropper_black.png')
+        pixmap = pixmap.scaled(20, 20,
+                               QtCore.Qt.IgnoreAspectRatio,
+                               QtCore.Qt.SmoothTransformation)
+        cursor = QtGui.QCursor(pixmap)
+        app.setOverrideCursor(cursor)
 
     def eraser(self, rubber_type):
         self.is_clicked_move = False
@@ -312,12 +343,21 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
 
         self.all_button_white()
         self.button_list[6].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[6].setToolTip('Rubber')
+
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('../content/square.png')
-        pixmap = pixmap.scaled(self.scribble_area.rubber_width, self.scribble_area.rubber_width,
-                               QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
+        if self.scribble_area.rubber_width > 10:
+            pixmap = pixmap.scaled(self.scribble_area.rubber_width,
+                                   self.scribble_area.rubber_width,
+                                   QtCore.Qt.IgnoreAspectRatio,
+                                   QtCore.Qt.SmoothTransformation)
+        else:
+            pixmap = pixmap.scaled(10, 10,
+                                   QtCore.Qt.IgnoreAspectRatio,
+                                   QtCore.Qt.SmoothTransformation)
 
         mask = pixmap.createMaskFromColor(QtCore.Qt.red)
         pixmap.setMask(mask)
@@ -331,6 +371,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'type'
         self.all_button_white()
         self.button_list[7].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[7].setToolTip('Text')
         textinput.Ui_Dialog(self.scribble_area).exec()
         if self.scribble_area.text != '':
             obj = buttons.MoveText(self.scribble_area.text, self.scribble_area.width_text,
@@ -348,6 +389,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.scribble_area.pressed_button = 'image_converter'
         self.all_button_white()
         self.button_list[8].setStyleSheet('background:#D600C9; border-radius:8px')
+        self.button_list[8].setToolTip('Converter')
         self.buttons_obj.image_converter(self)
         for i in self.band:
             i.draggable = False

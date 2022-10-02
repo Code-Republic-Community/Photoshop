@@ -1,6 +1,6 @@
 """asdas"""
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 import cv2 as cv
 
 
@@ -71,11 +71,28 @@ class InputSize(QtWidgets.QDialog):
         self.height = QtWidgets.QLineEdit(self)
         self.width.setValidator(self.only_int)
         self.height.setValidator(self.only_int)
+        self.width.setStyleSheet("QLineEdit { border-radius: 8px; }""")
+        self.height.setStyleSheet("QLineEdit { border-radius: 8px; }""")
+
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
+
 
         button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
                                                 | QtWidgets.QDialogButtonBox.Cancel, self)
+
+
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setStyleSheet(
+                                  "border-radius:8px;"
+                                  "background:#D600C9;color: white"
+                                  )
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setStyleSheet(
+                                    "border-radius:8px;"
+                                    "background: White;color: #D600C9"
+                                    )
 
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Width', self.width)
