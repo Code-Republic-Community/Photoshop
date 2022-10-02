@@ -26,7 +26,7 @@
   </div>
  
 
-![1  Amplication main](https://user-images.githubusercontent.com/53312820/190913686-02c7deb1-da2f-41b8-aa31-065e00f6155c.png)
+![1  Amplication main]([https://user-images.githubusercontent.com/53312820/190913686-02c7deb1-da2f-41b8-aa31-065e00f6155c.png](https://github.com/Code-Republic-Community/Photoshop/blob/martun_branch/content/editor_design.png)
 
 Photo Edit is an open‑source photo editing platform. It helps users to eidt images such croping, resizing, adding some filters, etc.
 
@@ -81,21 +81,4 @@ pip install opencv-python
 
 
 
-## Support
-
-Ask your questions and participate in discussions on Amplication-related and web-dev topics at Amplication Discord channel. 
-
-<a href="https://discord.gg/Z2CG3rUFnu"><img src="https://amplication.com/images/discord_banner_purple.svg" /></a>
-
-## Create a bug report
-
-If you see an error message or run into an issue, please [create bug report](https://github.com/amplication/amplication/issues/new?assignees=&labels=type%3A+bug&template=bug.yaml&title=%F0%9F%90%9B+Bug+Report%3A+). This effort is valued and it will help all Amplication users.
-
-
-## Submit a feature request
-
-If you have an idea, or you're missing a capability that would make development easier and more robust, please [Submit feature request](https://github.com/amplication/amplication/issues/new?assignees=&labels=type%3A+feature+request&template=feature.yml).
-
-If a similar feature request already exists, don't forget to leave a "+1".
-If you add some more information such as your thoughts and vision about the feature, your comments will be embraced warmly :)
 
