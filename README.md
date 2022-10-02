@@ -14,7 +14,7 @@
   <a href="https://opensource.org/licenses/Apache-2.0">
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
   </a>
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/amplication/amplication?color=purple"/>
+  <img alt="GitHub release (latest by date)" src="[https://img.shields.io/github/v/release/amplication/amplication?color=purple](https://github.com/Code-Republic-Community/Photoshop/blob/martun_branch/content/editor_design.png)"/>
 </p>
 
 <div align="center">
