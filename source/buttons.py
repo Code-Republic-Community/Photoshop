@@ -115,7 +115,7 @@ class MoveText(QtWidgets.QWidget):
         self.mouse_move_pos = None
         self.border_radius = 0
         self.setWindowFlags(QtCore.Qt.SubWindow)
-
+        self.setStyleSheet("background:transparent")
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(
