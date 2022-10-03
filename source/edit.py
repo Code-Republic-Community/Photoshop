@@ -59,10 +59,10 @@ class Edit:
     def clear_screen(cls, photoshop_obj):
         photoshop_obj.scribble_area.image_draw = QtGui.QImage(1000, 1000, QtGui.QImage.Format_ARGB32)
 
-        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image)
+        photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image, 'image')
         photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
 
-        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image_draw)
+        photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image_draw, 'image_draw')
         photoshop_obj.scribble_area.check = False
 
         photoshop_obj.scribble_area.update()
@@ -184,6 +184,7 @@ class KeyShortcut(QtWidgets.QDialog):
         self.vertical_layout_5.setObjectName('verticalLayout_5')
         self.horizontal_layout.addLayout(self.vertical_layout_5)
         self.horizontal_layout_2.addLayout(self.horizontal_layout)
+        self.setStyleSheet("background:#686868")
 
         layout = QtWidgets.QHBoxLayout(self)
         dictionary_shortcuts = {'New': 'Ctrl+N', 'Open': 'Ctrl+O', 'Save': 'Ctrl+S',
@@ -204,11 +205,13 @@ class KeyShortcut(QtWidgets.QDialog):
             label = QtWidgets.QLabel(self)
             label.setText(key)
             label.setFont(my_font)
+            label.setStyleSheet("color:white")
             self.vertical_layout_4.addWidget(label)
 
         for value in dictionary_shortcuts.values():
             label = QtWidgets.QLabel(self)
             label.setText(value)
+            label.setStyleSheet("color:white")
             self.vertical_layout_5.addWidget(label)
 
         layout.addLayout(self.vertical_layout_4)

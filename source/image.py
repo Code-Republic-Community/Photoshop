@@ -1,6 +1,6 @@
 """asdas"""
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 import cv2 as cv
 
 
@@ -45,12 +45,11 @@ class Image:
             transform90.rotate(-90)
 
         image = photoshop_obj.scribble_area.image.transformed(transform90)
-        image = photoshop_obj.scribble_area.convert_q_image_to_cv(image)
-        image = cv.resize(image, (photoshop_obj.scribble_area.image_width, photoshop_obj.scribble_area.image_height))
-        photoshop_obj.scribble_area.resize_image(image)
+        photoshop_obj.scribble_area.resize_image_draw(image, 'image')
 
         image_draw = photoshop_obj.scribble_area.image_draw.transformed(transform90)
-        photoshop_obj.scribble_area.resize_image_draw(image_draw)
+        photoshop_obj.scribble_area.resize_image_draw(image_draw, 'image_draw')
+
         photoshop_obj.scribble_area.check = True
         photoshop_obj.scribble_area.update()
 
@@ -71,11 +70,23 @@ class InputSize(QtWidgets.QDialog):
         self.height = QtWidgets.QLineEdit(self)
         self.width.setValidator(self.only_int)
         self.height.setValidator(self.only_int)
+        self.width.setStyleSheet("QLineEdit { border-radius: 8px; }""")
+        self.height.setStyleSheet("QLineEdit { border-radius: 8px; }""")
+
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
 
         button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
                                                 | QtWidgets.QDialogButtonBox.Cancel, self)
+
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
+        lst_button_box = [QtWidgets.QDialogButtonBox.Ok, QtWidgets.QDialogButtonBox.Cancel]
+        for answer in lst_button_box:
+            button_box.button(answer).setMinimumSize(QtCore.QSize(60, 25))
+            button_box.button(answer).setStyleSheet(
+                "border-radius:8px;"
+                "background:#D600C9;color: white"
+            )
 
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Width', self.width)
@@ -89,14 +100,11 @@ class InputSize(QtWidgets.QDialog):
                 width = int(self.width.text())
                 height = int(self.height.text())
                 img = self.photoshop_obj.scribble_area.image
-                img = self.photoshop_obj.scribble_area.convert_q_image_to_cv(img)
+                image_draw = self.photoshop_obj.scribble_area.image_draw
                 self.photoshop_obj.scribble_area.image_width = width
                 self.photoshop_obj.scribble_area.image_height = height
-                image = cv.resize(img, (width, height))
-                self.photoshop_obj.scribble_area.resize_image(image)
-                self.photoshop_obj.scribble_area.image = self.photoshop_obj.scribble_area.convert_cv_to_q_image(image)
-
-                self.photoshop_obj.scribble_area.resize_image_draw(self.photoshop_obj.scribble_area.image_draw)
+                self.photoshop_obj.scribble_area.resize_image_draw(img, 'image')
+                self.photoshop_obj.scribble_area.resize_image_draw(image_draw, 'image_draw')
 
                 self.photoshop_obj.scribble_area.update()
                 self.close()
