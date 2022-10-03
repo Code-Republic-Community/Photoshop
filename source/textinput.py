@@ -71,6 +71,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.italic.setObjectName("italic")
         self.italic.clicked.connect(functools.partial(self.set_font, 'italic'))
         self.horizontalLayout_2.addWidget(self.italic)
+        icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("../content/underline.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.underline = QtWidgets.QPushButton(self)
         self.underline.setMaximumSize(QtCore.QSize(24, 24))
@@ -179,31 +180,47 @@ class Ui_Dialog(QtWidgets.QDialog):
         font.setPointSize(self.scribble_obj.width_text)
         self.textEdit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')
         #font.sty(self.scribble_obj.text_font)
+        icon = QtGui.QIcon()
 
         if font_type == 'bold':
             if not self.scribble_obj.bold:
                 self.scribble_obj.bold = True
+                icon.addPixmap(QtGui.QPixmap("../content/bold_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
             else:
                 self.scribble_obj.bold = False
+                icon.addPixmap(QtGui.QPixmap("../content/bold.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
             self.textEdit.setFont(font)
+
         elif font_type == 'italic':
             if not self.scribble_obj.italic:
                 self.scribble_obj.italic = True
+                icon.addPixmap(QtGui.QPixmap("../content/italic_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
             else:
                 self.scribble_obj.italic = False
+                icon.addPixmap(QtGui.QPixmap("../content/italic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
             self.textEdit.setFont(font)
+
         elif font_type == 'underline':
             if not self.scribble_obj.underline:
                 self.scribble_obj.underline = True
+                icon.addPixmap(QtGui.QPixmap("../content/underline_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
             else:
                 self.scribble_obj.underline = False
+                icon.addPixmap(QtGui.QPixmap("../content/underline.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
             self.textEdit.setFont(font)
+
         elif font_type == 'color':
             self.scribble_obj.color_text = QtWidgets.QColorDialog.getColor().getRgb()
             self.textEdit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')

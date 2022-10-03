@@ -56,79 +56,51 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def open_image(self, img):
         self.open = True
-        new_size = QtCore.QSize(img.shape[0], img.shape[1])
-        self.resize_image(img)
+        self.resize_image_draw(img, 'image')
         image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
-        self.image = self.convert_cv_to_q_image(img)
-        image_draw.scaled(new_size)
+        #self.image = self.convert_cv_to_q_image(img)
+        #image_draw.scaled(new_size)
         self.image_draw = image_draw
         self.check = True
         self.update()
         return True
 
-    def resize_image(self, image, new_size=None):
-        if new_size is None:
-            new_image = QtGui.QImage(QtCore.QSize(self.image_width, self.image_height),
-                                     QtGui.QImage.Format_RGB32)
-        else:
-            new_image = QtGui.QImage(QtCore.QSize(new_size), QtGui.QImage.Format_RGB32)
-
-        new_image.fill(QtGui.qRgb(255, 255, 255))
-        painter = QtGui.QPainter(new_image)
-        image = self.convert_cv_to_q_image(image)
-        painter.drawImage(QtCore.QPoint(0, 0), image)
-        self.image = new_image
-
-    def resize_image_draw(self, image, new_size=None):
+    def resize_image_draw(self, image, image_type, new_size=None):
         pixmap = QtGui.QPixmap()
         if new_size is None:
-            pixamp = pixmap.fromImage(
+            pixmap = pixmap.fromImage(
                 image.copy().scaled(self.image_width, self.image_height,
                                     QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation))
         else:
             width, height = self.get_current_window_size()
-            pixamp = pixmap.fromImage(
+            pixmap = pixmap.fromImage(
                 image.copy().scaled(width, height,
                                     QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation))
 
-        self.image_copy = self.image.copy()
-
-        self.image_draw = pixamp.toImage()
+        if image_type == 'image':
+            self.image = pixmap.toImage()
+        else:
+            self.image_draw = pixmap.toImage()
         self.update()
 
     def resizeEvent(self, event):
-        if self.open:
-            if self.get_current_window_size()[0] > self.image_width \
-                    or self.get_current_window_size()[1] > self.image_height:
-                img = cv.resize(self.convert_q_image_to_cv(self.image),
-                                (self.image_width, self.image_height))
-            else:
-                img = cv.resize(self.convert_q_image_to_cv(self.image),
-                                (self.get_current_window_size()))
-
-            self.image = self.convert_cv_to_q_image(img)
-        else:
-            pixmap = QtGui.QPixmap()
-            pixmap = pixmap.fromImage(self.image.copy().scaled(self.image_width, self.image_height,
-                                                               QtCore.Qt.IgnoreAspectRatio,
-                                                               QtCore.Qt.SmoothTransformation))
-            self.image_copy = self.image.copy()
-            self.image = pixmap.toImage()
+        pixmap = QtGui.QPixmap()
+        pixmap = pixmap.fromImage(self.image.copy().scaled(self.image_width, self.image_height,
+                                                           QtCore.Qt.IgnoreAspectRatio,
+                                                           QtCore.Qt.SmoothTransformation))
+        self.image = pixmap.toImage()
 
         pixmap = QtGui.QPixmap()
-        pixmap = pixmap.fromImage(
-            self.image_draw.copy().scaled(self.image_width, self.image_height,
-                                          QtCore.Qt.IgnoreAspectRatio,
-                                          QtCore.Qt.SmoothTransformation))
-        self.image_copy = self.image.copy()
+        pixmap = pixmap.fromImage(self.image_draw.copy().scaled(self.image_width, self.image_height,
+                                                                QtCore.Qt.IgnoreAspectRatio,
+                                                                QtCore.Qt.SmoothTransformation))
         self.image_draw = pixmap.toImage()
-        self.update()
 
         super(ScribbleArea, self).resizeEvent(event)
 
     def save_image(self, file_name=None, file_format=None):
         visible_image = self.merge_two_images(self.image_draw, self.image)
-        self.resize_image(visible_image)
+        self.resize_image_draw(visible_image, 'image')
 
         if None is not (file_name and file_format):
             if visible_image.save(file_name, file_format):
@@ -138,7 +110,7 @@ class ScribbleArea(QtWidgets.QWidget):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         dirty_rect = event.rect()
-        painter.drawImage(dirty_rect, self.convert_cv_to_q_image(self.image), dirty_rect)
+        painter.drawImage(dirty_rect, self.image, dirty_rect)
         painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
         self.update()
         if self.pressed_button == 'paint':
@@ -165,16 +137,19 @@ class ScribbleArea(QtWidgets.QWidget):
             self.last_point = event.pos()
             if self.pressed_button == 'eyedropper':
                 self.buttons.get_color(self, event.pos().x(), event.pos().y())
+
             if self.pressed_button == 'marquee':
                 self.begin = self.end = event.pos()
                 self.update()
                 super().mousePressEvent(event)
+
             if self.pressed_button == 'paint' and self.slider_clicked_pen:
                 self.photoshop_obj.choose_width_pen.hide()
                 self.pen_width = self.photoshop_obj.choose_width_pen.value()
                 self.photoshop_obj.paint()
             else:
                 self.pen_width = 5
+
             if self.pressed_button in ('transparent', 'all image') and self.slider_clicked_rubber:
                 self.photoshop_obj.choose_width_rubber.hide()
                 self.rubber_width = self.photoshop_obj.choose_width_rubber.value()
@@ -185,11 +160,11 @@ class ScribbleArea(QtWidgets.QWidget):
         if event.button() == QtCore.Qt.RightButton:
             if self.pressed_button == 'paint':
                 self.slider_clicked_pen = True
-                self.photoshop_obj.choose_width_pen.move(self.last_point)
+                self.photoshop_obj.choose_width_pen.move(event.pos())
                 self.photoshop_obj.choose_width_pen.show()
             elif self.pressed_button in ('transparent', 'all image'):
                 self.slider_clicked_rubber = True
-                self.photoshop_obj.choose_width_rubber.move(self.last_point)
+                self.photoshop_obj.choose_width_rubber.move(event.pos())
                 self.photoshop_obj.choose_width_rubber.show()
 
     def mouseMoveEvent(self, event):
@@ -206,12 +181,12 @@ class ScribbleArea(QtWidgets.QWidget):
             self.update()
             self.check = True
 
-        if self.pressed_button == 'marquee':
+        elif self.pressed_button == 'marquee':
             self.end = event.pos()
             self.update()
             super().mouseMoveEvent(event)
 
-        if self.pressed_button == 'lasso':
+        elif self.pressed_button == 'lasso':
             self.move_step_count += 1
             if self.move_step_count >= 10 and self.pressed_pos_x in list(
                     range(event.pos().x() - 7, event.pos().x() + 7)) \
@@ -237,7 +212,7 @@ class ScribbleArea(QtWidgets.QWidget):
             self.update()
             self.check = True
 
-        if self.pressed_button == 'transparent':
+        elif self.pressed_button == 'transparent':
             painter = QtGui.QPainter(self.image_draw)
             rubber = QtCore.QRect(QtCore.QPoint(), self.rubber_width * QtCore.QSize())
             rubber.moveCenter(event.pos())
@@ -264,7 +239,7 @@ class ScribbleArea(QtWidgets.QWidget):
         if self.pressed_button == 'lasso':
             for pos in self.cord_lasso_pen:
                 painter = QtGui.QPainter(self.image_draw)
-                rubber = QtCore.QRect(QtCore.QPoint(), 200 * QtCore.QSize())
+                rubber = QtCore.QRect(QtCore.QPoint(), 10 * QtCore.QSize())
                 rubber.moveCenter(pos)
                 painter.save()
                 painter.setCompositionMode(QtGui.QPainter.CompositionMode_Clear)
@@ -276,9 +251,10 @@ class ScribbleArea(QtWidgets.QWidget):
                 self.update()
 
             if self.crossed:
-                painter = QtGui.QPainter(self.image)
-                painter.setBrush(QtGui.QColor(255, 255, 255, 255))
-                painter.drawPolygon(self.polygon)
+                painters = [QtGui.QPainter(self.image), QtGui.QPainter(self.image_draw)]
+                for painter in painters:
+                    painter.setBrush(QtGui.QColor(255, 255, 255, 255))
+                    painter.drawPolygon(self.polygon)
 
             self.lst = []
             self.crossed = False

@@ -59,10 +59,10 @@ class Edit:
     def clear_screen(cls, photoshop_obj):
         photoshop_obj.scribble_area.image_draw = QtGui.QImage(1000, 1000, QtGui.QImage.Format_ARGB32)
 
-        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image)
+        photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image, 'image')
         photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
 
-        photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image_draw)
+        photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image_draw, 'image_draw')
         photoshop_obj.scribble_area.check = False
 
         photoshop_obj.scribble_area.update()

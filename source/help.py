@@ -1,5 +1,3 @@
-from PyQt5.QtWidgets import QDialog, QLabel
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -62,8 +60,8 @@ class Help(object):
         font.setKerning(True)
         self.line.setFont(font)
         self.line.setStyleSheet("background: #FF7DF7;\n"
-"border-radius:20px\n"
-"")
+                                "border-radius:20px\n"
+                                "")
         self.line.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line.setLineWidth(0)
         self.line.setMidLineWidth(0)
@@ -145,7 +143,8 @@ class Help(object):
         self.label_13 = QtWidgets.QLabel(self.scrollAreaWidgetContents)
         self.label_13.setObjectName("label_13")
         self.verticalLayout_3.addWidget(self.label_13)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                           QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_3.addItem(spacerItem)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.scrollArea)
@@ -157,21 +156,71 @@ class Help(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Help"))
-        self.label_2.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:18pt; color:#ffffff;\">HELP</span></p></body></html>"))
-        self.label.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-style:italic; color:#fefdfc;\">FILE MENU</span></p></body></html>"))
-        self.label_3.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">New</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : New blank window</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">Open</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : Open an image file. </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">Save</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : Replace the uploaded image with a new image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">Save as</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : Save the image on screen into the selected file format </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">Print</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : Print the picture that you are currently viewing</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#fdf8f8;\">Close</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#fdf8f8;\"> : Quit the program</span></p></body></html>"))
-        self.label_4.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">EDIT MENU</span></p></body></html>"))
-        self.label_5.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Undo</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : It erases the last change done to the image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Redo</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Restores something undone</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Cut</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : The removal of unwanted outer areas from a image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Copy</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Copying part of an image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Paste</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Paste a copied area on your image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Clear screen</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Clears the scribble area</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Keyboard shortcuts</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Show the list of shortcuts</span></p></body></html>"))
-        self.label_6.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#fefdfb;\">IMAGE MENU</span></p></body></html>"))
-        self.label_7.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Image size</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Changes the image size</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Canvas size</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Changes the canvas size</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Rotate left</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Rotates the image 90 degrees to the left</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Rotate right</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Rotates the image 90 degrees to the right</span></p></body></html>"))
-        self.label_8.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">FILTER MENU</span></p></body></html>"))
-        self.label_9.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Blur</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Blur refers to the part of an image that is out of focus</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Noise</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Random variation of brightness or color information in images</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Twirling spirals </span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\">:  Applies a swirling pattern to the image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Pixelate</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Cause an image to break up into pixels, as by oversizing the image</span><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\"/></p></body></html>"))
-        self.label_10.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">HELP MENU</span></p></body></html>"))
-        self.label_11.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Help</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Help window</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Documentation</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Software documentation</span><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\"/></p></body></html>"))
-        self.label_12.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">TOOLS</span></p></body></html>"))
-        self.label_13.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Paint</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Paint on the image, also you can choose the width and color</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Move</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Move the text or a copied image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Select</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Select a part of an image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Lasso</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Lasso select erases the selected area</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Crop</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Crops the image and keeps only the selected part </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Eyedropper</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Click a point in the image to identify and select its color</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Eraser</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : You can choose the transparent eraser or the rubber</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Text</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Put a text to the image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Convert</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Convert any image to a different format</span></p></body></html>"))
-
-
+        self.label_2.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-size:18pt; "
+                                        "color:#ffffff;\">HELP</span></p></body></html>"))
+        self.label.setText(_translate("Dialog",
+                                      "<html><head/><body><p><span style=\" font-style:italic; "
+                                      "color:#fefdfc;\">FILE MENU</span></p></body></html>"))
+        self.label_3.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-weight:600; "
+                                        "font-style:italic; color:#fdf8f8;\">New</span><span "
+                                        "style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-style:italic; color:#fdf8f8;\"> : "
+                                        "New blank window</span></p><p><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; font-size:14pt; "
+                                        "font-weight:600; font-style:italic; "
+                                        "color:#fdf8f8;\">Open</span><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; font-size:14pt; "
+                                        "font-style:italic; color:#fdf8f8;\"> : "
+                                        "Open an image file. </span></p><p><span "
+                                        "style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-weight:600; font-style:italic; "
+                                        "color:#fdf8f8;\">Save</span><span "
+                                        "style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-style:italic; "
+                                        "color:#fdf8f8;\"> : "
+                                        "Replace the uploaded image with a new image</span></p>"
+                                        "<p><span style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-weight:600; font-style:italic; "
+                                        "color:#fdf8f8;\">Save as</span><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; font-size:14pt; "
+                                        "font-style:italic; color:#fdf8f8;\"> : "
+                                        "Save the image on screen into the selected file format "
+                                        "</span></p><p><span style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-weight:600; font-style:italic; "
+                                        "color:#fdf8f8;\">Print</span><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; font-size:14pt; "
+                                        "font-style:italic; color:#fdf8f8;\"> : "
+                                        "Print the picture that you are currently viewing</span></p>"
+                                        "<p><span style=\" font-family:\'Helvetica Neue\'; "
+                                        "font-size:14pt; font-weight:600; font-style:italic; "
+                                        "color:#fdf8f8;\">Close</span><span style=\" "
+                                        "font-family:\'Helvetica Neue\'; font-size:14pt; "
+                                        "font-style:italic; color:#fdf8f8;\"> : "
+                                        "Quit the program</span></p></body></html>"))
+        self.label_4.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">EDIT MENU</span></p></body></html>"))
+        self.label_5.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Undo</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : It erases the last change done to the image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Redo</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Restores something undone</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Cut</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : The removal of unwanted outer areas from a image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Copy</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Copying part of an image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Paste</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Paste a copied area on your image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Clear screen</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Clears the scribble area</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Keyboard shortcuts</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Show the list of shortcuts</span></p></body></html>"))
+        self.label_6.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#fefdfb;\">IMAGE MENU</span></p></body></html>"))
+        self.label_7.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Image size</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Changes the image size</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Canvas size</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Changes the canvas size</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Rotate left</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Rotates the image 90 degrees to the left</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Rotate right</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Rotates the image 90 degrees to the right</span></p></body></html>"))
+        self.label_8.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">FILTER MENU</span></p></body></html>"))
+        self.label_9.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Blur</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Blur refers to the part of an image that is out of focus</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Noise</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Random variation of brightness or color information in images</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Twirling spirals </span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\">:  Applies a swirling pattern to the image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Pixelate</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Cause an image to break up into pixels, as by oversizing the image</span><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\"/></p></body></html>"))
+        self.label_10.setText(_translate("Dialog",
+                                         "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">HELP MENU</span></p></body></html>"))
+        self.label_11.setText(_translate("Dialog",
+                                         "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Help</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Help window</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Documentation</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Software documentation</span><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\"/></p></body></html>"))
+        self.label_12.setText(_translate("Dialog",
+                                         "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">TOOLS</span></p></body></html>"))
+        self.label_13.setText(_translate("Dialog",
+                                         "<html><head/><body><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Paint</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Paint on the image, also you can choose the width and color</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Move</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Move the text or a copied image </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Select</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Select a part of an image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Lasso</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Lasso select erases the selected area</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Crop</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Crops the image and keeps only the selected part </span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Eyedropper</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Click a point in the image to identify and select its color</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Eraser</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : You can choose the transparent eraser or the rubber</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Text</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Put a text to the image</span></p><p><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-weight:600; font-style:italic; color:#ffffff;\">Convert</span><span style=\" font-family:\'Helvetica Neue\'; font-size:14pt; font-style:italic; color:#ffffff;\"> : Convert any image to a different format</span></p></body></html>"))
 
 
 class Documentation(object):
@@ -233,8 +282,8 @@ class Documentation(object):
         font.setKerning(True)
         self.line.setFont(font)
         self.line.setStyleSheet("background: #FF7DF7;\n"
-"border-radius:20px\n"
-"")
+                                "border-radius:20px\n"
+                                "")
         self.line.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line.setLineWidth(0)
         self.line.setMidLineWidth(0)
@@ -256,21 +305,107 @@ class Documentation(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Help"))
-        self.label_2.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:18pt; color:#ffffff;\">DOCUMENTATION</span></p></body></html>"))
-        self.label.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#fefdfc;\">FEATURES</span></p></body></html>"))
-        self.label_3.setText(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Draw</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image resizing</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image rotating</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Image filters such as blur, noise, twirling spirals and pixelate</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Adding a text</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Converting any image to a different format</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Eraser, transparent eraser</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Removal of unwanted outer areas</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Lasso tool</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji\'; font-size:14pt; font-style:italic; color:#ffffff;\">Paste a copied area on your image</span></p></body></html>"))
-        self.label_4.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PACKAGES WE USED</span></p></body></html>"))
-        self.label_5.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PyQt5</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">OpenCV</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">PIL</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">Functools</span></p><p><span style=\" font-size:14pt; font-style:italic; color:#ffffff;\">Numpy</span></p></body></html>"))
+        self.label_2.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" "
+                                        "font-size:18pt; color:#ffffff;\">"
+                                        "DOCUMENTATION</span></p></body></html>"))
+        self.label.setText(_translate("Dialog",
+                                      "<html><head/><body><p><span style=\" font-size:14pt; "
+                                      "font-style:italic; color:#fefdfc;\">"
+                                      "FEATURES</span></p></body></html>"))
+        self.label_3.setText(_translate("Dialog",
+                                        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" "
+                                        "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                        "<html><head><meta name=\"qrichtext\" content=\"1\" "
+                                        "/><style type=\"text/css\">\n"
+                                        "p, li { white-space: pre-wrap; }\n"
+                                        "</style></head><body style=\" "
+                                        "font-family:\'.AppleSystemUIFont\'; "
+                                        "font-size:13pt; font-weight:400; font-style:normal;\">\n"
+                                        "<p style=\" margin-top:0px; margin-bottom:0px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Draw</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Image resizing</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Image rotating</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Image filters such as blur, noise, "
+                                        "twirling spirals and pixelate</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Adding a text</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Converting any image to a "
+                                        "different format</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Eraser, transparent eraser</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Removal of unwanted outer areas</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Lasso tool</span></p>\n"
+                                        "<p style=\" margin-top:12px; margin-bottom:12px; "
+                                        "margin-left:0px; margin-right:0px; -qt-block-indent:0; "
+                                        "text-indent:0px;\"><span style=\" "
+                                        "font-family:\'-apple-system,BlinkMacSystemFont,"
+                                        "Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,"
+                                        "Segoe UI Emoji\'; font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Paste a copied area on your "
+                                        "image</span></p></body></html>"))
+        self.label_4.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" "
+                                        "font-size:14pt; font-style:italic; color:#ffffff;\">"
+                                        "PACKAGES WE USED</span></p></body></html>"))
+        self.label_5.setText(_translate("Dialog",
+                                        "<html><head/><body><p><span style=\" font-size:14pt; "
+                                        "font-style:italic; color:#ffffff;\">PyQt5</span></p><p>"
+                                        "<span style=\" font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">OpenCV</span></p><p><span style=\" "
+                                        "font-size:14pt; font-style:italic; color:#ffffff;\">"
+                                        "PIL</span></p><p><span style=\" font-size:14pt; "
+                                        "font-style:italic; color:#ffffff;\">Functools</span></p>"
+                                        "<p><span style=\" font-size:14pt; font-style:italic; "
+                                        "color:#ffffff;\">Numpy</span></p></body></html>"))
