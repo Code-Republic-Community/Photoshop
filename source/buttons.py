@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 # import aspose.words as aw
-import PIL
-import source.scribble_area
+from PIL import Image
 from image import Image
 
 
@@ -28,7 +27,7 @@ class Buttons(QtWidgets.QMainWindow):
             photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
             photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
 
-            photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image, 'image')
+            photoshop_obj.scribble_area.resize_image(photoshop_obj.scribble_area.image)
 
             painter = QtGui.QPainter(photoshop_obj.scribble_area.image)
             painter_draw = QtGui.QPainter(photoshop_obj.scribble_area.image_draw)
@@ -72,7 +71,7 @@ class Buttons(QtWidgets.QMainWindow):
                     return
 
                 if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
-                    PIL.Image.open(self.filename).convert('RGB'). \
+                    Image.open(self.filename).convert('RGB'). \
                         save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
         photoshop_obj.all_button_white()
@@ -109,14 +108,14 @@ class MoveText(QtWidgets.QWidget):
                  parent, photoshop_obj, dragable=False):
         super(MoveText, self).__init__(parent)
         self.draggable = dragable
-        self.scribble_obj: source.scribble_area.ScribbleArea = parent
+        self.scribble_obj = parent
         self.photoshop_obj = photoshop_obj
         self.dragging_threshold = 5
         self.mouse_press_pos = None
         self.mouse_move_pos = None
         self.border_radius = 0
         self.setWindowFlags(QtCore.Qt.SubWindow)
-
+        self.setStyleSheet("background:transparent")
         layout = QtWidgets.QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(
@@ -136,6 +135,7 @@ class MoveText(QtWidgets.QWidget):
         self.label.setText(text)
         self.label.setFont(my_font)
         self.label.setStyleSheet(f'color: rgba{text_color}')
+        #self.label.setFont(QtGui.QFont(text_font, 15))
         self.label.adjustSize()
 
         self.band = QtWidgets.QRubberBand(
@@ -162,14 +162,13 @@ class MoveText(QtWidgets.QWidget):
             pen.setWidth(10)
             painter.setPen(pen)
 
-            font = QtGui.QFont(self.scribble_obj.text_font)
+            font = QtGui.QFont()
             font.setBold(self.scribble_obj.bold)
             font.setItalic(self.scribble_obj.italic)
             font.setUnderline(self.scribble_obj.underline)
             font.setPointSize(self.scribble_obj.width_text)
             painter.setFont(font)
-            painter.drawText(self.geometry().x(), self.geometry().y()+self.scribble_obj.width_text,
-                             self.scribble_obj.text)
+            painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
             painter.end()
 
             self.hide()

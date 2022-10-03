@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
-import cv2 as cv
 
 CLOSED = False
 
