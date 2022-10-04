@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 # import aspose.words as aw
-from PIL import Image
+import PIL
 from image import Image
 
 
@@ -71,7 +71,7 @@ class Buttons(QtWidgets.QMainWindow):
                     return
 
                 if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
-                    Image.open(self.filename).convert('RGB'). \
+                    PIL.Image.open(self.filename).convert('RGB'). \
                         save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
         photoshop_obj.all_button_white()
@@ -168,7 +168,8 @@ class MoveText(QtWidgets.QWidget):
             font.setUnderline(self.scribble_obj.underline)
             font.setPointSize(self.scribble_obj.width_text)
             painter.setFont(font)
-            painter.drawText(self.geometry().x(), self.geometry().y(), self.scribble_obj.text)
+
+            painter.drawText(self.pos().x(),self.pos().y() , self.scribble_obj.text)
             painter.end()
 
             self.hide()
