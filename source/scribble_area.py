@@ -57,10 +57,8 @@ class ScribbleArea(QtWidgets.QWidget):
     def open_image(self, img):
         self.open = True
         self.resize_image_draw(img, 'image')
-        #image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
-        #self.image = self.convert_cv_to_q_image(img)
-        #image_draw.scaled(new_size)
-        #self.image_draw = image_draw
+        image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
+        self.image_draw = image_draw
         self.check = True
         self.update()
         return True
@@ -112,7 +110,7 @@ class ScribbleArea(QtWidgets.QWidget):
         dirty_rect = event.rect()
         painter.drawImage(dirty_rect, self.image, dirty_rect)
         painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-        self.update()
+        #self.update()
         if self.pressed_button == 'paint':
             self.draw = True
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
@@ -266,7 +264,8 @@ class ScribbleArea(QtWidgets.QWidget):
         selected_color = color_dialog.getColor()
         self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
-        obj_photoshop_editor.button_list[9].setStyleSheet(f'background:{selected_color.name()}; border-radius:8px')
+        obj_photoshop_editor.button_list[9].setStyleSheet(f'background:{selected_color.name()};'
+                                                          f' border-radius:8px')
         obj_photoshop_editor.paint()
 
     def make_undo_command(self):

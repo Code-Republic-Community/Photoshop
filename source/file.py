@@ -11,20 +11,24 @@ class File(QtWidgets.QMainWindow):
     def new(self, photoshop_obj):
         photoshop_obj.is_clicked_move = False
         if photoshop_obj.scribble_area.check:
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
-            msgBox.setText("The image has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-            lst_yes_no = [QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes]
-            for answer in lst_yes_no:
-                msgBox.button(answer).setMinimumSize(QtCore.QSize(60, 25))
-                msgBox.button(answer).setStyleSheet(
-                    "border-radius:8px;"
-                    "background: White;color: #D600C9"
-                )
-            return_value = msgBox.exec_()
-            if return_value == msgBox.Yes:
+            msg_box = QtWidgets.QMessageBox()
+            msg_box.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+            msg_box.setText("The image has been modified.")
+            msg_box.setInformativeText("Do you want to save your changes?")
+            msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            msg_box.button(QtWidgets.QMessageBox.No).setMinimumSize(QtCore.QSize(60, 25))
+            msg_box.button(QtWidgets.QMessageBox.No).setStyleSheet(
+                "border-radius:8px;"
+                "background: White;color: #D600C9"
+            )
+            msg_box.button(QtWidgets.QMessageBox.Yes).setMinimumSize(QtCore.QSize(60, 25))
+            msg_box.button(QtWidgets.QMessageBox.Yes).setStyleSheet(
+                "border-radius:8px;"
+                "background:#D600C9;color: white"
+
+            )
+            return_value = msg_box.exec_()
+            if return_value == msg_box.Yes:
                 File.save(self, photoshop_obj)
 
         photoshop_obj.scribble_area.check = False
@@ -116,7 +120,8 @@ class File(QtWidgets.QMainWindow):
 
         dialog = QtPrintSupport.QPrintDialog(printer)
         dialog.exec_()
-        img = QtGui.QImage(photoshop_obj.scribble_area.image)
+        img = photoshop_obj.scribble_area.merge_two_images(photoshop_obj.scribble_area.image_draw,
+                                                           photoshop_obj.scribble_area.image)
         img = img.scaledToWidth(printer.pageRect().width(), QtCore.Qt.SmoothTransformation)
 
         painter = QtGui.QPainter()
@@ -128,36 +133,40 @@ class File(QtWidgets.QMainWindow):
         photoshop_obj.is_clicked_move = False
         global CLOSED
 
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
-        msgBox.setInformativeText("Are you sure want to close the program?")
-        msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-        lst_yes_no = [QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.Yes]
-        for answer in lst_yes_no:
-            msgBox.button(answer).setMinimumSize(QtCore.QSize(60, 25))
-            msgBox.button(answer).setStyleSheet(
-                "border-radius:8px;"
-                "background: White;color: #D600C9"
-            )
+        msg_box = QtWidgets.QMessageBox()
+        msg_box.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        msg_box.setInformativeText("Are you sure want to close the program?")
+        msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        msg_box.button(QtWidgets.QMessageBox.No).setMinimumSize(QtCore.QSize(60, 25))
+        msg_box.button(QtWidgets.QMessageBox.No).setStyleSheet(
+            "border-radius:8px;"
+            "background: White;color: #D600C9"
+        )
+        msg_box.button(QtWidgets.QMessageBox.Yes).setMinimumSize(QtCore.QSize(60, 25))
+        msg_box.button(QtWidgets.QMessageBox.Yes).setStyleSheet(
+            "border-radius:8px;"
+            "background:#D600C9;color: white"
+
+        )
 
         if not photoshop_obj.scribble_area.check:
-            return_value = msgBox.exec_()
-            if return_value == msgBox.Yes:
+            return_value = msg_box.exec_()
+            if return_value == msg_box.Yes:
                 CLOSED = True
                 photoshop_obj.main_window.close()
             elif str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
                 event.ignore()
         else:
-            msgBox.setText("The image has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
-            return_value = msgBox.exec_()
-            if return_value == msgBox.Yes:
+            msg_box.setText("The image has been modified.")
+            msg_box.setInformativeText("Do you want to save your changes?")
+            return_value = msg_box.exec_()
+            if return_value == msg_box.Yes:
                 if photoshop_obj.scribble_area.open:
                     File.save(self, photoshop_obj)
                 else:
                     File.save_as(self, photoshop_obj)
-            elif str(type(event)) == "<class 'PyQt5.QtGui.QCloseEvent'>":
+            elif type(event) == QtGui.QCloseEvent:
                 event.accept()
-            elif return_value == msgBox.No:
+            elif return_value == msg_box.No:
                 CLOSED = True
                 photoshop_obj.main_window.close()

@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
-from load_screen import LoadScreen
-from photoshop_editor import PhotoshopEditor
+import load_screen
+import photoshop_editor
 import file
 
 COUNTER = 0
@@ -10,7 +10,7 @@ COUNTER = 0
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
-        self.photoshop_obj = PhotoshopEditor()
+        self.photoshop_obj = photoshop_editor.PhotoshopEditor()
         self.photoshop_obj.setupUi(self)
 
     def closeEvent(self, event):
@@ -21,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
 class SplashScreen(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
-        self.load_screen_obj = LoadScreen()
+        self.load_screen_obj = load_screen.LoadScreen()
         self.load_screen_obj.setup_ui(self)
 
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)

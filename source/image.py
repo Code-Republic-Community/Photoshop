@@ -80,13 +80,16 @@ class InputSize(QtWidgets.QDialog):
 
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
-        lst_button_box = [QtWidgets.QDialogButtonBox.Ok, QtWidgets.QDialogButtonBox.Cancel]
-        for answer in lst_button_box:
-            button_box.button(answer).setMinimumSize(QtCore.QSize(60, 25))
-            button_box.button(answer).setStyleSheet(
-                "border-radius:8px;"
-                "background:#D600C9;color: white"
-            )
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setStyleSheet(
+            "border-radius:8px;"
+            "background:#D600C9;color: white"
+        )
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setStyleSheet(
+            "border-radius:8px;"
+            "background: White;color: #D600C9"
+        )
 
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Width', self.width)
