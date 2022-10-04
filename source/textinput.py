@@ -14,16 +14,14 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.resize(530, 415)
         self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.setAutoFillBackground(False)
-        self.centralwidget = QtWidgets.QWidget(self)
-        self.centralwidget.resize(self.width(), self.height())
+        central_widget = QtWidgets.QWidget(self)
+        central_widget.resize(self.width(), self.height())
 
-        # Initial
         self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-        #self.setWindowOpacity(0.6)
 
         radius = 30
-        self.centralwidget.setStyleSheet(
+        central_widget.setStyleSheet(
             """
             background:#686868;
             border-top-left-radius:{0}px;
@@ -32,16 +30,16 @@ class Ui_Dialog(QtWidgets.QDialog):
             border-bottom-right-radius:{0}px;
             """.format(radius)
         )
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        vertical_layout_2 = QtWidgets.QVBoxLayout(self)
+        vertical_layout_2.setObjectName("verticalLayout_2")
+        vertical_layout = QtWidgets.QVBoxLayout()
+        vertical_layout.setObjectName("verticalLayout")
+        horizontal_layout_2 = QtWidgets.QHBoxLayout()
+        horizontal_layout_2.setObjectName("horizontalLayout_2")
 
         self.font = QtWidgets.QFontComboBox(self)
         self.font.setObjectName("font")
-        self.horizontalLayout_2.addWidget(self.font)
+        horizontal_layout_2.addWidget(self.font)
         self.font.activated[str].connect(functools.partial(self.set_font, 'text_font'))
 
         self.fontsize = QtWidgets.QSlider(self)
@@ -50,19 +48,21 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.fontsize.setMaximum(50)
         self.fontsize.setSliderPosition(15)
         self.fontsize.valueChanged.connect(functools.partial(self.set_font, 'size'))
-        self.horizontalLayout_2.addWidget(self.fontsize)
+        horizontal_layout_2.addWidget(self.fontsize)
 
         self.bold = QtWidgets.QPushButton(self)
         self.bold.setMaximumSize(QtCore.QSize(24, 24))
         self.bold.setStyleSheet("border-radius:8px\n")
         self.bold.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../content/bold.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../content/bold.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.bold.setIcon(icon)
         self.bold.setObjectName("bold")
         self.bold.clicked.connect(functools.partial(self.set_font, 'bold'))
-        self.horizontalLayout_2.addWidget(self.bold)
-        icon.addPixmap(QtGui.QPixmap("../content/italic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        horizontal_layout_2.addWidget(self.bold)
+        icon.addPixmap(QtGui.QPixmap("../content/italic.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.italic = QtWidgets.QPushButton(self)
         self.italic.setMaximumSize(QtCore.QSize(24, 24))
         self.italic.setStyleSheet("border-radius:8px\n")
@@ -70,9 +70,10 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.italic.setIcon(icon)
         self.italic.setObjectName("italic")
         self.italic.clicked.connect(functools.partial(self.set_font, 'italic'))
-        self.horizontalLayout_2.addWidget(self.italic)
+        horizontal_layout_2.addWidget(self.italic)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../content/underline.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../content/underline.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.underline = QtWidgets.QPushButton(self)
         self.underline.setMaximumSize(QtCore.QSize(24, 24))
         self.underline.setStyleSheet("border-radius:8px\n")
@@ -80,97 +81,99 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.underline.setIcon(icon)
         self.underline.setObjectName("underline")
         self.underline.clicked.connect(functools.partial(self.set_font, 'underline'))
-        self.horizontalLayout_2.addWidget(self.underline)
-        icon.addPixmap(QtGui.QPixmap("../content/color.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.color = QtWidgets.QPushButton(self)
-        self.color.setMaximumSize(QtCore.QSize(24, 24))
-        self.color.setStyleSheet("border-radius:8px\n")
-        self.color.setText("")
-        self.color.setIcon(icon)
-        self.color.setObjectName("color")
-        self.color.clicked.connect(functools.partial(self.set_font, 'color'))
-        self.horizontalLayout_2.addWidget(self.color)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
+        horizontal_layout_2.addWidget(self.underline)
+        icon.addPixmap(QtGui.QPixmap("../content/color.png"),
+                       QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        color = QtWidgets.QPushButton(self)
+        color.setMaximumSize(QtCore.QSize(24, 24))
+        color.setStyleSheet("border-radius:8px\n")
+        color.setText("")
+        color.setIcon(icon)
+        color.setObjectName("color")
+        color.clicked.connect(functools.partial(self.set_font, 'color'))
+        horizontal_layout_2.addWidget(color)
+        vertical_layout.addLayout(horizontal_layout_2)
 
-        self.textEdit = QtWidgets.QTextEdit(self)
-        self.textEdit.setObjectName("textEdit")
+        self.text_edit = QtWidgets.QTextEdit(self)
+        self.text_edit.setObjectName("textEdit")
         font = QtGui.QFont()
         font.setPointSize(self.scribble_obj.width_text)
-        self.textEdit.setFont(font)
-        self.verticalLayout.addWidget(self.textEdit)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
+        self.text_edit.setFont(font)
+        vertical_layout.addWidget(self.text_edit)
+        horizontal_layout = QtWidgets.QHBoxLayout()
+        horizontal_layout.setObjectName("horizontalLayout")
+        spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
+                                            QtWidgets.QSizePolicy.Minimum)
+        horizontal_layout.addItem(spacer_item)
 
-        self.cancel = QtWidgets.QPushButton(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(110)
-        sizePolicy.setVerticalStretch(35)
-        sizePolicy.setHeightForWidth(self.cancel.sizePolicy().hasHeightForWidth())
-        self.cancel.setSizePolicy(sizePolicy)
-        self.cancel.setMinimumSize(QtCore.QSize(110, 35))
-        self.cancel.setMaximumSize(QtCore.QSize(110, 35))
-        self.cancel.setAcceptDrops(False)
-        self.cancel.setToolTipDuration(-1)
-        self.cancel.setAutoFillBackground(False)
-        self.cancel.setStyleSheet("border-radius:8px;\n"
+        btn_cancel = QtWidgets.QPushButton(self)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                            QtWidgets.QSizePolicy.Preferred)
+        size_policy.setHorizontalStretch(110)
+        size_policy.setVerticalStretch(35)
+        size_policy.setHeightForWidth(btn_cancel.sizePolicy().hasHeightForWidth())
+        btn_cancel.setSizePolicy(size_policy)
+        btn_cancel.setMinimumSize(QtCore.QSize(110, 35))
+        btn_cancel.setMaximumSize(QtCore.QSize(110, 35))
+        btn_cancel.setAcceptDrops(False)
+        btn_cancel.setToolTipDuration(-1)
+        btn_cancel.setAutoFillBackground(False)
+        btn_cancel.setStyleSheet("border-radius:8px;\n"
                                   "background: White;color: #D600C9\n"
                                   ""
                                   "\n"
                                   "                                                    ")
-        self.cancel.setAutoRepeat(False)
-        self.cancel.setAutoDefault(True)
-        self.cancel.setDefault(False)
-        self.cancel.setFlat(False)
-        self.cancel.setObjectName("cancel")
-        self.cancel.clicked.connect(self.reject_window)
-        self.horizontalLayout.addWidget(self.cancel)
+        btn_cancel.setAutoRepeat(False)
+        btn_cancel.setAutoDefault(True)
+        btn_cancel.setDefault(False)
+        btn_cancel.setFlat(False)
+        btn_cancel.setObjectName("cancel")
+        btn_cancel.clicked.connect(self.reject_window)
+        horizontal_layout.addWidget(btn_cancel)
 
-        self.accept = QtWidgets.QPushButton(self)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(110)
-        sizePolicy.setVerticalStretch(35)
-        sizePolicy.setHeightForWidth(self.accept.sizePolicy().hasHeightForWidth())
-        self.accept.setSizePolicy(sizePolicy)
-        self.accept.setMinimumSize(QtCore.QSize(110, 35))
-        self.accept.setMaximumSize(QtCore.QSize(110, 35))
-        self.accept.setAcceptDrops(False)
-        self.accept.setToolTipDuration(-1)
-        self.accept.setAutoFillBackground(False)
-        self.accept.setStyleSheet("QPushButton{\n"
+        btn_accept = QtWidgets.QPushButton(self)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                            QtWidgets.QSizePolicy.Preferred)
+        size_policy.setHorizontalStretch(110)
+        size_policy.setVerticalStretch(35)
+        size_policy.setHeightForWidth(btn_accept.sizePolicy().hasHeightForWidth())
+        btn_accept.setSizePolicy(size_policy)
+        btn_accept.setMinimumSize(QtCore.QSize(110, 35))
+        btn_accept.setMaximumSize(QtCore.QSize(110, 35))
+        btn_accept.setAcceptDrops(False)
+        btn_accept.setToolTipDuration(-1)
+        btn_accept.setAutoFillBackground(False)
+        btn_accept.setStyleSheet("QPushButton{\n"
                                   "       border-radius:8px;\n"
                                   "       background:#D600C9;color: white\n"
                                   "       \n"
                                   "         }\n"
                                   "\n"
                                   "                                                    ")
-        self.accept.setAutoRepeat(False)
-        self.accept.setAutoDefault(True)
-        self.accept.setDefault(False)
-        self.accept.setFlat(False)
-        self.accept.setObjectName("accept")
-        self.accept.clicked.connect(self.accept_window)
+        btn_accept.setAutoRepeat(False)
+        btn_accept.setAutoDefault(True)
+        btn_accept.setDefault(False)
+        btn_accept.setFlat(False)
+        btn_accept.setObjectName("accept")
+        btn_accept.clicked.connect(self.accept_window)
 
-        self.horizontalLayout.addWidget(self.accept)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.verticalLayout_2.addLayout(self.verticalLayout)
-        self.actionbold = QtWidgets.QAction(self)
-        self.actionbold.setCheckable(True)
+        horizontal_layout.addWidget(btn_accept)
+        vertical_layout.addLayout(horizontal_layout)
+        vertical_layout_2.addLayout(vertical_layout)
+        action_bold = QtWidgets.QAction(self)
+        action_bold.setCheckable(True)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../content/bold.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionbold.setIcon(icon1)
-        self.actionbold.setObjectName("actionbold")
+        icon1.addPixmap(QtGui.QPixmap("../content/bold.png"),
+                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        action_bold.setIcon(icon1)
+        action_bold.setObjectName("actionbold")
 
-        self.retranslateUi(self)
+        translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(translate("Dialog", "Text"))
+        btn_cancel.setText(translate("Dialog", "Cancel"))
+        btn_accept.setText(translate("Dialog", "OK"))
+        action_bold.setText(translate("Dialog", "bold"))
         QtCore.QMetaObject.connectSlotsByName(self)
-
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Text"))
-        self.cancel.setText(_translate("Dialog", "Cancel"))
-        self.accept.setText(_translate("Dialog", "OK"))
-        self.actionbold.setText(_translate("Dialog", "bold"))
 
     def set_font(self, font_type):
         font = QtGui.QFont(self.scribble_obj.text_font)
@@ -178,62 +181,70 @@ class Ui_Dialog(QtWidgets.QDialog):
         font.setItalic(self.scribble_obj.italic)
         font.setUnderline(self.scribble_obj.underline)
         font.setPointSize(self.scribble_obj.width_text)
-        self.textEdit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')
-        #font.sty(self.scribble_obj.text_font)
+        self.text_edit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')
+        # font.sty(self.scribble_obj.text_font)
         icon = QtGui.QIcon()
 
         if font_type == 'bold':
             if not self.scribble_obj.bold:
                 self.scribble_obj.bold = True
-                icon.addPixmap(QtGui.QPixmap("../content/bold_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/bold_black.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
             else:
                 self.scribble_obj.bold = False
-                icon.addPixmap(QtGui.QPixmap("../content/bold.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/bold.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
-            self.textEdit.setFont(font)
+            self.text_edit.setFont(font)
 
         elif font_type == 'italic':
             if not self.scribble_obj.italic:
                 self.scribble_obj.italic = True
-                icon.addPixmap(QtGui.QPixmap("../content/italic_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/italic_black.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
             else:
                 self.scribble_obj.italic = False
-                icon.addPixmap(QtGui.QPixmap("../content/italic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/italic.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
-            self.textEdit.setFont(font)
+            self.text_edit.setFont(font)
 
         elif font_type == 'underline':
             if not self.scribble_obj.underline:
                 self.scribble_obj.underline = True
-                icon.addPixmap(QtGui.QPixmap("../content/underline_black.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/underline_black.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
             else:
                 self.scribble_obj.underline = False
-                icon.addPixmap(QtGui.QPixmap("../content/underline.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                icon.addPixmap(QtGui.QPixmap("../content/underline.png"),
+                               QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
-            self.textEdit.setFont(font)
+            self.text_edit.setFont(font)
 
         elif font_type == 'color':
             self.scribble_obj.color_text = QtWidgets.QColorDialog.getColor().getRgb()
-            self.textEdit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')
+            self.text_edit.setStyleSheet(f'color: rgb{self.scribble_obj.color_text};')
         elif font_type == 'text_font':
             self.scribble_obj.text_font = self.font.currentText()
-            self.textEdit.setFont(QtGui.QFont(self.scribble_obj.text_font, self.scribble_obj.width_text))
+            self.text_edit.setFont(QtGui.QFont(self.scribble_obj.text_font,
+                                               self.scribble_obj.width_text))
         else:
             self.scribble_obj.width_text = int(self.fontsize.value())
-            self.textEdit.setFont(QtGui.QFont(self.scribble_obj.text_font, self.scribble_obj.width_text))
+            self.text_edit.setFont(QtGui.QFont(self.scribble_obj.text_font,
+                                               self.scribble_obj.width_text))
 
     def accept_window(self):
-        if self.textEdit.toPlainText():
-            self.scribble_obj.text = self.textEdit.toPlainText()
+        if self.text_edit.toPlainText():
+            self.scribble_obj.text = self.text_edit.toPlainText()
             self.close()
 
     def reject_window(self):
