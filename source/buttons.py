@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 # import aspose.words as aw
 import PIL
+
+import source.scribble_area
 from image import Image
 
 
@@ -108,7 +110,7 @@ class MoveText(QtWidgets.QWidget):
                  parent, photoshop_obj, dragable=False):
         super(MoveText, self).__init__(parent)
         self.draggable = dragable
-        self.scribble_obj = parent
+        self.scribble_obj: source.scribble_area.ScribbleArea = parent
         self.photoshop_obj = photoshop_obj
         self.dragging_threshold = 5
         self.mouse_press_pos = None
@@ -162,14 +164,14 @@ class MoveText(QtWidgets.QWidget):
             pen.setWidth(10)
             painter.setPen(pen)
 
-            font = QtGui.QFont()
+            font = QtGui.QFont(self.scribble_obj.text_font)
             font.setBold(self.scribble_obj.bold)
             font.setItalic(self.scribble_obj.italic)
             font.setUnderline(self.scribble_obj.underline)
             font.setPointSize(self.scribble_obj.width_text)
             painter.setFont(font)
 
-            painter.drawText(self.pos().x(),self.pos().y() , self.scribble_obj.text)
+            painter.drawText(self.pos().x(),self.pos().y() + self.scribble_obj.width_text , self.scribble_obj.text)
             painter.end()
 
             self.hide()
