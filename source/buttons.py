@@ -1,7 +1,7 @@
 """This file is responsible for the tool buttons"""
 
 from PyQt5 import QtWidgets, QtCore, QtGui
-# import aspose.words as aw
+import aspose.words as aw
 import PIL
 from image import Image
 
@@ -84,30 +84,36 @@ class Buttons(QtWidgets.QMainWindow):
 class ImgTypeComboBox(QtWidgets.QDialog):
     def __init__(self, buttons_obj):
         super().__init__()
-        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
+        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
         self.buttons_obj = buttons_obj
-        self.setFixedSize(250, 120)
-
-        layout = QtWidgets.QVBoxLayout()
+        layout = QtWidgets.QFormLayout(self)
         self.combo_box = QtWidgets.QComboBox(self)
+
         img_types = ['jpeg', 'jpg', 'png', 'svg', 'bmp']
         self.combo_box.addItems(img_types)
         button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
                                                 | QtWidgets.QDialogButtonBox.Cancel, self)
 
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Ok).setStyleSheet(
+            "border-radius:8px;"
+            "background:#D600C9;color: white"
+        )
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setMinimumSize(QtCore.QSize(60, 25))
+        button_box.button(QtWidgets.QDialogButtonBox.Cancel).setStyleSheet(
+            "border-radius:8px;"
+            "background: White;color: #D600C9"
+        )
+
         layout.addWidget(self.combo_box)
         layout.addWidget(button_box)
-        self.setLayout(layout)
 
-        button_box.accepted.connect(self.accept_window)
-        button_box.rejected.connect(self.reject_window)
-
-    def accept_window(self):
+    def accept(self):
         img_type = self.combo_box.currentText()
         self.buttons_obj.image_type = img_type
-        self.close()
-
-    def reject_window(self):
         self.close()
 
 

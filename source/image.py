@@ -60,8 +60,6 @@ class InputSize(QtWidgets.QDialog):
     def __init__(self, photoshop_obj, btn_accepted, parent=None):
         """fgdgdf"""
         super().__init__(parent)
-        self.setWindowTitle('Input size')
-        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         self.setFixedSize(0, 0)
         self.btn_accepted = btn_accepted
         self.photoshop_obj = photoshop_obj
@@ -121,5 +119,5 @@ class InputSize(QtWidgets.QDialog):
                     height = 400
                 self.photoshop_obj.scribble_area.image_width = width
                 self.photoshop_obj.scribble_area.image_height = height
-                self.photoshop_obj.setWindowSize(width, height)
+                self.photoshop_obj.set_window_size(width, height)
                 self.close()

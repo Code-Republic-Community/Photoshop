@@ -408,7 +408,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def setWindowSize(self, width, height):
+    def set_window_size(self, width, height):
         screen = app.primaryScreen()
         rect = screen.availableGeometry()
         bigger = False
