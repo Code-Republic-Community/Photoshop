@@ -1,11 +1,14 @@
+"""This file is responsible for the tool buttons"""
+
 from PyQt5 import QtWidgets, QtCore, QtGui
 # import aspose.words as aw
 import PIL
-import source.scribble_area
 from image import Image
 
 
 class Buttons(QtWidgets.QMainWindow):
+    """This class includes all the functions which are responsible for the actions of the buttons"""
+
     def __init__(self):
         super().__init__()
         self.image_type = ''
@@ -81,7 +84,7 @@ class Buttons(QtWidgets.QMainWindow):
 class ImgTypeComboBox(QtWidgets.QDialog):
     def __init__(self, buttons_obj):
         super().__init__()
-        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         self.buttons_obj = buttons_obj
         self.setFixedSize(250, 120)
 
@@ -113,7 +116,7 @@ class MoveText(QtWidgets.QWidget):
                  scribble_obj, photoshop_obj, dragable=False):
         super(MoveText, self).__init__(scribble_obj)
         self.draggable = dragable
-        self.scribble_obj: source.scribble_area.ScribbleArea = scribble_obj
+        self.scribble_obj = scribble_obj
         self.photoshop_obj = photoshop_obj
         self.dragging_threshold = 5
         self.mouse_press_pos = None

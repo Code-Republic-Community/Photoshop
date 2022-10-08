@@ -34,10 +34,12 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.main_window = main_window
         main_window.setObjectName('MainWindow')
         main_window.setWindowTitle('Photoshop Clone')
-        main_window.setGeometry((self.screen_width - 826) // 2,
-                                (self.screen_height - 561) // 2, 900, 600)
+
+        rect = screen.availableGeometry()
+        main_window.setGeometry((self.screen_width - self.scribble_area.width()) // 2,
+                                (self.screen_height - self.scribble_area.height()) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
-        main_window.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        main_window.setWindowIcon(QtGui.QIcon('../content/logo.png'))
 
         main_window.setStyleSheet("background: #686868; color:white")
 
@@ -192,7 +194,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         i = 0
         QtWidgets.QToolTip.setFont(QtGui.QFont('Arial', 14))
         lst_name_buttons = ['Pen', 'Move', 'Marquee', 'Lasso', 'Crop', 'Eyedropper'
-                            , 'Text', 'Eraser', 'Image converter', 'Color']
+                            , 'Eraser', 'Text', 'Image converter', 'Color']
         for key, value in dict_buttons.items():
             self.button_list[i] = QtWidgets.QPushButton(self.central_widget)
 

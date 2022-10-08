@@ -61,7 +61,7 @@ class InputSize(QtWidgets.QDialog):
         """fgdgdf"""
         super().__init__(parent)
         self.setWindowTitle('Input size')
-        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         self.setFixedSize(0, 0)
         self.btn_accepted = btn_accepted
         self.photoshop_obj = photoshop_obj
