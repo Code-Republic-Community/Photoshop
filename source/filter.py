@@ -9,8 +9,7 @@ class Filter:
     @classmethod
     def blur(cls, photoshop_obj):
         photoshop_obj.scribble_area.save_image()
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(photoshop_obj.scribble_area.size(),
-                                                              QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
         photoshop_obj.is_clicked_move = False
         img = photoshop_obj.scribble_area.image
         buffer = QtCore.QBuffer()
@@ -31,8 +30,8 @@ class Filter:
     @classmethod
     def noise(cls, photoshop_obj):
         photoshop_obj.scribble_area.save_image()
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(photoshop_obj.scribble_area.size(),
-                                                              QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
+
         photoshop_obj.is_clicked_move = False
         img = photoshop_obj.scribble_area.convert_q_image_to_cv(photoshop_obj.scribble_area.image)
 
@@ -50,8 +49,8 @@ class Filter:
     @classmethod
     def twirling_spirals(cls, photoshop_obj):
         photoshop_obj.scribble_area.save_image()
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(photoshop_obj.scribble_area.size(),
-                                                              QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
+
         photoshop_obj.is_clicked_move = False
         img = photoshop_obj.scribble_area.convert_q_image_to_cv(photoshop_obj.scribble_area.image)
         c_x = img.shape[1] / 2
@@ -83,8 +82,8 @@ class Filter:
     @classmethod
     def pixelate(cls, photoshop_obj):
         photoshop_obj.scribble_area.save_image()
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(photoshop_obj.scribble_area.size(),
-                                                              QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
+
         photoshop_obj.is_clicked_move = False
         img = photoshop_obj.scribble_area.convert_q_image_to_cv(photoshop_obj.scribble_area.image)
         height, width = img.shape[:2]

@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui, QtPrintSupport
+import cv2 as cv
 
 CLOSED = False
 
@@ -41,8 +42,7 @@ class File(QtWidgets.QMainWindow):
             expandedTo(photoshop_obj.scribble_area.size())
         photoshop_obj.scribble_area.image.fill(QtCore.Qt.white)
 
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(QtCore.QSize(width, height),
-                                                              QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
 
         photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image_draw,
                                                       'image_draw', new_size)
@@ -56,7 +56,9 @@ class File(QtWidgets.QMainWindow):
                                                                  'Image files (*.jpg *.png)')
 
         if self.filename != '':
-            img = QtGui.QImage(self.filename)
+            #img = QtGui.QImage(self.filename)
+            img = cv.resize(cv.imread(self.filename),
+                            photoshop_obj.scribble_area.get_current_window_size())
             photoshop_obj.scribble_area.open_image(img)
             photoshop_obj.scribble_area.check = True
 

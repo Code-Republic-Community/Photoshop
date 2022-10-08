@@ -34,10 +34,8 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.main_window = main_window
         main_window.setObjectName('MainWindow')
         main_window.setWindowTitle('Photoshop Clone')
-
-        rect = screen.availableGeometry()
-        main_window.setGeometry((self.screen_width - self.scribble_area.width()) // 2,
-                                (self.screen_height - self.scribble_area.height()) // 2, 900, 600)
+        main_window.setGeometry((self.screen_width - 840) // 2,
+                                (self.screen_height - 560) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
         main_window.setWindowIcon(QtGui.QIcon('../content/logo.png'))
 
@@ -411,13 +409,17 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.window.show()
 
     def setWindowSize(self, width, height):
+        screen = app.primaryScreen()
+        rect = screen.availableGeometry()
         bigger = False
-        if height > 701:
-            height = 701
+        if height > rect.height():
+            height = rect.height()
             bigger = True
 
-        if width > 1360:
-            width = 1360
+        if width > rect.width():
+            width = rect.width()
+        self.scribble_area.image_width = width
+        self.scribble_area.image_height = height
 
         self.main_window.setFixedSize(width, height)
         if bigger:
