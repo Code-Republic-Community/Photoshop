@@ -9,7 +9,7 @@ class LoadScreen(object):
         if main_obj.objectName():
             main_obj.setObjectName('SplashScreen')
         main_obj.resize(680, 400)
-        main_obj.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        main_obj.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         central_widget = QtWidgets.QWidget(main_obj)
         central_widget.setObjectName('central_widget')
         vertical_layout = QtWidgets.QVBoxLayout(central_widget)
@@ -87,7 +87,7 @@ class LoadScreen(object):
         QtCore.QMetaObject.connectSlotsByName(main_obj)
 
         main_obj.setWindowTitle(QtCore.QCoreApplication.translate(
-            'SplashScreen', 'Photoshop Editor', None))
+            'SplashScreen', 'Photoshop Clone', None))
         label_title.setText(QtCore.QCoreApplication.translate(
             'SplashScreen', '<strong>Photoshop</strong> Clone', None))
         self.label_description.setText(QtCore.QCoreApplication.translate(

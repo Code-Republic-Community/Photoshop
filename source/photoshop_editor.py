@@ -34,10 +34,10 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.main_window = main_window
         main_window.setObjectName('MainWindow')
         main_window.setWindowTitle('Photoshop Clone')
-        main_window.setGeometry((self.screen_width - 826) // 2,
-                                (self.screen_height - 561) // 2, 900, 600)
+        main_window.setGeometry((self.screen_width - 840) // 2,
+                                (self.screen_height - 560) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
-        main_window.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        main_window.setWindowIcon(QtGui.QIcon('../content/logo.png'))
 
         main_window.setStyleSheet("background: #686868; color:white")
 
@@ -73,6 +73,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
 
         menubar = QtWidgets.QMenuBar(main_window)
         menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
+
         menubar.setObjectName('menubar')
         menu_file = QtWidgets.QMenu(menubar)
         menu_file.setObjectName('menuFile')
@@ -192,7 +193,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         i = 0
         QtWidgets.QToolTip.setFont(QtGui.QFont('Arial', 14))
         lst_name_buttons = ['Pen', 'Move', 'Marquee', 'Lasso', 'Crop', 'Eyedropper'
-                            , 'Text', 'Eraser', 'Image converter', 'Color']
+                            , 'Eraser', 'Text', 'Image converter', 'Color']
         for key, value in dict_buttons.items():
             self.button_list[i] = QtWidgets.QPushButton(self.central_widget)
 
@@ -223,7 +224,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
             i += 1
 
         rubber_menu = QtWidgets.QMenu()
-        rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
+        rubber_menu.addAction('Rubber the scribble', functools.partial(self.eraser, 'transparent'))
         rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
 
         self.button_list[6].setMenu(rubber_menu)
@@ -408,19 +409,23 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def setWindowSize(self, width, height):
+    def set_window_size(self, width, height):
+        screen = app.primaryScreen()
+        rect = screen.availableGeometry()
         bigger = False
-        if height > 701:
-            height = 701
+        if height > rect.height() - 30:
+            height = rect.height() - 30
             bigger = True
 
-        if width > 1360:
-            width = 1360
+        if width > rect.width():
+            width = rect.width()
+        self.scribble_area.image_width = width
+        self.scribble_area.image_height = height
 
         self.main_window.setFixedSize(width, height)
         if bigger:
             self.main_window.setGeometry((self.screen_width - width) // 2,
-                                         (self.screen_height - height + 27) // 2, width, height)
+                                         (self.screen_height - height + 20) // 2, width, height)
         else:
             self.main_window.setGeometry((self.screen_width - width) // 2,
                                          (self.screen_height - height) // 2, width, height)

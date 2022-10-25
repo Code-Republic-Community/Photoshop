@@ -119,10 +119,10 @@ class Ui_Dialog(QtWidgets.QDialog):
         btn_cancel.setToolTipDuration(-1)
         btn_cancel.setAutoFillBackground(False)
         btn_cancel.setStyleSheet("border-radius:8px;\n"
-                                  "background: White;color: #D600C9\n"
-                                  ""
-                                  "\n"
-                                  "                                                    ")
+                                 "background: White;color: #D600C9\n"
+                                 ""
+                                 "\n"
+                                 "                                                    ")
         btn_cancel.setAutoRepeat(False)
         btn_cancel.setAutoDefault(True)
         btn_cancel.setDefault(False)
@@ -144,12 +144,12 @@ class Ui_Dialog(QtWidgets.QDialog):
         btn_accept.setToolTipDuration(-1)
         btn_accept.setAutoFillBackground(False)
         btn_accept.setStyleSheet("QPushButton{\n"
-                                  "       border-radius:8px;\n"
-                                  "       background:#D600C9;color: white\n"
-                                  "       \n"
-                                  "         }\n"
-                                  "\n"
-                                  "                                                    ")
+                                 "       border-radius:8px;\n"
+                                 "       background:#D600C9;color: white\n"
+                                 "       \n"
+                                 "         }\n"
+                                 "\n"
+                                 "                                                    ")
         btn_accept.setAutoRepeat(False)
         btn_accept.setAutoDefault(True)
         btn_accept.setDefault(False)
@@ -222,6 +222,7 @@ class Ui_Dialog(QtWidgets.QDialog):
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
+
             else:
                 self.scribble_obj.underline = False
                 icon.addPixmap(QtGui.QPixmap("../content/underline.png"),

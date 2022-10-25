@@ -57,7 +57,7 @@ class Edit:
 
     @classmethod
     def clear_screen(cls, photoshop_obj):
-        photoshop_obj.scribble_area.image_draw = QtGui.QImage(1000, 1000, QtGui.QImage.Format_ARGB32)
+        photoshop_obj.scribble_area.image_draw.fill(QtCore.Qt.transparent)
 
         photoshop_obj.scribble_area.resize_image_draw(photoshop_obj.scribble_area.image, 'image')
         photoshop_obj.scribble_area.image.fill(QtGui.qRgb(255, 255, 255))
@@ -171,7 +171,7 @@ class KeyShortcut(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Keyboard shortcuts')
-        self.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         self.setFixedSize(400, 650)
         self.horizontal_layout_2 = QtWidgets.QHBoxLayout(self)
         self.horizontal_layout_2.setObjectName('horizontalLayout_2')

@@ -56,12 +56,26 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def open_image(self, img):
         self.open = True
-        self.resize_image_draw(img, 'image')
-        image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
-        self.image_draw = image_draw
-        self.check = True
+        new_size = QtCore.QSize(img.shape[0], img.shape[1])
+        self.image_draw.fill(QtCore.Qt.transparent)
+        self.resize_image(img, new_size)
+        self.image = self.convert_cv_to_q_image(img)
+
         self.update()
         return True
+
+    def resize_image(self, image, new_size=None):
+        if new_size is None:
+            new_image = QtGui.QImage(QtCore.QSize(self.image_width, self.image_height),
+                                     QtGui.QImage.Format_RGB32)
+        else:
+            new_image = QtGui.QImage(QtCore.QSize(new_size), QtGui.QImage.Format_RGB32)
+
+        new_image.fill(QtGui.qRgb(255, 255, 255))
+        painter = QtGui.QPainter(new_image)
+        image = self.convert_cv_to_q_image(image)
+        painter.drawImage(QtCore.QPoint(0, 0), image)
+        self.image = new_image
 
     def resize_image_draw(self, image, image_type, new_size=None):
         pixmap = QtGui.QPixmap()
@@ -82,6 +96,9 @@ class ScribbleArea(QtWidgets.QWidget):
         self.update()
 
     def resizeEvent(self, event):
+        print(self.size())
+        self.image_width = self.width()
+        self.image_height = self.height()
         pixmap = QtGui.QPixmap()
         pixmap = pixmap.fromImage(self.image.copy().scaled(self.image_width, self.image_height,
                                                            QtCore.Qt.IgnoreAspectRatio,
@@ -110,7 +127,7 @@ class ScribbleArea(QtWidgets.QWidget):
         dirty_rect = event.rect()
         painter.drawImage(dirty_rect, self.image, dirty_rect)
         painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
-        #self.update()
+        # self.update()
         if self.pressed_button == 'paint':
             self.draw = True
             painter.drawImage(dirty_rect, self.image_draw, dirty_rect)
@@ -260,7 +277,7 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def set_pen_color(self, obj_photoshop_editor):
         color_dialog = QtWidgets.QColorDialog(self)
-        color_dialog.setWindowIcon(QtGui.QIcon('../content/photoshop.png'))
+        color_dialog.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         selected_color = color_dialog.getColor()
         self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
