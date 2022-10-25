@@ -171,7 +171,7 @@ class KeyShortcut(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Keyboard shortcuts')
-        self.setWindowIcon(QtGui.QIcon('content/logo.png'))
+        self.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         self.setFixedSize(400, 650)
         self.horizontal_layout_2 = QtWidgets.QHBoxLayout(self)
         self.horizontal_layout_2.setObjectName('horizontalLayout_2')

@@ -37,7 +37,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         main_window.setGeometry((self.screen_width - 840) // 2,
                                 (self.screen_height - 560) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
-        main_window.setWindowIcon(QtGui.QIcon('content/logo.png'))
+        main_window.setWindowIcon(QtGui.QIcon('../content/logo.png'))
 
         main_window.setStyleSheet("background: #686868; color:white")
 
@@ -179,15 +179,15 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         help_menu.setTitle(translate('MainWindow', 'Help'))
 
     def toolbar(self):
-        dict_buttons = {'content/paint-brush.png': self.paint,
-                        'content/move.png': self.move_text,
-                        'content/marquee.png': self.marquee,
-                        'content/lasso.png': self.lasso,
-                        'content/crop.png': self.crop,
-                        'content/eyedropper.png': self.eyedropper,
-                        'content/eraser.png': self.eraser,
-                        'content/font.png': self.type,
-                        'content/recovery.png': self.image_converter,
+        dict_buttons = {'../content/paint-brush.png': self.paint,
+                        '../content/move.png': self.move_text,
+                        '../content/marquee.png': self.marquee,
+                        '../content/lasso.png': self.lasso,
+                        '../content/crop.png': self.crop,
+                        '../content/eyedropper.png': self.eyedropper,
+                        '../content/eraser.png': self.eraser,
+                        '../content/font.png': self.type,
+                        '../content/recovery.png': self.image_converter,
                         '': functools.partial(self.scribble_area.set_pen_color, self)
                         }
         i = 0
@@ -256,7 +256,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.all_button_white()
         self.button_list[0].setStyleSheet('background:#D600C9; border-radius:8px')
 
-        pixmap = QtGui.QPixmap('content/dry-clean.png')
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
         if self.scribble_area.pen_width > 10:
             pixmap = pixmap.scaled(self.scribble_area.pen_width,
                                    self.scribble_area.pen_width,
@@ -278,7 +278,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = True
 
-        pixmap = QtGui.QPixmap('content/move_black.png')
+        pixmap = QtGui.QPixmap('../content/move_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio,
                                QtCore.Qt.SmoothTransformation)
@@ -293,7 +293,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('content/crop_black.png')
+        pixmap = QtGui.QPixmap('../content/crop_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 
@@ -308,7 +308,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('content/dry-clean.png')
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 
@@ -331,7 +331,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.button_list[5].setStyleSheet('background:#D600C9; border-radius:8px')
         for i in self.band:
             i.draggable = False
-        pixmap = QtGui.QPixmap('content/eyedropper_black.png')
+        pixmap = QtGui.QPixmap('../content/eyedropper_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio,
                                QtCore.Qt.SmoothTransformation)
@@ -351,7 +351,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('content/dry-clean.png')
+        pixmap = QtGui.QPixmap('../content/dry-clean.png')
         if self.scribble_area.rubber_width > 10:
             pixmap = pixmap.scaled(self.scribble_area.rubber_width,
                                    self.scribble_area.rubber_width,
@@ -413,7 +413,6 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         screen = app.primaryScreen()
         rect = screen.availableGeometry()
         bigger = False
-        print(rect.size())
         if height > rect.height() - 30:
             height = rect.height() - 30
             bigger = True

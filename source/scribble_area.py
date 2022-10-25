@@ -277,7 +277,7 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def set_pen_color(self, obj_photoshop_editor):
         color_dialog = QtWidgets.QColorDialog(self)
-        color_dialog.setWindowIcon(QtGui.QIcon('content/logo.png'))
+        color_dialog.setWindowIcon(QtGui.QIcon('../content/logo.png'))
         selected_color = color_dialog.getColor()
         self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
