@@ -89,6 +89,7 @@ class InputSize(QtWidgets.QDialog):
             "background: White;color: #D600C9"
         )
 
+
         layout = QtWidgets.QFormLayout(self)
         layout.addRow('Width', self.width)
         layout.addRow('Height', self.height)

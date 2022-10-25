@@ -55,13 +55,13 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.bold.setStyleSheet("border-radius:8px\n")
         self.bold.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../content/bold.png"),
+        icon.addPixmap(QtGui.QPixmap("content/bold.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.bold.setIcon(icon)
         self.bold.setObjectName("bold")
         self.bold.clicked.connect(functools.partial(self.set_font, 'bold'))
         horizontal_layout_2.addWidget(self.bold)
-        icon.addPixmap(QtGui.QPixmap("../content/italic.png"),
+        icon.addPixmap(QtGui.QPixmap("content/italic.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.italic = QtWidgets.QPushButton(self)
         self.italic.setMaximumSize(QtCore.QSize(24, 24))
@@ -72,7 +72,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.italic.clicked.connect(functools.partial(self.set_font, 'italic'))
         horizontal_layout_2.addWidget(self.italic)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../content/underline.png"),
+        icon.addPixmap(QtGui.QPixmap("content/underline.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.underline = QtWidgets.QPushButton(self)
         self.underline.setMaximumSize(QtCore.QSize(24, 24))
@@ -82,7 +82,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         self.underline.setObjectName("underline")
         self.underline.clicked.connect(functools.partial(self.set_font, 'underline'))
         horizontal_layout_2.addWidget(self.underline)
-        icon.addPixmap(QtGui.QPixmap("../content/color.png"),
+        icon.addPixmap(QtGui.QPixmap("content/color.png"),
                        QtGui.QIcon.Normal, QtGui.QIcon.Off)
         color = QtWidgets.QPushButton(self)
         color.setMaximumSize(QtCore.QSize(24, 24))
@@ -119,10 +119,10 @@ class Ui_Dialog(QtWidgets.QDialog):
         btn_cancel.setToolTipDuration(-1)
         btn_cancel.setAutoFillBackground(False)
         btn_cancel.setStyleSheet("border-radius:8px;\n"
-                                  "background: White;color: #D600C9\n"
-                                  ""
-                                  "\n"
-                                  "                                                    ")
+                                 "background: White;color: #D600C9\n"
+                                 ""
+                                 "\n"
+                                 "                                                    ")
         btn_cancel.setAutoRepeat(False)
         btn_cancel.setAutoDefault(True)
         btn_cancel.setDefault(False)
@@ -144,12 +144,12 @@ class Ui_Dialog(QtWidgets.QDialog):
         btn_accept.setToolTipDuration(-1)
         btn_accept.setAutoFillBackground(False)
         btn_accept.setStyleSheet("QPushButton{\n"
-                                  "       border-radius:8px;\n"
-                                  "       background:#D600C9;color: white\n"
-                                  "       \n"
-                                  "         }\n"
-                                  "\n"
-                                  "                                                    ")
+                                 "       border-radius:8px;\n"
+                                 "       background:#D600C9;color: white\n"
+                                 "       \n"
+                                 "         }\n"
+                                 "\n"
+                                 "                                                    ")
         btn_accept.setAutoRepeat(False)
         btn_accept.setAutoDefault(True)
         btn_accept.setDefault(False)
@@ -163,7 +163,7 @@ class Ui_Dialog(QtWidgets.QDialog):
         action_bold = QtWidgets.QAction(self)
         action_bold.setCheckable(True)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../content/bold.png"),
+        icon1.addPixmap(QtGui.QPixmap("content/bold.png"),
                         QtGui.QIcon.Normal, QtGui.QIcon.Off)
         action_bold.setIcon(icon1)
         action_bold.setObjectName("actionbold")
@@ -188,13 +188,13 @@ class Ui_Dialog(QtWidgets.QDialog):
         if font_type == 'bold':
             if not self.scribble_obj.bold:
                 self.scribble_obj.bold = True
-                icon.addPixmap(QtGui.QPixmap("../content/bold_black.png"),
+                icon.addPixmap(QtGui.QPixmap("content/bold_black.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
             else:
                 self.scribble_obj.bold = False
-                icon.addPixmap(QtGui.QPixmap("../content/bold.png"),
+                icon.addPixmap(QtGui.QPixmap("content/bold.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.bold.setIcon(icon)
                 font.setBold(self.scribble_obj.bold)
@@ -203,13 +203,13 @@ class Ui_Dialog(QtWidgets.QDialog):
         elif font_type == 'italic':
             if not self.scribble_obj.italic:
                 self.scribble_obj.italic = True
-                icon.addPixmap(QtGui.QPixmap("../content/italic_black.png"),
+                icon.addPixmap(QtGui.QPixmap("content/italic_black.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
             else:
                 self.scribble_obj.italic = False
-                icon.addPixmap(QtGui.QPixmap("../content/italic.png"),
+                icon.addPixmap(QtGui.QPixmap("content/italic.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.italic.setIcon(icon)
                 font.setItalic(self.scribble_obj.italic)
@@ -218,13 +218,14 @@ class Ui_Dialog(QtWidgets.QDialog):
         elif font_type == 'underline':
             if not self.scribble_obj.underline:
                 self.scribble_obj.underline = True
-                icon.addPixmap(QtGui.QPixmap("../content/underline_black.png"),
+                icon.addPixmap(QtGui.QPixmap("content/underline_black.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)
+
             else:
                 self.scribble_obj.underline = False
-                icon.addPixmap(QtGui.QPixmap("../content/underline.png"),
+                icon.addPixmap(QtGui.QPixmap("content/underline.png"),
                                QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 self.underline.setIcon(icon)
                 font.setUnderline(self.scribble_obj.underline)

@@ -94,3 +94,4 @@ class Filter:
         photoshop_obj.scribble_area.image = q_img
         photoshop_obj.scribble_area.check = True
         photoshop_obj.scribble_area.update()
+        

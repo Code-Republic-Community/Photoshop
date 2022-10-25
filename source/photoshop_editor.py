@@ -37,7 +37,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         main_window.setGeometry((self.screen_width - 840) // 2,
                                 (self.screen_height - 560) // 2, 900, 600)
         main_window.setFixedSize(900, 600)
-        main_window.setWindowIcon(QtGui.QIcon('../content/logo.png'))
+        main_window.setWindowIcon(QtGui.QIcon('content/logo.png'))
 
         main_window.setStyleSheet("background: #686868; color:white")
 
@@ -73,6 +73,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
 
         menubar = QtWidgets.QMenuBar(main_window)
         menubar.setGeometry(QtCore.QRect(0, 0, 800, 24))
+
         menubar.setObjectName('menubar')
         menu_file = QtWidgets.QMenu(menubar)
         menu_file.setObjectName('menuFile')
@@ -178,15 +179,15 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         help_menu.setTitle(translate('MainWindow', 'Help'))
 
     def toolbar(self):
-        dict_buttons = {'../content/paint-brush.png': self.paint,
-                        '../content/move.png': self.move_text,
-                        '../content/marquee.png': self.marquee,
-                        '../content/lasso.png': self.lasso,
-                        '../content/crop.png': self.crop,
-                        '../content/eyedropper.png': self.eyedropper,
-                        '../content/eraser.png': self.eraser,
-                        '../content/font.png': self.type,
-                        '../content/recovery.png': self.image_converter,
+        dict_buttons = {'content/paint-brush.png': self.paint,
+                        'content/move.png': self.move_text,
+                        'content/marquee.png': self.marquee,
+                        'content/lasso.png': self.lasso,
+                        'content/crop.png': self.crop,
+                        'content/eyedropper.png': self.eyedropper,
+                        'content/eraser.png': self.eraser,
+                        'content/font.png': self.type,
+                        'content/recovery.png': self.image_converter,
                         '': functools.partial(self.scribble_area.set_pen_color, self)
                         }
         i = 0
@@ -223,7 +224,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
             i += 1
 
         rubber_menu = QtWidgets.QMenu()
-        rubber_menu.addAction('Transparent', functools.partial(self.eraser, 'transparent'))
+        rubber_menu.addAction('Rubber the scribble', functools.partial(self.eraser, 'transparent'))
         rubber_menu.addAction('Rubber all image', functools.partial(self.eraser, 'all image'))
 
         self.button_list[6].setMenu(rubber_menu)
@@ -255,7 +256,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.all_button_white()
         self.button_list[0].setStyleSheet('background:#D600C9; border-radius:8px')
 
-        pixmap = QtGui.QPixmap('../content/dry-clean.png')
+        pixmap = QtGui.QPixmap('content/dry-clean.png')
         if self.scribble_area.pen_width > 10:
             pixmap = pixmap.scaled(self.scribble_area.pen_width,
                                    self.scribble_area.pen_width,
@@ -277,7 +278,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = True
 
-        pixmap = QtGui.QPixmap('../content/move_black.png')
+        pixmap = QtGui.QPixmap('content/move_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio,
                                QtCore.Qt.SmoothTransformation)
@@ -292,7 +293,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('../content/crop_black.png')
+        pixmap = QtGui.QPixmap('content/crop_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 
@@ -307,7 +308,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('../content/dry-clean.png')
+        pixmap = QtGui.QPixmap('content/dry-clean.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio, QtCore.Qt.SmoothTransformation)
 
@@ -330,7 +331,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.button_list[5].setStyleSheet('background:#D600C9; border-radius:8px')
         for i in self.band:
             i.draggable = False
-        pixmap = QtGui.QPixmap('../content/eyedropper_black.png')
+        pixmap = QtGui.QPixmap('content/eyedropper_black.png')
         pixmap = pixmap.scaled(20, 20,
                                QtCore.Qt.IgnoreAspectRatio,
                                QtCore.Qt.SmoothTransformation)
@@ -350,7 +351,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         for i in self.band:
             i.draggable = False
 
-        pixmap = QtGui.QPixmap('../content/dry-clean.png')
+        pixmap = QtGui.QPixmap('content/dry-clean.png')
         if self.scribble_area.rubber_width > 10:
             pixmap = pixmap.scaled(self.scribble_area.rubber_width,
                                    self.scribble_area.rubber_width,
@@ -412,8 +413,9 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         screen = app.primaryScreen()
         rect = screen.availableGeometry()
         bigger = False
-        if height > rect.height():
-            height = rect.height()
+        print(rect.size())
+        if height > rect.height() - 30:
+            height = rect.height() - 30
             bigger = True
 
         if width > rect.width():
@@ -424,7 +426,7 @@ class PhotoshopEditor(QtWidgets.QMainWindow):
         self.main_window.setFixedSize(width, height)
         if bigger:
             self.main_window.setGeometry((self.screen_width - width) // 2,
-                                         (self.screen_height - height + 27) // 2, width, height)
+                                         (self.screen_height - height + 20) // 2, width, height)
         else:
             self.main_window.setGeometry((self.screen_width - width) // 2,
                                          (self.screen_height - height) // 2, width, height)

@@ -1,7 +1,6 @@
 """This file is responsible for the tool buttons"""
 
 from PyQt5 import QtWidgets, QtCore, QtGui
-import aspose.words as aw
 import PIL
 from image import Image
 
@@ -53,30 +52,9 @@ class Buttons(QtWidgets.QMainWindow):
             point_index = self.filename.rindex('.')
             ImgTypeComboBox(self).exec()
 
-            if self.image_type in 'svg':
-                if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
-                    doc = aw.Document()
-                    builder = aw.DocumentBuilder(doc)
-                    shape = builder.insert_image(self.filename)
-                    save_options = aw.saving.ImageSaveOptions(aw.SaveFormat.SVG)
-                    shape.get_shape_renderer(). \
-                        save(f'{self.filename[:point_index + 1]}{self.image_type}',
-                             save_options)
-                    photoshop_obj.all_button_white()
-                    return
-
-            elif self.image_type in ('png', 'bmp', 'jpeg', 'jpg'):
-                if self.filename.endswith('svg'):
-                    doc = aw.Document()
-                    builder = aw.DocumentBuilder(doc)
-                    shape = builder.insert_image(self.filename)
-                    shape.image_data.save(f'{self.filename[:-3]}{self.image_type}')
-                    photoshop_obj.all_button_white()
-                    return
-
-                if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
-                    PIL.Image.open(self.filename).convert('RGB'). \
-                        save(f'{self.filename[:point_index + 1]}{self.image_type}')
+            if self.filename.endswith(('png', 'jpg', 'gif', 'bmp', 'jpeg', 'jfif')):
+                PIL.Image.open(self.filename).convert('RGB'). \
+                    save(f'{self.filename[:point_index + 1]}{self.image_type}')
 
         photoshop_obj.all_button_white()
 
@@ -89,7 +67,7 @@ class ImgTypeComboBox(QtWidgets.QDialog):
         layout = QtWidgets.QFormLayout(self)
         self.combo_box = QtWidgets.QComboBox(self)
 
-        img_types = ['jpeg', 'jpg', 'png', 'svg', 'bmp']
+        img_types = ['jpeg', 'jpg', 'png', 'bmp']
         self.combo_box.addItems(img_types)
         button_box = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
                                                 | QtWidgets.QDialogButtonBox.Cancel, self)

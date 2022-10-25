@@ -14,7 +14,7 @@ class File(QtWidgets.QMainWindow):
         if photoshop_obj.scribble_area.check:
             msg_box = QtWidgets.QMessageBox()
             msg_box.setWindowTitle('Photoshop Clone')
-            msg_box.setWindowIcon(QtGui.QIcon('../content/logo.png'))
+            msg_box.setWindowIcon(QtGui.QIcon('content/logo.png'))
             msg_box.setText("The image has been modified.")
             msg_box.setInformativeText("Do you want to save your changes?")
             msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
@@ -57,11 +57,9 @@ class File(QtWidgets.QMainWindow):
                                                                  'Image files (*.jpg *.png)')
 
         if self.filename != '':
-            # img = QtGui.QImage(self.filename)
             img = cv.resize(cv.imread(self.filename),
                             photoshop_obj.scribble_area.get_current_window_size())
             photoshop_obj.scribble_area.open_image(img)
-            photoshop_obj.scribble_area.check = True
 
     def save(self, photoshop_obj):
         photoshop_obj.is_clicked_move = False
@@ -138,7 +136,7 @@ class File(QtWidgets.QMainWindow):
 
         msg_box = QtWidgets.QMessageBox()
         msg_box.setWindowTitle('Photoshop Clone')
-        msg_box.setWindowIcon(QtGui.QIcon('../content/logo.png'))
+        msg_box.setWindowIcon(QtGui.QIcon('content/logo.png'))
         msg_box.setInformativeText('Are you sure want to close the program?')
         msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
         msg_box.button(QtWidgets.QMessageBox.No).setMinimumSize(QtCore.QSize(60, 25))

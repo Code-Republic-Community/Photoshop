@@ -57,12 +57,10 @@ class ScribbleArea(QtWidgets.QWidget):
     def open_image(self, img):
         self.open = True
         new_size = QtCore.QSize(img.shape[0], img.shape[1])
-        #self.image_draw = QtGui.QImage(self.size(), QtGui.QImage.Format_ARGB32)
         self.image_draw.fill(QtCore.Qt.transparent)
         self.resize_image(img, new_size)
         self.image = self.convert_cv_to_q_image(img)
 
-        self.check = True
         self.update()
         return True
 
@@ -98,6 +96,9 @@ class ScribbleArea(QtWidgets.QWidget):
         self.update()
 
     def resizeEvent(self, event):
+        print(self.size())
+        self.image_width = self.width()
+        self.image_height = self.height()
         pixmap = QtGui.QPixmap()
         pixmap = pixmap.fromImage(self.image.copy().scaled(self.image_width, self.image_height,
                                                            QtCore.Qt.IgnoreAspectRatio,
@@ -276,7 +277,7 @@ class ScribbleArea(QtWidgets.QWidget):
 
     def set_pen_color(self, obj_photoshop_editor):
         color_dialog = QtWidgets.QColorDialog(self)
-        color_dialog.setWindowIcon(QtGui.QIcon('../content/logo.png'))
+        color_dialog.setWindowIcon(QtGui.QIcon('content/logo.png'))
         selected_color = color_dialog.getColor()
         self.color_pen = selected_color.getRgb()
         obj_photoshop_editor.paint()
